@@ -42,7 +42,7 @@ bool j1Scene::Awake(pugi::xml_node& config)
 bool j1Scene::Start()
 {
 	//Load Background texture
-	background = App->tex->Load("textures/background.png");
+	background = App->tex->Load("textures/Basement.png");
 
 	//Background mark collide build
 	int background_points[10] = {
@@ -52,7 +52,9 @@ bool j1Scene::Start()
 		-3, 481,
 		-4, 421
 	};
-	background_collide_mark = App->physics->CreateChain(0, 0, background_points, 10, collision_type::MAP, BODY_TYPE::map);
+	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
+
+
 
 	return true;
 }
@@ -69,6 +71,8 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	App->render->Blit(background, 0, 0);
+
+
 
 	return true;
 }
