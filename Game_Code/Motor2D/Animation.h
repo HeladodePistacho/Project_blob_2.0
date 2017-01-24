@@ -14,6 +14,7 @@ private:
 	int						frames_num = -1;
 	p2DynArray<SDL_Rect>	frames;
 	uint					speed = 1000;
+	bool					loop = true;
 
 public:
 

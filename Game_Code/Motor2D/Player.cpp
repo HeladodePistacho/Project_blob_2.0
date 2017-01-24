@@ -4,10 +4,10 @@
 
 #include "j1App.h"
 #include "j1Physics.h"
-#include "j1Input.h"
 #include "j1Scene.h"
 #include "j1Render.h"
 #include "j1Textures.h"
+#include "j1Input.h"
 
 //Constructors ----------------------------------
 j1Player::j1Player()
@@ -31,6 +31,7 @@ bool j1Player::Start()
 
 	//Generate inital blob body
 	body = App->physics->CreateRectangle(50, 200, base_width * level, base_height * level, collision_type::PLAYER, BODY_TYPE::player);
+	body->FixedRotation(true);
 	body->listener = this;
 
 	//Set bullet size
@@ -44,6 +45,23 @@ bool j1Player::Start()
 	idle.PushBack({ 21,4,18,16 });
 	idle.SetSpeed(350);
 	
+	//RUN LEFT
+	run_left.PushBack({ 0,46,20,16 });
+	run_left.PushBack({ 21,46,20,16 });
+	run_left.SetSpeed(500);
+
+	//RUN RIGHT
+	run_right.PushBack({ 0,25,20,16 });
+	run_right.PushBack({ 21,25,20,16 });
+	run_right.SetSpeed(500);
+
+	//JUMP
+	jump.PushBack({ 44,68,16,15 });
+	jump.PushBack({ 65,65,16,18 });
+	jump.PushBack({ 86,65,16,15 });
+	jump.PushBack({ 107,65,16,11 });
+	jump.SetSpeed(300);
+
 	//Set initial animation
 	current_animation = &idle;
 	
@@ -55,10 +73,15 @@ bool j1Player::Update(float dt)
 {
 
 	//Shoot bullet
-	if (App->input->GetMouseButtonDown(1) == KEY_DOWN && level > 1) ShootBullet();
+	if (App->input->GetMouseButtonDown(1) == KEY_DOWN && level > 1)
+	{
+		ShootBullet();
+		CheckLevel();
+	}
 
-	//Check player level
-	CheckLevel();
+
+	if (body->body->GetLinearVelocity().x == 0)current_animation = &idle;
+	
 
 	//Draw player current sprite
 	int x, y;
@@ -171,7 +194,7 @@ void j1Player::CheckLevel()
 	
 	//Generate new body with new lvl scale
 	body = App->physics->CreateRectangle(x, y, base_width * current_level, base_height * current_level, collision_type::PLAYER, BODY_TYPE::player);
-	
+	body->FixedRotation(true);
 	//Update level
 	level = current_level;
 	
@@ -179,4 +202,28 @@ void j1Player::CheckLevel()
 	bullet_size = level * 3;
 
 	return;
+}
+
+void j1Player::HandleInput(PLAYER_INPUT input)
+{
+	switch (input)
+	{
+	case W_KEY:
+		body->body->ApplyForceToCenter(b2Vec2(0, -vertical_force), true);
+		current_animation = &jump;
+		break;
+	
+	case A_KEY:
+		body->body->ApplyForceToCenter(b2Vec2(-horizontal_force, 0),true);
+		current_animation = &run_left;
+		break;
+	
+	case S_KEY:
+		break;
+	
+	case D_KEY:
+		body->body->ApplyForceToCenter(b2Vec2(horizontal_force, 0), true);
+		current_animation = &run_right;
+		break;
+	}
 }

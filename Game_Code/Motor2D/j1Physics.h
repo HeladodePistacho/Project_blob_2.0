@@ -38,6 +38,8 @@ public:
 	void GetPosition(int& x, int &y) const;
 	float GetRotation() const;
 
+	void Move(int x_vel, int y_vel);
+	void FixedRotation(bool value);
 	void SetPosition(int x,int y);
 
 	bool Contains(int x, int y) const;

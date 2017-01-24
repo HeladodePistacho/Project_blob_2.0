@@ -453,6 +453,22 @@ float PhysBody::GetRotation() const
 	return RADTODEG * body->GetAngle();
 }
 
+void PhysBody::Move(int x_vel, int y_vel)
+{
+	int x, y;
+	GetPosition(x, y);
+	x += x_vel;
+	y += y_vel;
+	x = PIXEL_TO_METERS(x);
+	y = PIXEL_TO_METERS(y);
+	SetPosition(x, y);
+}
+
+void PhysBody::FixedRotation(bool value)
+{
+	body->SetFixedRotation(value);
+}
+
 void PhysBody::SetPosition(int x, int y)
 {
 	b2Vec2 position((float32)x,(float32)y);

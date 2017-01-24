@@ -148,7 +148,23 @@ bool j1Input::PreUpdate()
 			{
 				App->console->ChangeConsoleState();
 			}
-
+			else if (event.key.keysym.scancode == SDL_SCANCODE_W)
+			{
+				App->player->HandleInput(PLAYER_INPUT::W_KEY);
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_A)
+			{
+				App->player->HandleInput(PLAYER_INPUT::A_KEY);
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_S)
+			{
+				App->player->HandleInput(PLAYER_INPUT::S_KEY);
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_D)
+			{
+				App->player->HandleInput(PLAYER_INPUT::D_KEY);
+			}
+			else App->player->HandleInput(PLAYER_INPUT::INVALID_KEY);
 			break;
 
 		case SDL_EventType::SDL_TEXTINPUT:
