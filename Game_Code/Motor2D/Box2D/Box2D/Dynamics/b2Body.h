@@ -182,6 +182,10 @@ public:
 	/// @param v the new linear velocity of the center of mass.
 	void SetLinearVelocity(const b2Vec2& v);
 
+
+	void PlusLinearVelocity(const b2Vec2& v);
+
+
 	/// Get the linear velocity of the center of mass.
 	/// @return the linear velocity of the center of mass.
 	const b2Vec2& GetLinearVelocity() const;
@@ -509,6 +513,13 @@ inline void b2Body::SetLinearVelocity(const b2Vec2& v)
 	}
 
 	m_linearVelocity = v;
+}
+
+inline void b2Body::PlusLinearVelocity(const b2Vec2 & v)
+{
+	b2Vec2 current_v = GetLinearVelocity();
+	current_v += v;
+	SetLinearVelocity(current_v);
 }
 
 inline const b2Vec2& b2Body::GetLinearVelocity() const

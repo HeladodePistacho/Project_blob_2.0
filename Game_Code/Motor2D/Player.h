@@ -8,15 +8,6 @@
 struct PhysBody;
 struct SDL_Texture;
 
-enum PLAYER_INPUT
-{
-	INVALID_KEY,
-	W_KEY,
-	A_KEY,
-	S_KEY,
-	D_KEY
-};
-
 class j1Player :public j1Module
 {
 public:
@@ -47,8 +38,9 @@ private:
 	uint				evolve_size = 10;
 	uint				base_width = 18;
 	uint				base_height = 16;
-	float				horizontal_force = 5.0f;
-	float				vertical_force = 18.0f;
+	float				horizontal_acceleration = 3.0f;
+	float				horizontal_speed_limit = 25.0f;
+	float				vertical_acceleration = 3.5f;
 
 	//Bullets data
 	p2List<PhysBody*>	bullets_list;
@@ -72,7 +64,8 @@ public:
 	
 	void		CheckLevel();
 
-	void		HandleInput(PLAYER_INPUT input);
+	bool		HandleInput();
+	void		HandleVelocity();
 };
 
 #endif // _PLAYER_

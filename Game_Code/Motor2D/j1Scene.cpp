@@ -93,7 +93,7 @@ bool j1Scene::Update(float dt)
 		case BOX:
 			int x, y;
 			actual_item->data->Get_body()->GetPosition(x, y);
-			App->render->Blit(boxes, x, y, &actual_item->data->Get_Texture());
+			App->render->Blit(boxes, x, y, &actual_item->data->Get_Texture(),1,1.0f,actual_item->data->Get_body()->GetRotation());
 		}
 
 		actual_item = actual_item->next;

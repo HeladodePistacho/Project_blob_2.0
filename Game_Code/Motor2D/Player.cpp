@@ -72,16 +72,15 @@ bool j1Player::Start()
 
 bool j1Player::Update(float dt)
 {
-
-	//Shoot bullet
-	if (App->input->GetMouseButtonDown(1) == KEY_DOWN && level > 1)
+	//Check all the action to set the current animation
+	if (!body->IsInContact())
 	{
-		ShootBullet();
-		CheckLevel();
+		current_animation = &jump;
 	}
-
-
-	if (body->body->GetLinearVelocity().x == 0)current_animation = &idle;
+	else if(!HandleInput())
+	{
+		HandleVelocity();
+	}
 	
 
 	//Draw player current sprite
@@ -205,26 +204,48 @@ void j1Player::CheckLevel()
 	return;
 }
 
-void j1Player::HandleInput(PLAYER_INPUT input)
+bool j1Player::HandleInput()
 {
-	switch (input)
+	bool ret = false;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 	{
-	case W_KEY:
-		body->body->ApplyForceToCenter(b2Vec2(0, -vertical_force), true);
-		current_animation = &jump;
-		break;
-	
-	case A_KEY:
-		body->body->ApplyForceToCenter(b2Vec2(-horizontal_force, 0),true);
-		current_animation = &run_left;
-		break;
-	
-	case S_KEY:
-		break;
-	
-	case D_KEY:
-		body->body->ApplyForceToCenter(b2Vec2(horizontal_force, 0), true);
-		current_animation = &run_right;
-		break;
+		body->body->PlusLinearVelocity(b2Vec2(0, -vertical_acceleration));
+		ret = !ret;
 	}
+	else if (App->input->GetKey(SDL_SCANCODE_A) != KEY_IDLE)
+	{
+		body->body->PlusLinearVelocity(b2Vec2(-horizontal_acceleration * App->GetDT(), 0.0f));
+		current_animation = &run_left;
+		ret = !ret;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_S))
+	{
+		//TODO LOW ACTION
+		ret = !ret;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_D) != KEY_IDLE)
+	{
+		body->body->PlusLinearVelocity(b2Vec2(horizontal_acceleration * App->GetDT(), 0.0f));
+		current_animation = &run_right;
+		ret = !ret;
+	}
+
+	if (App->input->GetMouseButtonDown(1) == KEY_DOWN && level > 1)
+	{
+		ShootBullet();
+		CheckLevel();
+	}
+
+	return ret;
+}
+
+void j1Player::HandleVelocity()
+{
+	//Get player current velocity
+	b2Vec2 vel = body->body->GetLinearVelocity();
+	
+	//Set player animation
+	if (vel.x < -0.5f)current_animation = &run_left;
+	else if (vel.x > 0.5f)current_animation = &run_right;
+	else current_animation = &idle;
 }

@@ -524,6 +524,11 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	return ret;
 }
 
+bool PhysBody::IsInContact() const
+{
+	return (body->GetContactList() != nullptr);
+}
+
 void j1Physics::BeginContact(b2Contact* contact)
 {
 	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
