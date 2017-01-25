@@ -33,6 +33,7 @@ bool j1Player::Start()
 	body = App->physics->CreateRectangle(50, 200, base_width * level, base_height * level, collision_type::PLAYER, BODY_TYPE::player);
 	body->FixedRotation(true);
 	body->listener = this;
+	CheckLevel();
 
 	//Set bullet size
 	bullet_size = level * 4;
