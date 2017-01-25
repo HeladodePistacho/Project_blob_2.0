@@ -61,11 +61,11 @@ bool j1Scene::Start()
 	//Loading Scene items
 
 	PhysBody* box = App->physics->CreateRectangle(600, 100, 50, 50, collision_type::PLAYER);
-	SceneItem* item = new SceneItem(BOX, box, { 0,0,50,50 });
+	SceneItem* item = new SceneItem(BOX, box, { 0,0,51,50 });
 	Items.add(item);
 
-	box = App->physics->CreateRectangle(650, 100, 50, 50, collision_type::PLAYER);
-	item = new SceneItem(BOX, box, { 52,0,50,50 });
+	box = App->physics->CreateRectangle(651, 100, 50, 50, collision_type::PLAYER);
+	item = new SceneItem(BOX, box, { 52,0,51,50 });
 	Items.add(item);
 
 	return true;
@@ -120,6 +120,9 @@ bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
 
+	for (p2List_item<SceneItem*>* item = Items.start; item != nullptr; item = item->next)
+		Items.del(item);
+	
 
 
 	return true;
