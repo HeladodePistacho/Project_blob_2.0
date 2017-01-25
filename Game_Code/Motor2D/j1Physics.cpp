@@ -278,13 +278,16 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 	switch (type)
 	{
 	case PLAYER:
-		fixture.filter.maskBits = MAP | BULLET;
+		fixture.filter.maskBits = MAP | MAP_ITEM;
 		break;
 	case BULLET:
-		fixture.filter.maskBits = MAP;
+		fixture.filter.maskBits = MAP | MAP_ITEM;
 		break;
 	case MAP:
-		fixture.filter.maskBits = PLAYER | BULLET;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM;
+		break;
+	case MAP_ITEM:
+		fixture.filter.maskBits = PLAYER | BULLET | MAP;
 		break;
 	}
 	return;

@@ -17,7 +17,8 @@ enum collision_type
 {
 	PLAYER = 1,
 	BULLET = 2,
-	MAP = 4
+	MAP = 4,
+	MAP_ITEM
 };
 
 enum BODY_TYPE 
@@ -25,7 +26,8 @@ enum BODY_TYPE
 	none,
 	player,
 	bullet,
-	map
+	map,
+	map_item
 };
 
 // Small class to return to other modules to track position and rotation of physics bodies

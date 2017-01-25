@@ -51,10 +51,9 @@ private:
 	SDL_Texture*		background;
 	PhysBody*			background_collide_mark = nullptr;
 
-	//items
+	//Items ---------------------------
 	p2List<SceneItem*>	Items;
-
-	//box texture
+	//Box texture
 	SDL_Texture*		boxes;
 
 public:

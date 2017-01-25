@@ -55,17 +55,17 @@ bool j1Scene::Start()
 	};
 	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
 
-	//loading box texture
+	//Loading box texture
 	boxes = App->tex->Load("textures/Box_textures.png");
 
 	//Loading Scene items
 
-	PhysBody* box = App->physics->CreateRectangle(600, 100, 50, 50, collision_type::PLAYER);
-	SceneItem* item = new SceneItem(BOX, box, { 0,0,51,50 });
+	SceneItem* item = new SceneItem({ 0,0,51,50 },BOX);
+	item->SetPosition(250, 50);
 	Items.add(item);
 
-	box = App->physics->CreateRectangle(651, 100, 50, 50, collision_type::PLAYER);
-	item = new SceneItem(BOX, box, { 52,0,51,50 });
+	item = new SceneItem({ 52,0,51,50 }, BOX);
+	item->SetPosition(100,150);
 	Items.add(item);
 
 	return true;
