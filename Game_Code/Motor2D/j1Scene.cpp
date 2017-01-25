@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "j1SceneManager.h"
 
+
 //UI Elements
 #include "UI_String.h"
 #include "UI_Image.h"
@@ -54,7 +55,18 @@ bool j1Scene::Start()
 	};
 	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
 
+	//loading box texture
+	boxes = App->tex->Load("textures/Box_textures.png");
 
+	//Loading Scene items
+
+	PhysBody* box = App->physics->CreateRectangle(600, 100, 50, 50, collision_type::PLAYER);
+	SceneItem* item = new SceneItem(BOX, box, { 0,0,50,50 });
+	Items.add(item);
+
+	box = App->physics->CreateRectangle(650, 100, 50, 50, collision_type::PLAYER);
+	item = new SceneItem(BOX, box, { 52,0,50,50 });
+	Items.add(item);
 
 	return true;
 }
@@ -72,7 +84,20 @@ bool j1Scene::Update(float dt)
 {
 	App->render->Blit(background, 0, 0);
 
+	p2List_item<SceneItem*>* actual_item = Items.start;
 
+	while (actual_item)
+	{
+		switch (actual_item->data->Get_type())
+		{
+		case BOX:
+			int x, y;
+			actual_item->data->Get_body()->GetPosition(x, y);
+			App->render->Blit(boxes, x, y, &actual_item->data->Get_Texture());
+		}
+
+		actual_item = actual_item->next;
+	}
 
 	return true;
 }
@@ -94,6 +119,9 @@ bool j1Scene::PostUpdate()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
+
+
+
 	return true;
 }
 
@@ -152,3 +180,24 @@ void j1Scene::Desactivate()
 }
 
 //Functionality -----------------------------
+
+
+//----------SCENEITEM----------
+//-----------------------------
+
+SceneItem::SceneItem(ITEM_TYPE TYPE, PhysBody* new_body, SDL_Rect new_tex) : type(TYPE), body(new_body), texture(new_tex) {}
+
+const PhysBody * SceneItem::Get_body() const
+{
+	return body;
+}
+
+ITEM_TYPE SceneItem::Get_type() const
+{
+	return type;
+}
+
+SDL_Rect SceneItem::Get_Texture() const
+{
+	return texture;
+}

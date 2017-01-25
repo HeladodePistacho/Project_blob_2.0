@@ -13,24 +13,7 @@ enum fade_step
 	fade_from_black
 };
 
-enum ITEM_TYPE
-{
-	BOX,
-	TABLE
-};
 
-class SceneItem
-{
-private:
-	PhysBody* body;
-	SDL_Rect texture;
-	ITEM_TYPE type;
-
-public:
-	SceneItem(ITEM_TYPE, PhysBody*, SDL_Rect);
-	const PhysBody* Get_body() const;
-
-};
 
 class j1SceneManager : public j1Module
 {

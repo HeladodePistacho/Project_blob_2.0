@@ -72,6 +72,9 @@
     <ClCompile Include="j1SceneManager.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="SceneItem.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -174,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneItem.h">
+      <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,9 +2,13 @@
 #define __j1SCENE_H__
 
 #include "j1Module.h"
+#include "j1SceneManager.h"
+#include "SceneItem.h"
 
 struct PhysBody;
 struct SDL_Texture;
+
+
 
 class j1Scene : public j1Module
 {
@@ -48,6 +52,12 @@ private:
 	//Background ----------------------
 	SDL_Texture*		background;
 	PhysBody*			background_collide_mark = nullptr;
+
+	//items
+	p2List<SceneItem*>	Items;
+
+	//box texture
+	SDL_Texture*		boxes;
 
 public:
 
