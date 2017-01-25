@@ -45,7 +45,7 @@ bool j1Player::Start()
 	idle.PushBack({ 0,4,19,16 });
 	idle.PushBack({ 21,4,18,16 });
 	idle.SetSpeed(350);
-	
+
 	//RUN LEFT
 	run_left.PushBack({ 0,46,20,16 });
 	run_left.PushBack({ 21,46,20,16 });
@@ -63,6 +63,24 @@ bool j1Player::Start()
 	jump.PushBack({ 107,65,16,11 });
 	jump.SetSpeed(300);
 
+	//DODGE
+	dodge.PushBack({ 0,67,20,16 });
+	dodge.PushBack({ 21,67,20,16 });
+	dodge.SetSpeed(350);
+
+	//DIE
+	die.PushBack({ 0,89,19,15 });
+	die.PushBack({ 21,89,19,15 });
+	die.PushBack({ 42,89,19,15 });
+	die.PushBack({ 63,89,19,15 });
+	die.PushBack({ 84,89,19,15 });
+	die.PushBack({ 105,89,19,15 });
+	die.PushBack({ 126,89,19,15 });
+	die.PushBack({ 147,89,19,15 });
+	die.PushBack({ 168,89,19,15 });
+	die.SetSpeed(250);
+	die.SetLoop(false);
+
 	//Set initial animation
 	current_animation = &idle;
 	
@@ -72,16 +90,18 @@ bool j1Player::Start()
 
 bool j1Player::Update(float dt)
 {
-	//Check all the action to set the current animation
-	if (!body->IsInContact())
-	{
-		current_animation = &jump;
+	if (alive) {
+		//Check all the action to set the current animation
+		if (!body->IsInContact())
+		{
+			current_animation = &jump;
+		}
+		else if (!HandleInput())
+		{
+			HandleVelocity();
+		}
 	}
-	else if(!HandleInput())
-	{
-		HandleVelocity();
-	}
-	
+	else if (current_animation->IsEnd())Respawn();
 
 	//Draw player current sprite
 	int x, y;
@@ -175,13 +195,18 @@ void j1Player::PickBullet(PhysBody* bullet)
 	bullets_list.del(bullets_list.At(bullets_list.find(bullet)));
 }
 
-void j1Player::CheckLevel()
+bool j1Player::CheckLevel()
 {
 	//Calculate current level
 	uint current_level = floor(bullets/bullets_to_evolve);
 	
 	//Check level
-	if (current_level == level || current_level == 0)return;
+	if (current_level == 0)
+	{
+		Die();
+		return true;
+	}
+	if (current_level == level)return false;
 
 	//Calculate player location
 	int x, y;
@@ -201,7 +226,7 @@ void j1Player::CheckLevel()
 	//Update bullet size
 	bullet_size = level * 3;
 
-	return;
+	return false;
 }
 
 bool j1Player::HandleInput()
@@ -218,9 +243,9 @@ bool j1Player::HandleInput()
 		current_animation = &run_left;
 		ret = !ret;
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_S))
+	else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		//TODO LOW ACTION
+		current_animation = &dodge;
 		ret = !ret;
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_D) != KEY_IDLE)
@@ -230,10 +255,10 @@ bool j1Player::HandleInput()
 		ret = !ret;
 	}
 
-	if (App->input->GetMouseButtonDown(1) == KEY_DOWN && level > 1)
+	if (App->input->GetMouseButtonDown(1) == KEY_DOWN)
 	{
 		ShootBullet();
-		CheckLevel();
+		ret = CheckLevel();
 	}
 
 	return ret;
@@ -243,9 +268,24 @@ void j1Player::HandleVelocity()
 {
 	//Get player current velocity
 	b2Vec2 vel = body->body->GetLinearVelocity();
-	
 	//Set player animation
 	if (vel.x < -0.5f)current_animation = &run_left;
 	else if (vel.x > 0.5f)current_animation = &run_right;
 	else current_animation = &idle;
+}
+
+void j1Player::Die()
+{
+	LOG("Player dead :(");
+	alive = false;
+	current_animation = &die;
+	current_animation->Reset();
+}
+
+void j1Player::Respawn()
+{
+	LOG("Player Respawned!");
+	alive = true;
+	bullets = 16;
+	CheckLevel();
 }

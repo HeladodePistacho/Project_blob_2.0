@@ -32,12 +32,15 @@ public:
 
 private:
 
+	bool				alive = true;
+
 	//Player Body
 	PhysBody*			body = nullptr;
 	uint				level = 4;
 	uint				evolve_size = 10;
 	uint				base_width = 18;
 	uint				base_height = 16;
+	
 	float				horizontal_acceleration = 3.0f;
 	float				horizontal_speed_limit = 25.0f;
 	float				vertical_acceleration = 3.5f;
@@ -55,6 +58,8 @@ private:
 	Animation			run_right;
 	Animation			run_left;
 	Animation			jump;
+	Animation			dodge;
+	Animation			die;
 
 public:
 
@@ -62,10 +67,13 @@ public:
 	PhysBody*	ShootBullet();
 	void		PickBullet(PhysBody* bullet);
 	
-	void		CheckLevel();
+	bool		CheckLevel();
 
 	bool		HandleInput();
 	void		HandleVelocity();
+
+	void		Die();
+	void		Respawn();
 };
 
 #endif // _PLAYER_

@@ -15,8 +15,14 @@ private:
 	p2DynArray<SDL_Rect>	frames;
 	uint					speed = 1000;
 	bool					loop = true;
-
+	
 public:
+
+	//Set functions
+	void SetLoop(bool it_loop)
+	{
+		loop = it_loop;
+	}
 
 	void SetSpeed(uint new_speed)
 	{
@@ -29,29 +35,50 @@ public:
 		frames_num++;
 	}
 
-	const SDL_Rect& GetCurrentFrame()
-	{
-		current_frame = (int)floor(frame_timer.Read() / speed);
-		if (current_frame > frames_num)
-		{
-			current_frame = 0;
-			frame_timer.Start();
-		}
-
-		return frames[(int)current_frame];
-	}
-
-	void Reset()
-	{
-		current_frame = 0;
-	}
-
 	void Set_frame(uint position)
 	{
 		if (position > frames_num)return;
 
 		current_frame = position;
 	}
+
+	//Get functions
+	bool IsEnd()const
+	{
+		return (current_frame == -1);
+	}
+
+	//Loop
+	const SDL_Rect& GetCurrentFrame()
+	{
+		if (current_frame == -1)return {0,0,0,0};
+
+		current_frame = (int)floor(frame_timer.Read() / speed);
+		if (current_frame > frames_num)
+		{
+			if (loop)
+			{
+				current_frame = 0;
+				frame_timer.Start();
+			}
+			else
+			{
+				current_frame = -1;
+				return{ 0,0,0,0 };
+			}
+		}
+
+		return frames[(int)current_frame];
+		
+	}
+
+	void Reset()
+	{
+		current_frame = 0;
+		frame_timer.Start();
+	}
+
+
 
 };
 
