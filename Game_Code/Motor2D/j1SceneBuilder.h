@@ -6,7 +6,7 @@
 
 struct SDL_Texture;
 
-enum BUILD_TYPE
+enum BUILD_ITEM_TYPE
 {
 	BOX_BOOKS,
 	BOX_XMAS,
@@ -15,7 +15,10 @@ enum BUILD_TYPE
 	BOX_LARGE_XMAS,
 	BOX_LARGE_NUKE
 };
-
+enum BUILD_PLATFORM_TYPE
+{
+	PLATFORM_ORANGE
+};
 
 class j1SceneBuilder : public j1Module
 {
@@ -43,8 +46,10 @@ private:
 public:
 
 	//Functionality ----------------------
-	Item*	GenerateSceneElement(BUILD_TYPE element_type);
-	
-	void	SetTarget(j1Scene* new_target);
+	Item*			GenerateSceneItem(BUILD_ITEM_TYPE item_type);
+	Platform*		GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, int width);
+
+	void			SetTarget(j1Scene* new_target);
+	SDL_Texture*	GetPlatformsSpritesheet()const;
 };
 #endif // _SCENE_BUILER_

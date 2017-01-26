@@ -25,8 +25,6 @@ PhysBody * Item::GenerateBodyFromRect()
 
 void Item::SetPosition(int x, int y)
 {
-	x = PIXEL_TO_METERS(x);
-	y = PIXEL_TO_METERS(y);
 	body->SetPosition(x, y);
 }
 

@@ -9,7 +9,6 @@ enum ITEM_TYPE
 {
 	BOX,
 	TABLE,
-	PLATFORM
 };
 
 class Item
@@ -24,16 +23,17 @@ private:
 	PhysBody*		body;
 	SDL_Rect		texture;
 	ITEM_TYPE		item_type;
+	
+	//Build ----------------------
+	PhysBody*		GenerateBodyFromRect();
 
 public:
 
-	//Functionality
-	PhysBody*		GenerateBodyFromRect();
-
+	//Functionality --------------
 	void			SetPosition(int x, int y);
+	
 	void			GetPosition(int& x, int& y)const;
 	float			GetRotation()const;
-
 	const PhysBody*	Get_body() const;
 	ITEM_TYPE		Get_type() const;
 	SDL_Rect		Get_Texture() const;

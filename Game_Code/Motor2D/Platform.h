@@ -1,7 +1,10 @@
 #ifndef _PLATFORM_
 #define _PLATFORM_
 
-#include "Item.h"
+#include "SDL\include\SDL_rect.h"
+
+struct PhysBody;
+struct SDL_Texture;
 
 enum PLATFORM_TYPE
 {
@@ -14,16 +17,33 @@ enum PLATFORM_TYPE
 	PURPLE
 };
 
-class Platform :public Item
+class Platform
 {
 public:
 
-	Platform(SDL_Rect texture, PLATFORM_TYPE TYPE);
+	Platform(const SDL_Rect& texture_rect, PLATFORM_TYPE TYPE);
 	~Platform();
 
 private:
 
-	PLATFORM_TYPE platform_type;
+	PhysBody*		body = nullptr;
+	SDL_Texture*	texture = nullptr;
+	PLATFORM_TYPE	type;
+
+	//Build ----------------------
+	void	GenerateBodyFromRect(const SDL_Rect& texture_rect);
+	void	GenerateTextureFromRect(const SDL_Rect& texture_rect);
+
+public:
+
+	//Functionality --------------
+	void			Set_Position(int x, int y);
+
+	void			Get_Position(int& x, int& y)const;
+	float			Get_Rotation()const;
+	const PhysBody*	Get_Body() const;
+	PLATFORM_TYPE	Get_Type() const;
+	SDL_Texture*	Get_Texture() const;
 
 };
 #endif // _PLATFORM_

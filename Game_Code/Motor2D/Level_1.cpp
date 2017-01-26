@@ -38,8 +38,13 @@ bool Level_1::Start()
 	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
 
 
-	Item* item = App->scene_builder->GenerateSceneElement(BUILD_TYPE::BOX_BOOKS);
+	//Test box --------
+	Item* item = App->scene_builder->GenerateSceneItem(BUILD_ITEM_TYPE::BOX_BOOKS);
 	item->SetPosition(250, 50);
+
+	//Test platform --
+	Platform* platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_ORANGE, 250);
+	platform->Set_Position(220, 200);
 
 	return true;
 }

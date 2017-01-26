@@ -474,6 +474,8 @@ void PhysBody::FixedRotation(bool value)
 
 void PhysBody::SetPosition(int x, int y)
 {
+	x = PIXEL_TO_METERS(x);
+	y = PIXEL_TO_METERS(y);
 	b2Vec2 position((float32)x,(float32)y);
 	body->SetTransform(position, body->GetAngle());
 }
