@@ -14,13 +14,14 @@ class j1Render;
 class j1Textures;
 class j1Audio;
 class j1FileSystem;
-class j1Scene;
 class j1Fonts;
 class j1Gui;
 class j1Console;
 class j1Physics;
 class j1Player;
 class j1SceneManager;
+class j1SceneBuilder;
+class Level_1;
 
 class j1App
 {
@@ -90,14 +91,15 @@ public:
 	j1Textures*			tex = NULL;
 	j1Audio*			audio = NULL;
 	j1Physics*			physics = NULL;
-	j1Scene*			scene = NULL;
 	j1FileSystem*		fs = NULL;
 	j1Fonts*			font = NULL;
 	j1Gui*				gui = NULL;
 	j1Console*			console = NULL;
 	j1Player*			player = NULL;
 	j1SceneManager*		scene_manager = NULL;
-
+	j1SceneBuilder*		scene_builder = NULL;
+	Level_1*			level_1 = NULL;
+	
 	// Add a new module to handle
 	void		AddModule(j1Module* module);
 	//Get Module pointer by name

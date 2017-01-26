@@ -70,9 +70,18 @@
       <Filter>Game\Player</Filter>
     </ClCompile>
     <ClCompile Include="j1SceneManager.cpp">
-      <Filter>Game\Scenes</Filter>
+      <Filter>Game\Scenes\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="SceneItem.cpp">
+    <ClCompile Include="Item.cpp">
+      <Filter>Game\Scenes\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="j1SceneBuilder.cpp">
+      <Filter>Game\Scenes\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Game\Scenes\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_1.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -109,9 +118,6 @@
     </ClInclude>
     <ClInclude Include="p2DynArray.h">
       <Filter>Tanks</Filter>
-    </ClInclude>
-    <ClInclude Include="j1Scene.h">
-      <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="j1FileSystem.h">
       <Filter>Modules</Filter>
@@ -172,14 +178,26 @@
     <ClInclude Include="Player.h">
       <Filter>Game\Player</Filter>
     </ClInclude>
-    <ClInclude Include="j1SceneManager.h">
-      <Filter>Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="SceneItem.h">
+    <ClInclude Include="j1SceneManager.h">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Game\Scenes\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Scene.h">
       <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_1.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1SceneBuilder.h">
+      <Filter>Game\Scenes\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Game\Scenes\Builder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +230,12 @@
     </Filter>
     <Filter Include="Game\Player">
       <UniqueIdentifier>{a07e2984-8aad-41e0-b9f2-bd0cb6e143f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes\Builder">
+      <UniqueIdentifier>{f13dd067-a7e8-479c-abaa-cc5710274a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes\Manager">
+      <UniqueIdentifier>{40aea533-9c3b-4fe7-9381-0ddaa28ce42c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

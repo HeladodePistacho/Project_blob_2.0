@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "p2Defs.h"
 #include "p2Log.h"
 #include "j1App.h"
@@ -13,96 +12,20 @@
 #include "Player.h"
 #include "j1SceneManager.h"
 
-
-//UI Elements
-#include "UI_String.h"
-#include "UI_Image.h"
-#include "UI_Button.h"
-
-
-
+//Constructors ----------------------------------
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
 }
 
-// Destructor
+//Destructors -----------------------------------
 j1Scene::~j1Scene()
-{}
-
-// Called before render is available
-bool j1Scene::Awake(pugi::xml_node& config)
 {
 
-
-
-	return true;
 }
 
-// Called before the first frame
-bool j1Scene::Start()
-{
-	//Load Background texture
-	background = App->tex->Load("textures/Basement.png");
 
-	//Background mark collide build
-	int background_points[10] = {
-		-4, 413,
-		770, 414,
-		771, 479,
-		-3, 481,
-		-4, 421
-	};
-	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
-
-	//Loading box texture
-	boxes = App->tex->Load("textures/Box_textures.png");
-
-	//Loading Scene items
-
-	SceneItem* item = new SceneItem({ 0,0,51,50 },BOX);
-	item->SetPosition(250, 50);
-	Items.add(item);
-
-	item = new SceneItem({ 52,0,51,50 }, BOX);
-	item->SetPosition(100,150);
-	Items.add(item);
-
-	return true;
-}
-
-// Called each loop iteration
-bool j1Scene::PreUpdate()
-{
-	
-
-	return true;
-}
-
-// Called each loop iteration
-bool j1Scene::Update(float dt)
-{
-	App->render->Blit(background, 0, 0);
-
-	p2List_item<SceneItem*>* actual_item = Items.start;
-
-	while (actual_item)
-	{
-		switch (actual_item->data->Get_type())
-		{
-		case BOX:
-			int x, y;
-			actual_item->data->Get_body()->GetPosition(x, y);
-			App->render->Blit(boxes, x, y, &actual_item->data->Get_Texture(),1,1.0f,actual_item->data->Get_body()->GetRotation());
-		}
-
-		actual_item = actual_item->next;
-	}
-
-	return true;
-}
-
-// Called each loop iteration
+//Game Loop -------------------------------------
 bool j1Scene::PostUpdate()
 {
 	bool ret = true;
@@ -118,69 +41,67 @@ bool j1Scene::PostUpdate()
 // Called before quitting
 bool j1Scene::CleanUp()
 {
-	LOG("Freeing scene");
+	LOG("Freeing %s",this->name.GetString());
 
-	for (p2List_item<SceneItem*>* item = Items.start; item != nullptr; item = item->next)
-		Items.del(item);
-	
+	bool ret = true;
 
+	//Clean all Scene Items
+	p2List_item<Item*>* item = Items.end;
+	p2List_item<Item*>* item_prev = nullptr;
 
-	return true;
-}
+	if (item != nullptr)item_prev = item->prev;
+	while (item) {
 
-void j1Scene::GUI_Input(UI_Element* target, GUI_INPUT input)
-{
-	int x, y;
-	App->input->GetMouseMotion(x, y);
-	switch (input)
-	{
-	case UP_ARROW:
-		break;
-	case DOWN_ARROW:
-		break;
-	case LEFT_ARROW:
-		break;
-	case RIGHT_ARROW:
-		break;
-	case MOUSE_LEFT_BUTTON_DOWN:
-		break;
-	case MOUSE_LEFT_BUTTON_REPEAT:
-		break;
-	case MOUSE_LEFT_BUTTON_UP:
-		break;
-	case MOUSE_RIGHT_BUTTON:
-		break;
-	case BACKSPACE:
-		break;
-	case SUPR:
-		break;
-	case MOUSE_IN:
-		break;
-	case MOUSE_OUT:
-		break;
-	case ENTER:
-		break;
+		//Delete all item data
+		ret = Items.del(item);
+
+		item = item_prev;
+		if (item_prev != nullptr)item_prev = item_prev->prev;
+
 	}
+
+	//Clean all Scene Platforms
+	p2List_item<Platform*>* p_item = Platforms.end;
+	p2List_item<Platform*>* p_item_prev = nullptr;
+
+	if (p_item != nullptr)p_item_prev = p_item->prev;
+	while (p_item) {
+
+		//Delete all item data
+		ret = Platforms.del(p_item);
+
+		p_item = p_item_prev;
+		if (p_item_prev != nullptr)p_item_prev = p_item_prev->prev;
+
+	}
+
+	return ret;
 }
 
-void j1Scene::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
+//Functionality ---------------------------------
+p2List_item<Item*>* j1Scene::GetFirstItem() const
 {
-
+	return Items.start;
 }
 
-void j1Scene::Activate()
+p2List_item<Platform*>* j1Scene::GetFirstPlatform() const
 {
-	LOG("Scene Activated!");
-	active = true;
-
+	return Platforms.start;
 }
 
-void j1Scene::Desactivate()
+SDL_Texture * j1Scene::GetBackgroundTexture() const
 {
-	LOG("Scene Desactivated!");
-	active = false;
-
+	return background;
 }
 
-//Functionality -----------------------------
+void j1Scene::AddSceneItem(Item * new_item)
+{
+	if (new_item == nullptr)return;
+	Items.add(new_item);
+}
 
+void j1Scene::AddScenePlatform(Platform * new_platform)
+{
+	if (new_platform == nullptr)return;
+	Platforms.add(new_platform);
+}

@@ -12,7 +12,6 @@
 #include "j1Textures.h"
 #include "j1Audio.h"
 #include "j1Physics.h"
-#include "j1Scene.h"
 #include "j1FileSystem.h"
 #include "j1Fonts.h"
 
@@ -20,6 +19,9 @@
 #include "j1Console.h"
 #include "Player.h"
 #include "j1SceneManager.h"
+#include "j1SceneBuilder.h"
+
+#include "Level_1.h"
 
 #include "j1App.h"
 
@@ -35,7 +37,11 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new j1Textures();
 	audio = new j1Audio();
 	physics = new j1Physics();
-	scene = new j1Scene();
+	
+	scene_builder = new j1SceneBuilder();
+	
+	level_1 = new Level_1();
+	
 	fs = new j1FileSystem();
 	font = new j1Fonts();
 	gui = new j1Gui();
@@ -55,7 +61,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(physics);
 	
 	// scene last
-	AddModule(scene);
+	AddModule(scene_builder);
+	AddModule(level_1);
+
 	AddModule(player);
 	AddModule(gui);
 	AddModule(console);

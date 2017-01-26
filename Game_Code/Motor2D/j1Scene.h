@@ -2,11 +2,13 @@
 #define __j1SCENE_H__
 
 #include "j1Module.h"
-#include "j1SceneManager.h"
-#include "SceneItem.h"
+#include "p2List.h"
 
 struct PhysBody;
 struct SDL_Texture;
+
+#include "Item.h"
+#include "Platform.h"
 
 class j1Scene : public j1Module
 {
@@ -17,50 +19,31 @@ public:
 	// Destructor
 	virtual ~j1Scene();
 
-	// Called before render is available
-	bool Awake(pugi::xml_node& config);
-
-	// Called before the first frame
-	bool Start();
-
-	// Called before all Updates
-	bool PreUpdate();
-
-	// Called each loop iteration
-	bool Update(float dt);
-
 	// Called after all Updates
-	bool PostUpdate();
+	virtual bool PostUpdate();
 
 	// Called before quitting
-	bool CleanUp();
+	virtual bool CleanUp();
 
-	// Recieve UI input and work with it
-	void GUI_Input(UI_Element* target, GUI_INPUT input);
-
-	// Recieve Physics Collisions
-	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
-
-	//Active/Deasctive scene
-	void Activate();
-	void Desactivate();
-
-private:
+protected:
 
 	//Background ----------------------
-	SDL_Texture*		background;
-	PhysBody*			background_collide_mark = nullptr;
-
+	SDL_Texture*			background = nullptr;
+	PhysBody*				background_collide_mark = nullptr;
 	//Items ---------------------------
-	p2List<SceneItem*>	Items;
-	//Box texture
-	SDL_Texture*		boxes;
+	p2List<Item*>			Items;
+	//Platforms -----------------------
+	p2List<Platform*>		Platforms;
 
 public:
 
 	//Functionality -----------------------------
+	p2List_item<Item*>*			GetFirstItem()const;
+	p2List_item<Platform*>*		GetFirstPlatform()const;
+	SDL_Texture*				GetBackgroundTexture()const;
 
-
+	void						AddSceneItem(Item* new_item);
+	void						AddScenePlatform(Platform* new_platform);
 };
 
 #endif // __j1SCENE_H__
