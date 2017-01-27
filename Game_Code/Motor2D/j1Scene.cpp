@@ -12,6 +12,10 @@
 #include "Player.h"
 #include "j1SceneManager.h"
 
+#include "SDL/include/SDL.h"
+#include "SDL_image/include/SDL_image.h"
+#include "OpenGL/glut.h"
+
 //Constructors ----------------------------------
 j1Scene::j1Scene() : j1Module()
 {
@@ -34,6 +38,20 @@ bool j1Scene::PostUpdate()
 	{
 		ret = false;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		if (App->win->fullscreen)
+		{
+			SDL_SetWindowFullscreen(App->win->window, NULL);
+			App->win->fullscreen = false;
+		}
+		else
+		{
+			SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN);
+			App->win->fullscreen = true;
+		}
+	}
+
 
 	return ret;
 }
