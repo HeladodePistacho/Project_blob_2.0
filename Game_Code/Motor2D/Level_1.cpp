@@ -43,8 +43,8 @@ bool Level_1::Start()
 	item->SetPosition(250, 50);
 
 	//Test platform --
-	Platform* platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_ORANGE, 50,2);
-	platform->Set_Position(220, 200);
+	Platform* platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_ORANGE, 250,2);
+	platform->Set_Position(320, 200);
 
 	return true;
 }

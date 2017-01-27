@@ -54,7 +54,7 @@ bool j1SceneBuilder::Update(float dt)
 		//Get item position
 		platform->data->Get_Position(x, y);
 		//Blit item texture from spritesheet
-		ret = App->render->Blit(platform->data->Get_Texture(), x, y,NULL, 1, 1.0f, platform->data->Get_Rotation());
+		ret = App->render->Blit(platform->data->Get_Texture(), x, y,&platform->data->Get_CurrentAnimationRect(), 1, 1.0f, platform->data->Get_Rotation());
 		//Set next item
 		platform = platform->next;
 	}
@@ -90,7 +90,7 @@ Platform * j1SceneBuilder::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_ty
 	switch (platform_type)
 	{
 	// Platform Builds --------------------------
-	case PLATFORM_ORANGE:	new_element = new Platform({ 0,0,(int)width,25 } , PLATFORM_TYPE::ORANGE, scale);		break;
+	case PLATFORM_ORANGE:	new_element = new Platform(width, PLATFORM_TYPE::ORANGE, scale);		break;
 	}
 
 	if (new_element != nullptr)target->AddScenePlatform(new_element);

@@ -4,6 +4,7 @@
 #include "SDL/include/SDL_rect.h"
 #include "p2DynArray.h"
 #include "j1Timer.h"
+#include <math.h>
 
 class Animation
 {
