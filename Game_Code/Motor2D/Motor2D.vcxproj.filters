@@ -72,17 +72,17 @@
     <ClCompile Include="j1SceneManager.cpp">
       <Filter>Game\Scenes\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Game\Scenes\Builder</Filter>
-    </ClCompile>
     <ClCompile Include="j1SceneBuilder.cpp">
-      <Filter>Game\Scenes\Builder</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform.cpp">
       <Filter>Game\Scenes\Builder</Filter>
     </ClCompile>
     <ClCompile Include="Level_1.cpp">
       <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Game\Scenes\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Game\Scenes\Elements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +184,6 @@
     <ClInclude Include="j1SceneManager.h">
       <Filter>Game\Scenes\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Game\Scenes\Builder</Filter>
-    </ClInclude>
     <ClInclude Include="j1Scene.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
@@ -197,7 +194,10 @@
       <Filter>Game\Scenes\Builder</Filter>
     </ClInclude>
     <ClInclude Include="Platform.h">
-      <Filter>Game\Scenes\Builder</Filter>
+      <Filter>Game\Scenes\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Game\Scenes\Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +236,9 @@
     </Filter>
     <Filter Include="Game\Scenes\Manager">
       <UniqueIdentifier>{40aea533-9c3b-4fe7-9381-0ddaa28ce42c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes\Elements">
+      <UniqueIdentifier>{7ee81190-212c-4235-b5c2-15c8ffcabce5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

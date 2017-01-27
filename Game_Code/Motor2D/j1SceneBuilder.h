@@ -13,7 +13,6 @@ enum BUILD_ITEM_TYPE
 	BOX_SNES,
 	BOX_NUKE,
 	BOX_LARGE_XMAS,
-	BOX_LARGE_NUKE
 };
 enum BUILD_PLATFORM_TYPE
 {
@@ -46,8 +45,8 @@ private:
 public:
 
 	//Functionality ----------------------
-	Item*			GenerateSceneItem(BUILD_ITEM_TYPE item_type);
-	Platform*		GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, int width);
+	Item*			GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale = 1);
+	Platform*		GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale = 1);
 
 	void			SetTarget(j1Scene* new_target);
 	SDL_Texture*	GetPlatformsSpritesheet()const;

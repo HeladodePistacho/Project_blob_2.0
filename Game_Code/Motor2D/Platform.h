@@ -1,6 +1,7 @@
 #ifndef _PLATFORM_
 #define _PLATFORM_
 
+#include "p2Defs.h"
 #include "SDL\include\SDL_rect.h"
 
 struct PhysBody;
@@ -21,13 +22,14 @@ class Platform
 {
 public:
 
-	Platform(const SDL_Rect& texture_rect, PLATFORM_TYPE TYPE);
+	Platform(const SDL_Rect& texture_rect, PLATFORM_TYPE TYPE, uint scale = 1);
 	~Platform();
 
 private:
 
 	PhysBody*		body = nullptr;
 	SDL_Texture*	texture = nullptr;
+	uint			scale;
 	PLATFORM_TYPE	type;
 
 	//Build ----------------------

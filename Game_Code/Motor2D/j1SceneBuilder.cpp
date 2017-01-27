@@ -42,7 +42,7 @@ bool j1SceneBuilder::Update(float dt)
 		//Get item position
 		item->data->GetPosition(x, y);
 		//Blit item texture from spritesheet
-		ret = App->render->Blit(boxes_spritesheet, x, y, &item->data->Get_Texture(), 1, 1.0f, item->data->GetRotation());
+		ret = App->render->Blit(boxes_spritesheet, x, y, &item->data->Get_Texture(),item->data->Get_Scale(), 1.0f, item->data->GetRotation());
 		//Set next item
 		item = item->next;
 	}
@@ -64,19 +64,18 @@ bool j1SceneBuilder::Update(float dt)
 
 
 //Functionality ---------------------------------
-Item * j1SceneBuilder::GenerateSceneItem(BUILD_ITEM_TYPE element_type)
+Item * j1SceneBuilder::GenerateSceneItem(BUILD_ITEM_TYPE element_type, uint scale)
 {
 	Item* new_element = nullptr;
 
 	switch (element_type)
 	{
 	// Box Builds -------------------------------
-	case BOX_BOOKS:			new_element = new Item({ 0, 0, 51, 50 }, ITEM_TYPE::BOX);		break;
-	case BOX_XMAS:			new_element = new Item({ 52, 0, 51, 50 }, ITEM_TYPE::BOX);		break;
-	case BOX_SNES:			new_element = new Item({ 104, 0, 51, 50 }, ITEM_TYPE::BOX);		break;
-	case BOX_NUKE:			new_element = new Item({ 156, 0, 51, 50 }, ITEM_TYPE::BOX);		break;
-	case BOX_LARGE_XMAS:	new_element = new Item({ 0, 58, 100, 97 }, ITEM_TYPE::BOX);		break;
-	case BOX_LARGE_NUKE:	new_element = new Item({ 107, 58, 100, 97 }, ITEM_TYPE::BOX);	break;
+	case BOX_BOOKS:			new_element = new Item({ 0, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_XMAS:			new_element = new Item({ 52, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_SNES:			new_element = new Item({ 104, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_NUKE:			new_element = new Item({ 156, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_LARGE_XMAS:	new_element = new Item({ 0, 58, 100, 97 }, ITEM_TYPE::BOX, scale);		break;
 	}
 
 	if(new_element != nullptr)target->AddSceneItem(new_element);
@@ -84,14 +83,14 @@ Item * j1SceneBuilder::GenerateSceneItem(BUILD_ITEM_TYPE element_type)
 	return new_element;
 }
 
-Platform * j1SceneBuilder::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, int width)
+Platform * j1SceneBuilder::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale)
 {
 	Platform* new_element = nullptr;
 
 	switch (platform_type)
 	{
 	// Platform Builds --------------------------
-	case PLATFORM_ORANGE:	new_element = new Platform({ 0,0,width,25 } , PLATFORM_TYPE::ORANGE);		break;
+	case PLATFORM_ORANGE:	new_element = new Platform({ 0,0,(int)width,25 } , PLATFORM_TYPE::ORANGE, scale);		break;
 	}
 
 	if (new_element != nullptr)target->AddScenePlatform(new_element);

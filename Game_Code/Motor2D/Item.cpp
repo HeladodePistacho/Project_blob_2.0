@@ -4,7 +4,7 @@
 #include "j1Physics.h"
 
 //Constructors ----------------------------------
-Item::Item(SDL_Rect new_tex, ITEM_TYPE TYPE) : item_type(TYPE), texture(new_tex)
+Item::Item(SDL_Rect new_tex, ITEM_TYPE TYPE, uint scale) : item_type(TYPE), texture(new_tex), scale(scale)
 {
 	GenerateBodyFromRect();
 }
@@ -19,7 +19,7 @@ Item::~Item()
 
 PhysBody * Item::GenerateBodyFromRect()
 {
-	body = App->physics->CreateRectangle(0, 0, texture.w, texture.h, collision_type::MAP_ITEM, BODY_TYPE::map_item);
+	body = App->physics->CreateRectangle(0, 0, texture.w * scale, texture.h * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item);
 	return body;
 }
 
@@ -52,4 +52,9 @@ ITEM_TYPE Item::Get_type() const
 SDL_Rect Item::Get_Texture() const
 {
 	return texture;
+}
+
+int Item::Get_Scale() const
+{
+	return scale;
 }
