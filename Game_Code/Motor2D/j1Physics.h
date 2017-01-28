@@ -39,17 +39,20 @@ public:
 	PhysBody() : listener(NULL), body(NULL)
 	{}
 
-	void GetPosition(int& x, int &y) const;
-	float GetRotation() const;
+	void	GetPosition(int& x, int &y) const;
+	float	GetRotation() const;
 
-	void Move(int x_vel, int y_vel);
-	void FixedRotation(bool value);
-	void SetPosition(int x,int y);
+	int		GetWidth()const;
+	int		GetHeight()const;
 
-	bool Contains(int x, int y) const;
-	int RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
+	void	Move(int x_vel, int y_vel);
+	void	FixedRotation(bool value);
+	void	SetPosition(int x,int y);
+
+	bool	Contains(int x, int y) const;
+	int		RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 	
-	bool IsInContact()const;
+	bool	IsInContact()const;
 
 public:
 

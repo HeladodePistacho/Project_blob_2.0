@@ -40,6 +40,7 @@ bool j1Scene::PostUpdate()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
+		Desactivate();
 		if (App->win->fullscreen)
 		{
 			SDL_SetWindowFullscreen(App->win->window, NULL);
@@ -50,6 +51,7 @@ bool j1Scene::PostUpdate()
 			SDL_SetWindowFullscreen(App->win->window, SDL_WINDOW_FULLSCREEN);
 			App->win->fullscreen = true;
 		}
+		Activate();
 	}
 
 
@@ -122,4 +124,48 @@ void j1Scene::AddScenePlatform(Platform * new_platform)
 {
 	if (new_platform == nullptr)return;
 	Platforms.add(new_platform);
+}
+
+bool j1Scene::GeneratePlatformsTextures()
+{
+	bool ret = true;
+	p2List_item<Platform*>* item = Platforms.start;
+	while (item)
+	{
+		ret = item->data->GenerateTexture();
+
+		item = item->next;
+	}
+	return ret;
+}
+
+void j1Scene::CleanPlatformsTextures()
+{
+	bool ret = true;
+	p2List_item<Platform*>* item = Platforms.start;
+
+	while (item)
+	{
+		item->data->DestroyTexture();
+
+		item = item->next;
+	}
+
+	return;
+}
+
+void j1Scene::Activate()
+{
+	LOG("Activating Scene!");
+	if (!GeneratePlatformsTextures())
+	{
+		LOG("Scene Textures wasn't clear before generation!");
+	}
+	return;
+}
+
+void j1Scene::Desactivate()
+{
+	LOG("Desactivating Scene...");
+	CleanPlatformsTextures();
 }

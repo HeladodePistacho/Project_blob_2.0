@@ -215,6 +215,9 @@ bool j1App::Start()
 	//Desactive gameplay scene manager
 	scene_manager->Desactivate();
 
+	//Activate the first game scene
+	level_1->Activate();
+
 	return ret;
 }
 

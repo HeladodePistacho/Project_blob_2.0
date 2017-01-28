@@ -29,6 +29,8 @@ bool j1SceneBuilder::Start()
 
 bool j1SceneBuilder::Update(float dt)
 {
+	if (!target->active)return true;
+
 	bool ret = true;
 	int x = 0, y = 0;
 
@@ -54,7 +56,7 @@ bool j1SceneBuilder::Update(float dt)
 		//Get item position
 		platform->data->Get_Position(x, y);
 		//Blit item texture from spritesheet
-		ret = App->render->Blit(platform->data->Get_Texture(), x, y,&platform->data->Get_CurrentAnimationRect(), 1, 1.0f, platform->data->Get_Rotation());
+		ret = App->render->Blit(platform->data->Get_Texture(), x, y, &platform->data->Get_CurrentAnimationRect(), platform->data->Get_Scale());
 		//Set next item
 		platform = platform->next;
 	}

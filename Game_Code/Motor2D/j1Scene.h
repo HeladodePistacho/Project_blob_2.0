@@ -44,6 +44,13 @@ public:
 
 	void						AddSceneItem(Item* new_item);
 	void						AddScenePlatform(Platform* new_platform);
+	
+	bool						GeneratePlatformsTextures();
+	void						CleanPlatformsTextures();
+
+	void Activate();
+	void Desactivate();
+
 };
 
 #endif // __j1SCENE_H__

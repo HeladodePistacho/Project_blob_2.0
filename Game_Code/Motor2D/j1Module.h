@@ -101,11 +101,11 @@ public:
 	}
 
 	//Active/Deasctive module
-	void Activate()
+	virtual void Activate()
 	{
 		active = true;
 	}
-	void Desactivate()
+	virtual void Desactivate()
 	{
 		active = false;
 	}

@@ -456,6 +456,16 @@ float PhysBody::GetRotation() const
 	return RADTODEG * body->GetAngle();
 }
 
+int PhysBody::GetWidth() const
+{
+	return width;
+}
+
+int PhysBody::GetHeight() const
+{
+	return height;
+}
+
 void PhysBody::Move(int x_vel, int y_vel)
 {
 	int x, y;

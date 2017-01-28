@@ -38,10 +38,12 @@ private:
 	Animation*		current_animation;
 
 	//Build ----------------------
-	void	GenerateBodyFromRect(uint width);
-	void	GenerateTextureFromRect(uint width);
-
+	void	GenerateBodyFromWidth(uint width);
+	
 public:
+
+	bool	GenerateTexture();
+	void	DestroyTexture();
 
 	//Functionality --------------
 	void				Set_Position(int x, int y);
@@ -52,6 +54,7 @@ public:
 	PLATFORM_TYPE		Get_Type() const;
 	SDL_Texture*		Get_Texture() const;
 	const SDL_Rect&		Get_CurrentAnimationRect()const;
+	uint				Get_Scale()const;
 
 };
 #endif // _PLATFORM_
