@@ -4,10 +4,35 @@
 #include "j1Module.h"
 #include "p2List.h"
 #include "Animation.h"
+#include "j1Timer.h"
 
 struct PhysBody;
 struct SDL_Texture;
 
+///Player Bullet class ---------------------------
+class Bullet
+{
+public:
+	
+	Bullet(int x, int y, uint bullet_size, uint scale = 1);
+	~Bullet();
+
+private:
+
+	PhysBody*	body;
+	Animation	anim;
+	uint		scale;
+	j1Timer		live_time;
+
+public:
+
+	PhysBody*			GetBody()const;
+	const SDL_Rect&		GetCurrentAnimationRect();
+	uint				GetScale()const;
+	uint				GetLiveTime()const;
+
+}; //_BULLET_
+/// ----------------------------------------------
 class j1Player :public j1Module
 {
 public:
@@ -32,26 +57,31 @@ public:
 
 private:
 
+	//Player State ------------------------------
 	bool				alive = true;
 
-	//Player Body
+	//Player PhysBodys --------------------------
 	PhysBody*			body = nullptr;
+	PhysBody*			mouth = nullptr;
+	//Player sizes data -------------------------
 	uint				level = 4;
 	uint				evolve_size = 10;
 	uint				base_width = 18;
 	uint				base_height = 16;
-	
+	//Player velocities data --------------------
 	float				horizontal_acceleration = 3.0f;
 	float				horizontal_speed_limit = 25.0f;
 	float				vertical_acceleration = 3.5f;
 
-	//Bullets data
-	p2List<PhysBody*>	bullets_list;
+	//Bullets data ------------------------------
+	p2List<Bullet*>		bullets_list;
 	uint				bullets = 16;
 	uint				bullets_to_evolve = 3;
-	uint				bullet_size = 0;
+	uint				bullet_size = 3;
+	float				bullet_force = 0.8f;
+	uint				bullet_active_delay = 350;
 
-	//PLayer animations
+	//PLayer animations -------------------------
 	SDL_Texture*		blob_spritesheet = nullptr;
 	Animation*			current_animation = nullptr;
 	Animation			idle;
@@ -64,8 +94,8 @@ private:
 public:
 
 	//Functionality -------------------
-	PhysBody*	ShootBullet();
-	void		PickBullet(PhysBody* bullet);
+	Bullet*		ShootBullet();
+	void		PickBullet(Bullet* bullet);
 	
 	bool		CheckLevel();
 

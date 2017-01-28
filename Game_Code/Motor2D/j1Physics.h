@@ -16,16 +16,18 @@
 enum collision_type
 {
 	PLAYER = 1,
-	BULLET = 2,
-	MAP = 4,
-	MAP_ITEM = 8,
-	PLATFORM = 16
+	PLAYER_MOUTH = 2,
+	BULLET = 4,
+	MAP = 8,
+	MAP_ITEM = 16,
+	PLATFORM = 32
 };
 
 enum BODY_TYPE 
 {
 	none,
 	player,
+	player_mouth,
 	bullet,
 	map,
 	map_item,
@@ -77,6 +79,7 @@ public:
 	bool PostUpdate();
 	bool CleanUp();
 
+	//Bodys Creations -----------------
 	PhysBody* CreateCircle(int x, int y, int radius, collision_type type, BODY_TYPE b_type = none, uint restitution = 0);
 	PhysBody* CreateStaticCircle(int x, int y, int radius, collision_type type, BODY_TYPE b_type = none, uint restitution = 0);
 	PhysBody* CreateRectangle(int x, int y, int width, int height, collision_type type, BODY_TYPE b_type = none, uint restitution = 0);
@@ -84,7 +87,12 @@ public:
 	PhysBody* CreateChain(int x, int y, int* points, int size, collision_type type, BODY_TYPE b_type = none, uint restitution = 0);
 	PhysBody* CreateSensorChain(int x, int y, int* points, int size, collision_type type, BODY_TYPE b_type = none, uint restitution = 0);
 	
+	//Fixture Creations ---------------
 	void	SetFixture(b2FixtureDef& fixture, collision_type type);
+
+	//Joints Creations ----------------
+	bool	CreateWeldJoint(PhysBody* A, PhysBody* B);
+	bool	CreateRevoluteJoint(PhysBody* A, PhysBody* B);
 
 	bool DeleteBody(PhysBody* target);
 

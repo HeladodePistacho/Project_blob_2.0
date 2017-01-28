@@ -9,6 +9,49 @@
 #include "j1Textures.h"
 #include "j1Input.h"
 
+///BULLET CLASS ----------------------------------
+//Constructor
+Bullet::Bullet(int x, int y, uint bullet_size, uint scale): scale(scale)
+{
+	anim.PushBack({ 114,2,7,7 });
+	anim.PushBack({ 124,2,7,8 });
+	anim.PushBack({ 114,2,7,7 });
+	anim.PushBack({ 145,2,8,7 });
+	anim.SetSpeed(250);
+
+	body = App->physics->CreateCircle(x, y, bullet_size* scale, collision_type::BULLET, BODY_TYPE::bullet, 1);
+	body->body->SetBullet(true);
+	body->listener = App->player;
+	body->body->SetFixedRotation(true);
+
+	live_time.Start();
+}
+//Destructor
+Bullet::~Bullet()
+{
+}
+
+PhysBody * Bullet::GetBody() const
+{
+	return body;
+}
+
+const SDL_Rect & Bullet::GetCurrentAnimationRect()
+{
+	return anim.GetCurrentFrame();
+}
+
+uint Bullet::GetScale() const
+{
+	return scale;
+}
+uint Bullet::GetLiveTime() const
+{
+	return live_time.Read();
+}
+/// ----------------------------------------------
+
+
 //Constructors ----------------------------------
 j1Player::j1Player()
 {
@@ -33,10 +76,16 @@ bool j1Player::Start()
 	body = App->physics->CreateRectangle(50, 200, base_width * level, base_height * level, collision_type::PLAYER, BODY_TYPE::player);
 	body->FixedRotation(true);
 	body->listener = this;
+	//Generate initial blob mouth
+	mouth = App->physics->CreateRectangle(50, 220,25,25, collision_type::PLAYER_MOUTH, BODY_TYPE::player_mouth);
+	mouth->FixedRotation(true);
+	App->physics->CreateRevoluteJoint(body,mouth);
+	
+	b2WeldJointDef weld_joint;
+	weld_joint.bodyA = body->body;
+	weld_joint.bodyB = mouth->body;
+	//Update level from number of bullets
 	CheckLevel();
-
-	//Set bullet size
-	bullet_size = level * 4;
 
 	//Load blob animations
 	blob_spritesheet = App->tex->Load("textures/Blob_sprites.png");
@@ -84,12 +133,14 @@ bool j1Player::Start()
 	//Set initial animation
 	current_animation = &idle;
 	
-
 	return true;
 }
 
 bool j1Player::Update(float dt)
 {
+	int x, y;
+	body->GetPosition(x, y);
+
 	if (alive) {
 		//Check all the action to set the current animation
 		if (!body->IsInContact())
@@ -104,10 +155,24 @@ bool j1Player::Update(float dt)
 	else if (current_animation->IsEnd())Respawn();
 
 	//Draw player current sprite
-	int x, y;
-	body->GetPosition(x, y);
 	App->render->Blit(blob_spritesheet, x, y, &current_animation->GetCurrentFrame(),level);
 	
+	//Draw player bullets
+	p2List_item<Bullet*>* item = bullets_list.start;
+	while (item)
+	{
+		//Calculate bullet texture coordinates
+		int x, y;
+		item->data->GetBody()->GetPosition(x, y);
+		x -= floor(item->data->GetBody()->GetWidth()  * 0.25f);
+		y -= floor(item->data->GetBody()->GetHeight() * 0.25f);
+
+		//Blit bullet 
+		App->render->Blit(blob_spritesheet, x, y, &item->data->GetCurrentAnimationRect(), item->data->GetScale());
+
+		item = item->next;
+	}
+
 	return true;
 }
 
@@ -128,8 +193,8 @@ bool j1Player::CleanUp()
 	LOG("Freeing Player...");
 
 	bool ret = true;
-	p2List_item<PhysBody*>* item = bullets_list.end;
-	p2List_item<PhysBody*>* item_prev = nullptr;
+	p2List_item<Bullet*>* item = bullets_list.end;
+	p2List_item<Bullet*>* item_prev = nullptr;
 
 	if (item != nullptr)item_prev = item->prev;
 	while (item) {
@@ -149,12 +214,22 @@ void j1Player::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
 {
 	if (bodyA->collide_type == bullet && bodyB->collide_type == player)
 	{
-		//PickBullet(bodyA);
+		p2List_item<Bullet*>* item = bullets_list.start;
+		while (item)
+		{
+			if (item->data->GetBody() == bodyA && item->data->GetLiveTime() > bullet_active_delay)
+			{
+				PickBullet(item->data);
+				break;
+			}
+			item = item->next;
+		}
 	}
+
 }
 
 //Functionality -------------------
-PhysBody * j1Player::ShootBullet() 
+Bullet * j1Player::ShootBullet() 
 {
 	//Calculate the bullet origin
 	int x, y;
@@ -163,36 +238,42 @@ PhysBody * j1Player::ShootBullet()
 	y += body->width;
 
 	//Build the bullet
-	PhysBody* bullet = App->physics->CreateCircle(x, y, bullet_size, collision_type::BULLET, BODY_TYPE::bullet);
-
-	//Set as bullet for tunneling
-	bullet->body->SetBullet(true);
+	Bullet* new_bullet = new Bullet(x, y, bullet_size, level);
+	bullets_list.add(new_bullet);
 
 	//Calculate vector for bullet direction
-	float x_vec = (App->input->GetMouseX() - x) * 0.08f;
-	float y_vec = (App->input->GetMouseY() - y) * 0.08f;
+	//Build vector from mouse coordinates
+	float x_vec = (App->input->GetMouseX() - x);
+	float y_vec = (App->input->GetMouseY() - y);
+	b2Vec2 force_vector = { x_vec,y_vec };
+	//Get vector length
+	float length = force_vector.Length();
+	//Normalize vector
+	force_vector.Normalize();
+	//Calculate new vector length in relation the bullet mass and player shoot force
+	force_vector *= (length * new_bullet->GetBody()->body->GetMass()) * bullet_force;
 
 	//Apply force to th bullet with the calculated vector
-	bullet->body->ApplyForce(b2Vec2(x_vec, y_vec), b2Vec2(0, 0), false);
-	bullet->listener = this;
-
-	//Add bullet to the list
-	bullets_list.add(bullet);
+	new_bullet->GetBody()->body->ApplyForceToCenter(force_vector, false);
 
 	//Update current bullets
 	bullets--;
 
-	return bullet;
+	return new_bullet;
 }
 
-void j1Player::PickBullet(PhysBody* bullet)
+void j1Player::PickBullet(Bullet* bullet)
 {
 	//Add bullet count to the player
 	bullets++;
+	
 	//Delet body of bullet
-	App->physics->DeleteBody(bullet);
+	App->physics->DeleteBody(bullet->GetBody());
 	//Delet bullet from bullets list
 	bullets_list.del(bullets_list.At(bullets_list.find(bullet)));
+
+	//Check player level
+	CheckLevel();
 }
 
 bool j1Player::CheckLevel()
@@ -222,9 +303,6 @@ bool j1Player::CheckLevel()
 	body->FixedRotation(true);
 	//Update level
 	level = current_level;
-	
-	//Update bullet size
-	bullet_size = level * 3;
 
 	return false;
 }

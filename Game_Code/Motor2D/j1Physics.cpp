@@ -284,13 +284,55 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = MAP | MAP_ITEM;
 		break;
 	case MAP:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH;
 		break;
 	case MAP_ITEM:
 		fixture.filter.maskBits = PLAYER | BULLET | MAP;
 		break;
+	case PLAYER_MOUTH:
+		fixture.filter.maskBits = MAP;
+		break;
 	}
 	return;
+}
+
+bool j1Physics::CreateWeldJoint(PhysBody * A, PhysBody * B)
+{
+	b2Vec2 world_point = A->body->GetWorldPoint(b2Vec2(0, 0));
+	b2WeldJointDef joint_def;
+	joint_def.bodyA = A->body;
+	joint_def.bodyB = B->body;
+
+	joint_def.localAnchorA = joint_def.bodyA->GetLocalPoint(world_point);
+	joint_def.localAnchorB = joint_def.bodyB->GetLocalPoint(world_point);
+	joint_def.referenceAngle = joint_def.bodyB->GetAngle() - joint_def.bodyA->GetAngle();
+	joint_def.collideConnected = true;
+	joint_def.dampingRatio = 0.5f;
+	joint_def.frequencyHz = 1;
+	
+	joint_def.Initialize(A->body, B->body, world_point);
+	
+	b2Joint* joint = world->CreateJoint(&joint_def);
+
+	return true;
+}
+
+bool j1Physics::CreateRevoluteJoint(PhysBody * A, PhysBody * B)
+{
+	b2Vec2 world_point = B->body->GetWorldPoint(b2Vec2(0, 0));
+
+	b2RevoluteJointDef def;
+	def.bodyA = A->body;
+	def.bodyB = B->body;
+	def.collideConnected = false;
+	def.localAnchorA.Set(def.bodyA->GetLocalPoint(world_point).x, def.bodyA->GetLocalPoint(world_point).y);
+	def.localAnchorB.Set(def.bodyB->GetLocalPoint(world_point).x, def.bodyB->GetLocalPoint(world_point).y);
+	/*def.upperAngle = 0;
+	def.enableLimit = true;
+	//def.Initialize(A->body, B->body, world_point);*/
+
+	b2Joint* joint = world->CreateJoint(&def);
+	return true;
 }
 
 bool j1Physics::DeleteBody(PhysBody * target)
@@ -401,7 +443,14 @@ bool j1Physics::PostUpdate()
 		}
 	}
 
-	
+	b2Joint * item = world->GetJointList();
+	while (item != nullptr)
+	{
+		b2Vec2 A_pos = item->GetBodyA()->GetPosition();
+		App->render->DrawCircle(A_pos.x, A_pos.y, 2, 50, 50, 150, 255);
+		item = item->GetNext();
+	}
+
 	b2MouseJointDef def;
 
 	if (body_clicked)
