@@ -65,7 +65,7 @@ public:
 			else
 			{
 				current_frame = -1;
-				return{ 0,0,0,0 };
+				return frames[0];
 			}
 		}
 

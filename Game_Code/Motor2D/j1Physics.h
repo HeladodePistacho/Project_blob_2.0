@@ -54,7 +54,7 @@ public:
 	bool	Contains(int x, int y) const;
 	int		RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 	
-	bool	IsInContact()const;
+	bool	IsInStaticContact()const;
 
 public:
 

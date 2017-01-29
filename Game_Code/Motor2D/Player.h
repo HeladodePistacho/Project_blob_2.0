@@ -59,7 +59,7 @@ private:
 
 	//Player State ------------------------------
 	bool				alive = true;
-
+	bool				in_air = false;
 	//Player PhysBodys --------------------------
 	PhysBody*			body = nullptr;
 	PhysBody*			mouth = nullptr;
@@ -87,7 +87,7 @@ private:
 	Animation			idle;
 	Animation			run_right;
 	Animation			run_left;
-	Animation			jump;
+	Animation			jump_end;
 	Animation			dodge;
 	Animation			die;
 

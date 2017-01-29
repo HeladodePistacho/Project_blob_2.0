@@ -596,9 +596,19 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	return ret;
 }
 
-bool PhysBody::IsInContact() const
+bool PhysBody::IsInStaticContact() const
 {
-	return (body->GetContactList() != nullptr);
+	b2ContactEdge* edge = body->GetContactList();
+	while (edge)
+	{
+		if (edge->contact->GetFixtureA()->GetBody()->GetType() == b2_staticBody || edge->contact->GetFixtureB()->GetBody()->GetType() == b2_staticBody)
+		{
+			return true;
+			break;
+		}
+		edge = edge->next;
+	}
+	return false;
 }
 
 void j1Physics::BeginContact(b2Contact* contact)

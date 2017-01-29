@@ -102,11 +102,15 @@ bool j1Player::Start()
 	run_right.SetSpeed(500);
 
 	//JUMP
-	jump.PushBack({ 44,68,16,15 });
-	jump.PushBack({ 65,65,16,18 });
-	jump.PushBack({ 86,65,16,15 });
-	jump.PushBack({ 107,65,16,11 });
-	jump.SetSpeed(300);
+	jump_end.PushBack({ 0,4,19,16 });
+	jump_end.PushBack({ 49,65,20,18 });
+	jump_end.PushBack({ 70,65,20,18 });
+	jump_end.PushBack({ 91,65,20,18 });
+	jump_end.PushBack({ 70,65,20,18 });
+	jump_end.PushBack({ 49,65,20,18 });
+	jump_end.PushBack({ 0,4,19,16 });
+	jump_end.SetSpeed(100);
+	jump_end.SetLoop(false);
 
 	//DODGE
 	dodge.PushBack({ 0,67,20,16 });
@@ -134,15 +138,30 @@ bool j1Player::Start()
 
 bool j1Player::Update(float dt)
 {
+	//Get Player data
 	int x, y;
 	body->GetPosition(x, y);
-
+	b2Vec2 velocity = body->body->GetLinearVelocity();
 	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation
-		if (!body->IsInContact())
+		bool body_contact = body->IsInStaticContact();
+		if (!body_contact)
 		{
-			current_animation = &jump;
+			in_air = true;
+		}
+		else if (in_air && body_contact)
+		{
+			if (current_animation != &jump_end)
+			{
+				jump_end.Reset();
+				current_animation = &jump_end;
+			}
+			else if (current_animation->IsEnd())
+			{
+				in_air = false;
+				HandleVelocity();
+			}
 		}
 		else if (!HandleInput())
 		{
