@@ -32,70 +32,53 @@ SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 	//Get platforms spritesheet from scene builder
 	SDL_Texture* spritesheet = App->scene_builder->GetPlatformsSpritesheet();
 	
-	//Create rects for the three parts of the texture
+	//Create rects for the three parts of the texture(default is blue)
 	//Entire platform state
-	SDL_Rect right_texture = { 0,0,0,0 };
-	SDL_Rect left_texture = { 0,0,0,0 };
-	SDL_Rect mid_texture_A = { 0,0,0,0 };
-	SDL_Rect mid_texture_B = { 0,0,0,0 };
-	//Mid desintegrated platform state
-	SDL_Rect MID_right_texture = { 0,0,0,0 };
-	SDL_Rect MID_left_texture = { 0,0,0,0 };
-	SDL_Rect MID_mid_texture = { 0,0,0,0 };
-	//Full desintegrated platform state
-	SDL_Rect FULL_right_texture = { 0,0,0,0 };
-	SDL_Rect FULL_left_texture = { 0,0,0,0 };
-	SDL_Rect FULL_mid_texture = { 0,0,0,0 };
-
+	SDL_Rect right_texture = { 146,22,9,11 };
+	SDL_Rect left_texture = { 158,22,9,11 };
+	SDL_Rect mid_texture_A = { 0,22,72,19 };
+	SDL_Rect mid_texture_B = { 73,22,72,19 };
+	//First colorized platform state
+	SDL_Rect FIRST_right_texture = { 169,22,9,7 };
+	SDL_Rect FIRST_left_texture = { 181,22,9,7 };
+	SDL_Rect FIRST_mid_texture = { 0,41,72,7 };
+	//Second colorized platform state
+	SDL_Rect SECOND_right_texture = { 192,22,9,7 };
+	SDL_Rect SECOND_left_texture = { 204,22,9,7 };
+	SDL_Rect SECOND_mid_texture = { 73,41,72,10 };
+	
 	//Set textures rect checking the platform type
-	switch (type)
+	uint y_delta_between_color = 38;
+	uint y_delta = 0;
+	if (texture_type == BLACK)
 	{
-	case BLACK:
-		break;
-	case BLUE:
-		break;
-	case GREEN:
-		break;
-	case YELLOW:
-		break;
-	case PURPLE:
-		break;
-	case RED:
-		mid_texture_A = { 0,178,72,18 };
-		mid_texture_B = { 73,178,72,16 };
-		right_texture = { 146,178,9,10 };
-		left_texture = { 158,178,9,10 };
-		// ----------------------------
-		MID_mid_texture = { 73,197,72,11 };
-		MID_right_texture = { 192,178,9,10 };
-		MID_left_texture = { 204,178,9,10 };
-		// ----------------------------
-		FULL_mid_texture = { 0,197,72,6 };
-		FULL_right_texture = { 169,178,9,7 };
-		FULL_left_texture = { 181,178,9,7 };
-		break;
-	case ORANGE:
-		mid_texture_A = { 0,218,72,18 };
-		mid_texture_B = { 73,218,72,16 };
-		right_texture = { 146,218,9,10 };
-		left_texture = { 158,218,9,10 };
-		// ----------------------------
-		MID_mid_texture = { 73,237,72,11 };
-		MID_right_texture = { 192,218,9,10 };
-		MID_left_texture = { 204,218,9,10 };
-		// ----------------------------
-		FULL_mid_texture = { 0,237,72,6 };
-		FULL_right_texture = { 169,218,9,7 };
-		FULL_left_texture = { 181,218,9,7 };
-		break;
+		right_texture = { 146,1,9,11 };
+		left_texture = { 158,1,9,11 };
+		mid_texture_A = { 0,1,72,19 };
+		mid_texture_B = { 73,1,72,19 };
 	}
+	else y_delta += y_delta_between_color * (texture_type - 1);
+
+	//Entire platform state
+	right_texture.y += y_delta;
+	left_texture.y += y_delta;
+	mid_texture_A.y += y_delta;
+	mid_texture_B.y += y_delta;
+	//First colorized platform state
+	FIRST_right_texture.y += y_delta;
+	FIRST_left_texture.y += y_delta;
+	FIRST_mid_texture.y += y_delta;
+	//Second colorized platform state
+	SECOND_right_texture.y += y_delta;
+	SECOND_left_texture.y += y_delta;
+	SECOND_mid_texture.y += y_delta;
 
 	//Calculate sprite height in the spritesheet
 	int total_width = body->GetWidth();
 	int first_height = mid_texture_A.h;
 	int second_height = first_height + mid_texture_B.h;
-	int third_height = second_height + MID_mid_texture.h;
-	int total_height = third_height + FULL_right_texture.h;
+	int third_height = second_height + FIRST_mid_texture.h;
+	int total_height = third_height + SECOND_right_texture.h;
 
 	//Create an empty texture with the rect area
 	SDL_Texture* new_texture = SDL_CreateTexture(App->render->renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_TARGET, total_width, total_height);
@@ -116,9 +99,9 @@ SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 		//Blit for second sprite of idle animation
 		App->render->Blit(spritesheet, w_lenght, first_height, &mid_texture_B);
 		//Blit for first sprite of desintegration
-		App->render->Blit(spritesheet, w_lenght, second_height, &MID_mid_texture);
+		App->render->Blit(spritesheet, w_lenght, second_height, &FIRST_mid_texture);
 		//Blit for second sprite of desintegration
-		App->render->Blit(spritesheet, w_lenght, third_height, &FULL_mid_texture);
+		App->render->Blit(spritesheet, w_lenght, third_height, &SECOND_mid_texture);
 
 		//Update next blit x location
 		w_lenght += mid_texture_A.w;
@@ -135,11 +118,11 @@ SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 	App->render->Blit(spritesheet, 0, first_height, &left_texture);
 	App->render->Blit(spritesheet, total_width - (right_texture.w), first_height, &right_texture);
 	//Blit for mid desintegration corners
-	App->render->Blit(spritesheet, 0, second_height, &MID_left_texture);
-	App->render->Blit(spritesheet, total_width - (MID_right_texture.w), second_height, &MID_right_texture);
+	App->render->Blit(spritesheet, 0, second_height, &FIRST_left_texture);
+	App->render->Blit(spritesheet, total_width - (FIRST_right_texture.w), second_height, &FIRST_right_texture);
 	//Blit for full desintegration corners
-	App->render->Blit(spritesheet, 0, third_height, &FULL_left_texture);
-	App->render->Blit(spritesheet, total_width - (FULL_right_texture.w), third_height, &FULL_right_texture);
+	App->render->Blit(spritesheet, 0, third_height, &SECOND_left_texture);
+	App->render->Blit(spritesheet, total_width - (SECOND_right_texture.w), third_height, &SECOND_right_texture);
 	
 	//Set blend mode to texture transparency (if not texture is opaque)
 	SDL_SetTextureBlendMode(new_texture, SDL_BlendMode::SDL_BLENDMODE_BLEND);
@@ -205,8 +188,7 @@ void Platform::ChangeType(PLATFORM_TYPE new_type)
 	next_texture = GenerateTexture(new_type);
 	//Init toggle animation
 	in_toggle = true;
-	current_animation = &toggle_anim;
-	current_animation->Reset();
+	toggle_anim.Reset();
 }
 
 bool Platform::IsInToggle() const
@@ -216,7 +198,7 @@ bool Platform::IsInToggle() const
 
 bool Platform::CheckToggle()
 {
-	if (current_animation->IsEnd())
+	if (this->toggle_anim.IsEnd())
 	{
 		DestroyTexture();
 		texture = next_texture;
@@ -265,9 +247,9 @@ const SDL_Rect& Platform::Get_CurrentAnimationRect() const
 	return current_animation->GetCurrentFrame();
 }
 
-const SDL_Rect & Platform::Get_NextAnimationRect() const
+const SDL_Rect & Platform::Get_NextAnimationRect()
 {
-	return idle_anim.GetFirstFrame();
+	return toggle_anim.GetCurrentFrame();
 }
 
 uint Platform::Get_Scale() const

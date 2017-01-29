@@ -45,6 +45,15 @@ bool Level_1::Start()
 	//Test platform --
 	Platform* platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_RED, 250,2);
 	platform->Set_Position(320, 200);
-
+	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_BLACK, 250, 2);
+	platform->Set_Position(320, 250);
+	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_BLUE, 250, 2);
+	platform->Set_Position(320, 300);
+	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
+	platform->Set_Position(320, 150);
+	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_PURPLE, 250, 2);
+	platform->Set_Position(320, 100);
+	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_YELLOW, 250, 2);
+	platform->Set_Position(320, 50);
 	return true;
 }

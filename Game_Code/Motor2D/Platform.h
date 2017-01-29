@@ -64,7 +64,7 @@ public:
 	SDL_Texture*		Get_Texture() const;
 	SDL_Texture*		Get_NextTexture()const;
 	const SDL_Rect&		Get_CurrentAnimationRect()const;
-	const SDL_Rect&		Get_NextAnimationRect()const;
+	const SDL_Rect&		Get_NextAnimationRect();
 	uint				Get_Scale()const;
 
 };

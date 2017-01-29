@@ -59,13 +59,16 @@ bool j1SceneBuilder::Update(float dt)
 		current_animation = platform->data->Get_CurrentAnimationRect();
 
 		//Blit item texture from spritesheet
-		if(!platform->data->IsInToggle())ret = App->render->Blit(platform->data->Get_Texture(), x, y, &current_animation, platform->data->Get_Scale());
+		if(!platform->data->IsInToggle())ret = App->render->Blit(platform->data->Get_Texture(), x, y,&current_animation, platform->data->Get_Scale());
+		
+		//In case that the platform is in color swap
 		else
 		{
+			SDL_Rect next_animation = platform->data->Get_NextAnimationRect();
 			if (platform->data->CheckToggle())
 			{
-				ret = App->render->Blit(platform->data->Get_NextTexture(), x, y, &platform->data->Get_NextAnimationRect(), platform->data->Get_Scale());
 				ret = App->render->Blit(platform->data->Get_Texture(), x, y, &current_animation, platform->data->Get_Scale());
+				ret = App->render->Blit(platform->data->Get_NextTexture(), x, y, &next_animation, platform->data->Get_Scale());
 			}
 			else
 			{
