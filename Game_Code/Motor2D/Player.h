@@ -67,7 +67,7 @@ private:
 	uint				level = 4;
 	uint				evolve_size = 10;
 	uint				base_width = 18;
-	uint				base_height = 16;
+	uint				base_height = 15;
 	//Player velocities data --------------------
 	float				horizontal_acceleration = 3.0f;
 	float				horizontal_speed_limit = 25.0f;

@@ -87,46 +87,46 @@ bool j1Player::Start()
 	blob_spritesheet = App->tex->Load("textures/Blob_sprites.png");
 
 	//IDLE
-	idle.PushBack({ 0,3,19,17 });
-	idle.PushBack({ 21,3,18,17 });
+	idle.PushBack({ 0,4,19,16 });
+	idle.PushBack({ 21,4,18,16 });
 	idle.SetSpeed(350);
 
 	//RUN LEFT
-	run_left.PushBack({ 0,45,20,17 });
-	run_left.PushBack({ 21,45,20,17 });
+	run_left.PushBack({ 0,46,20,16 });
+	run_left.PushBack({ 21,46,20,16 });
 	run_left.SetSpeed(500);
 
 	//RUN RIGHT
-	run_right.PushBack({ 0,24,20,17 });
-	run_right.PushBack({ 21,24,20,17 });
+	run_right.PushBack({ 0,25,20,16 });
+	run_right.PushBack({ 21,25,20,16 });
 	run_right.SetSpeed(500);
 
 	//JUMP
 	jump_end.PushBack({ 0,4,19,16 });
-	jump_end.PushBack({ 49,65,20,17 });
-	jump_end.PushBack({ 70,65,20,17 });
-	jump_end.PushBack({ 91,65,20,17 });
-	jump_end.PushBack({ 70,65,20,17 });
-	jump_end.PushBack({ 49,65,20,17 });
+	jump_end.PushBack({ 49,66,20,16 });
+	jump_end.PushBack({ 70,66,20,16 });
+	jump_end.PushBack({ 91,66,20,16 });
+	jump_end.PushBack({ 70,66,20,16 });
+	jump_end.PushBack({ 49,66,20,16 });
 	jump_end.PushBack({ 0,4,19,16 });
 	jump_end.SetSpeed(100);
 	jump_end.SetLoop(false);
 
 	//DODGE
-	dodge.PushBack({ 0,67,20,16 });
-	dodge.PushBack({ 21,67,20,16 });
+	dodge.PushBack({ 0,68,20,15 });
+	dodge.PushBack({ 21,68,20,15 });
 	dodge.SetSpeed(350);
 
 	//DIE
-	die.PushBack({ 0,87,19,17 });
-	die.PushBack({ 21,87,19,17 });
-	die.PushBack({ 42,87,19,17 });
-	die.PushBack({ 63,87,19,17 });
-	die.PushBack({ 84,87,19,17 });
-	die.PushBack({ 105,87,19,17 });
-	die.PushBack({ 126,87,19,17 });
-	die.PushBack({ 147,87,19,17 });
-	die.PushBack({ 168,87,19,17 });
+	die.PushBack({ 0,88,19,16 });
+	die.PushBack({ 21,88,19,16 });
+	die.PushBack({ 42,88,19,16 });
+	die.PushBack({ 63,88,19,16 });
+	die.PushBack({ 84,88,19,16 });
+	die.PushBack({ 105,88,19,16 });
+	die.PushBack({ 126,88,19,16 });
+	die.PushBack({ 147,88,19,16 });
+	die.PushBack({ 168,88,19,16 });
 	die.SetSpeed(250);
 	die.SetLoop(false);
 
@@ -161,16 +161,11 @@ bool j1Player::Update(float dt)
 			else if (current_animation->IsEnd())
 			{
 				in_air = false;
-				HandleVelocity();
+				current_animation = &idle;
 			}
 		}
-		else if (!in_air)
-		{
-			if (!HandleInput())
-			{
-				HandleVelocity();
-			}
-		}
+
+		else if (!HandleInput()) HandleVelocity();
 		//Check player level
 		CheckLevel();
 	}

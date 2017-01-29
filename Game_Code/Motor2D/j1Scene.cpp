@@ -113,6 +113,7 @@ void j1Scene::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
 
 	switch (bodyA->collide_type)
 	{
+		//BLACK PLATFORM ------------------------
 	case platform_black:
 		if (bodyB->collide_type == player)
 		{
@@ -123,10 +124,12 @@ void j1Scene::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
 			App->player->DeleteBullet(App->player->FindBullet(bodyB));
 		}
 		break;
-
+		
+		//BLUE PLATFORM -------------------------
 	case platform_blue:
 		break;
 
+		//GREEN PLATFORM ------------------------
 	case platform_green:
 
 		if (bodyB->collide_type == player && at_bottom)
