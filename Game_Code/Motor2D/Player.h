@@ -96,7 +96,9 @@ public:
 	//Functionality -------------------
 	Bullet*		ShootBullet();
 	void		PickBullet(Bullet* bullet);
-	
+	void		DeleteBullet(Bullet* bullet_body);
+	Bullet*		FindBullet(PhysBody* bullet)const;
+
 	bool		CheckLevel();
 
 	bool		HandleInput();
@@ -104,6 +106,10 @@ public:
 
 	void		Die();
 	void		Respawn();
+
+	//Get Methods --
+	float		GetVerticalAcceleration()const;
+
 };
 
 #endif // _PLAYER_

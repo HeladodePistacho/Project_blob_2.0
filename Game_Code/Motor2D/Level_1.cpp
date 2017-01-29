@@ -39,21 +39,21 @@ bool Level_1::Start()
 
 
 	//Test box --------
-	Item* item = App->scene_builder->GenerateSceneItem(BUILD_ITEM_TYPE::BOX_BOOKS,2);
-	item->SetPosition(250, 50);
+	//Item* item = App->scene_builder->GenerateSceneItem(BUILD_ITEM_TYPE::BOX_BOOKS,2);
+	//item->SetPosition(250, 50);
 
 	//Test platform --
 	Platform* platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_RED, 250,2);
-	platform->Set_Position(320, 200);
+	platform->Set_Position(520, 200);
 	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_BLACK, 250, 2);
-	platform->Set_Position(320, 250);
-	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_BLUE, 250, 2);
-	platform->Set_Position(320, 300);
+	platform->Set_Position(1120, 420);
+	/*platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_BLUE, 250, 2);
+	platform->Set_Position(520, 300);*/
 	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
-	platform->Set_Position(320, 150);
+	platform->Set_Position(520, 420);
 	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_PURPLE, 250, 2);
-	platform->Set_Position(320, 100);
+	platform->Set_Position(520, 100);
 	platform = (Platform*)App->scene_builder->GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_YELLOW, 250, 2);
-	platform->Set_Position(320, 50);
+	platform->Set_Position(520, 50);
 	return true;
 }

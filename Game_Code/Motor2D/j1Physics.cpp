@@ -278,16 +278,16 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 	switch (type)
 	{
 	case PLAYER:
-		fixture.filter.maskBits = MAP | MAP_ITEM;
+		fixture.filter.maskBits = MAP | MAP_ITEM | PLATFORM;
 		break;
 	case BULLET:
-		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH;
+		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH | PLATFORM;
 		break;
 	case MAP:
 		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH;
 		break;
 	case MAP_ITEM:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM;
 		break;
 	case PLAYER_MOUTH:
 		fixture.filter.maskBits = BULLET;
@@ -601,7 +601,8 @@ bool PhysBody::IsInStaticContact() const
 	b2ContactEdge* edge = body->GetContactList();
 	while (edge)
 	{
-		if (edge->contact->GetFixtureA()->GetBody()->GetType() == b2_staticBody || edge->contact->GetFixtureB()->GetBody()->GetType() == b2_staticBody)
+		if ( edge->contact->GetFixtureA()->GetBody()->GetType() == b2_staticBody &&
+			((PhysBody*)edge->contact->GetFixtureA()->GetBody()->GetUserData())->collide_type != platform_green)
 		{
 			return true;
 			break;

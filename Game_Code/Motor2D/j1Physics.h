@@ -31,7 +31,13 @@ enum BODY_TYPE
 	bullet,
 	map,
 	map_item,
-	platform
+	platform_black,
+	platform_blue,
+	platform_green,
+	platform_yellow,
+	platform_purple,
+	platform_red,
+	platform_orange
 };
 
 // Small class to return to other modules to track position and rotation of physics bodies

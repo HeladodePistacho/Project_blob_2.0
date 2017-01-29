@@ -87,27 +87,27 @@ bool j1Player::Start()
 	blob_spritesheet = App->tex->Load("textures/Blob_sprites.png");
 
 	//IDLE
-	idle.PushBack({ 0,4,19,16 });
-	idle.PushBack({ 21,4,18,16 });
+	idle.PushBack({ 0,3,19,17 });
+	idle.PushBack({ 21,3,18,17 });
 	idle.SetSpeed(350);
 
 	//RUN LEFT
-	run_left.PushBack({ 0,46,20,16 });
-	run_left.PushBack({ 21,46,20,16 });
+	run_left.PushBack({ 0,45,20,17 });
+	run_left.PushBack({ 21,45,20,17 });
 	run_left.SetSpeed(500);
 
 	//RUN RIGHT
-	run_right.PushBack({ 0,25,20,16 });
-	run_right.PushBack({ 21,25,20,16 });
+	run_right.PushBack({ 0,24,20,17 });
+	run_right.PushBack({ 21,24,20,17 });
 	run_right.SetSpeed(500);
 
 	//JUMP
 	jump_end.PushBack({ 0,4,19,16 });
-	jump_end.PushBack({ 49,65,20,18 });
-	jump_end.PushBack({ 70,65,20,18 });
-	jump_end.PushBack({ 91,65,20,18 });
-	jump_end.PushBack({ 70,65,20,18 });
-	jump_end.PushBack({ 49,65,20,18 });
+	jump_end.PushBack({ 49,65,20,17 });
+	jump_end.PushBack({ 70,65,20,17 });
+	jump_end.PushBack({ 91,65,20,17 });
+	jump_end.PushBack({ 70,65,20,17 });
+	jump_end.PushBack({ 49,65,20,17 });
 	jump_end.PushBack({ 0,4,19,16 });
 	jump_end.SetSpeed(100);
 	jump_end.SetLoop(false);
@@ -118,15 +118,15 @@ bool j1Player::Start()
 	dodge.SetSpeed(350);
 
 	//DIE
-	die.PushBack({ 0,89,19,15 });
-	die.PushBack({ 21,89,19,15 });
-	die.PushBack({ 42,89,19,15 });
-	die.PushBack({ 63,89,19,15 });
-	die.PushBack({ 84,89,19,15 });
-	die.PushBack({ 105,89,19,15 });
-	die.PushBack({ 126,89,19,15 });
-	die.PushBack({ 147,89,19,15 });
-	die.PushBack({ 168,89,19,15 });
+	die.PushBack({ 0,87,19,17 });
+	die.PushBack({ 21,87,19,17 });
+	die.PushBack({ 42,87,19,17 });
+	die.PushBack({ 63,87,19,17 });
+	die.PushBack({ 84,87,19,17 });
+	die.PushBack({ 105,87,19,17 });
+	die.PushBack({ 126,87,19,17 });
+	die.PushBack({ 147,87,19,17 });
+	die.PushBack({ 168,87,19,17 });
 	die.SetSpeed(250);
 	die.SetLoop(false);
 
@@ -151,7 +151,7 @@ bool j1Player::Update(float dt)
 		{
 			in_air = true;
 		}
-		else if (in_air && body_contact)
+		if (in_air && body_contact)
 		{
 			if (current_animation != &jump_end)
 			{
@@ -164,9 +164,12 @@ bool j1Player::Update(float dt)
 				HandleVelocity();
 			}
 		}
-		else if (!HandleInput())
+		else if (!in_air)
 		{
-			HandleVelocity();
+			if (!HandleInput())
+			{
+				HandleVelocity();
+			}
 		}
 		//Check player level
 		CheckLevel();
@@ -177,7 +180,7 @@ bool j1Player::Update(float dt)
 
 	//Player Blits ----------------------------------------
 	//Draw player current sprite
-	App->render->Blit(blob_spritesheet, x, y, &current_animation->GetCurrentFrame(),level);
+	App->render->Blit(blob_spritesheet, x - (level * 0.5f), y, &current_animation->GetCurrentFrame(),level);
 	
 	//Draw player bullets
 	p2List_item<Bullet*>* item = bullets_list.start;
@@ -186,8 +189,8 @@ bool j1Player::Update(float dt)
 		//Calculate bullet texture coordinates
 		int x, y;
 		item->data->GetBody()->GetPosition(x, y);
-		x -= floor(item->data->GetBody()->GetWidth()  * 0.25f);
-		y -= floor(item->data->GetBody()->GetHeight() * 0.25f);
+		x -= (int)floor(item->data->GetBody()->GetWidth()  * 0.25f);
+		y -= (int)floor(item->data->GetBody()->GetHeight() * 0.25f);
 
 		//Blit bullet 
 		App->render->Blit(blob_spritesheet, x, y, &item->data->GetCurrentAnimationRect(), item->data->GetScale());
@@ -241,20 +244,7 @@ bool j1Player::CleanUp()
 
 void j1Player::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
 {
-	if (bodyA->collide_type == bullet && bodyB->collide_type == player_mouth)
-	{
-		p2List_item<Bullet*>* item = bullets_list.start;
-		while (item)
-		{
-			if (item->data->GetBody() == bodyA && item->data->GetLiveTime() > bullet_active_delay)
-			{
-				PickBullet(item->data);
-				break;
-			}
-			item = item->next;
-		}
-	}
-
+	if (bodyA->collide_type == bullet && bodyB->collide_type == player_mouth)PickBullet(FindBullet(bodyA));
 }
 
 //Functionality -------------------
@@ -293,14 +283,38 @@ Bullet * j1Player::ShootBullet()
 
 void j1Player::PickBullet(Bullet* bullet)
 {
+	if (bullet == nullptr || bullet->GetLiveTime() < bullet_active_delay)return;
+
 	//Add bullet count to the player
 	bullets++;
-	
+
+	//Delete bullet
+	DeleteBullet(bullet);
+}
+
+void j1Player::DeleteBullet(Bullet* bullet)
+{
+	if (bullet == nullptr)return;
+
 	//Delet bullet from bullets list
 	bullets_list.del(bullets_list.At(bullets_list.find(bullet)));
 
 	//Delet body of bullet
 	App->physics->DeleteBody(bullet->GetBody());
+}
+
+Bullet * j1Player::FindBullet(PhysBody * bullet) const
+{
+	p2List_item<Bullet*>* item = bullets_list.start;
+	while (item)
+	{
+		if (item->data->GetBody() == bullet)
+		{
+			return item->data;
+		}
+		item = item->next;
+	}
+	return nullptr;
 }
 
 bool j1Player::CheckLevel()
@@ -319,8 +333,8 @@ bool j1Player::CheckLevel()
 	//Calculate player location
 	int x, y;
 	body->GetPosition(x, y);
-	x += (base_width * level)  * 0.5;
-	y += (base_height * level) * 0.5;
+	x += (int)((base_width * level)  * 0.5);
+	y += (int)((base_height * level) * 0.5);
 	//Get player velocity
 	b2Vec2 player_velocity = body->body->GetLinearVelocity();
 	
@@ -408,4 +422,9 @@ void j1Player::Respawn()
 	alive = true;
 	bullets = 16;
 	CheckLevel();
+}
+
+float j1Player::GetVerticalAcceleration() const
+{
+	return vertical_acceleration;
 }

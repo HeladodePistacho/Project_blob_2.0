@@ -25,6 +25,9 @@ public:
 	// Called before quitting
 	virtual bool CleanUp();
 
+	// On collision callback
+	virtual void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+
 protected:
 
 	//Background ----------------------

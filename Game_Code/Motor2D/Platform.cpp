@@ -23,8 +23,18 @@ Platform::~Platform()
 //Build -----------------------------------------
 void Platform::GenerateBodyFromWidth(uint width)
 {
-	body = App->physics->CreateRectangle(0,0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform);
+	switch (type)
+	{
+	case BLACK:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_black);		break;
+	case BLUE:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_blue);		break;
+	case GREEN:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_green);		break;
+	case YELLOW:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_yellow);	break;
+	case PURPLE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_purple);	break;
+	case RED:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_red);		break;
+	case ORANGE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_orange);	break;
+	}
 	body->body->SetType(b2BodyType::b2_staticBody);
+	body->listener = App->scene_builder->GetTarget();
 }
 
 SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
@@ -78,7 +88,7 @@ SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 	int first_height = mid_texture_A.h;
 	int second_height = first_height + mid_texture_B.h;
 	int third_height = second_height + FIRST_mid_texture.h;
-	int total_height = third_height + SECOND_right_texture.h;
+	int total_height = third_height + SECOND_right_texture.h + 4;
 
 	//Create an empty texture with the rect area
 	SDL_Texture* new_texture = SDL_CreateTexture(App->render->renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_TARGET, total_width, total_height);
@@ -129,20 +139,23 @@ SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 	//Reset renderer viewport to app window
 	SDL_SetRenderTarget(App->render->renderer, NULL);
 
-	//Build idle animation
+	//Build idle animation ----------------------
 	idle_anim.Clear();
 	idle_anim.PushBack({ 0, 0, total_width, first_height });
 	idle_anim.PushBack({ 0, first_height, total_width, second_height - first_height });
 	idle_anim.SetSpeed(350);
 
+	//Build toggle animation --------------------
 	toggle_anim.Clear();
 	toggle_anim.PushBack({ 0, second_height, total_width, third_height - second_height });
 	toggle_anim.PushBack({ 0,third_height,total_width,total_height - third_height });
 	toggle_anim.SetSpeed(400);
 	toggle_anim.SetLoop(false);
 
+	//Set current animation as idle
 	current_animation = &idle_anim;
 
+	//Add new texture generated to the module textures list to clean up it at app end
 	App->tex->textures.add(new_texture);
 
 	return new_texture;

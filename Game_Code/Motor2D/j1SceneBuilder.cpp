@@ -128,6 +128,11 @@ void j1SceneBuilder::SetTarget(j1Scene* new_target)
 	target = new_target;
 }
 
+j1Scene * j1SceneBuilder::GetTarget() const
+{
+	return target;
+}
+
 SDL_Texture * j1SceneBuilder::GetPlatformsSpritesheet() const
 {
 	return platforms_spritesheet;

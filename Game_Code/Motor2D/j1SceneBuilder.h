@@ -55,6 +55,7 @@ public:
 	Platform*		GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale = 1);
 
 	void			SetTarget(j1Scene* new_target);
+	j1Scene*		GetTarget()const;
 	SDL_Texture*	GetPlatformsSpritesheet()const;
 };
 #endif // _SCENE_BUILER_
