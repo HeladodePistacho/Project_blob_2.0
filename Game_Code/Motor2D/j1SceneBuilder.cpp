@@ -50,13 +50,28 @@ bool j1SceneBuilder::Update(float dt)
 	}
 
 	//Draw all the target scene platforms
+	SDL_Rect current_animation = { 0,0,0,0 };
 	p2List_item<Platform*>* platform = target->GetFirstPlatform();
 	while (platform)
 	{
-		//Get item position
+		//Get item current data
 		platform->data->Get_Position(x, y);
+		current_animation = platform->data->Get_CurrentAnimationRect();
+
 		//Blit item texture from spritesheet
-		ret = App->render->Blit(platform->data->Get_Texture(), x, y, &platform->data->Get_CurrentAnimationRect(), platform->data->Get_Scale());
+		if(!platform->data->IsInToggle())ret = App->render->Blit(platform->data->Get_Texture(), x, y, &current_animation, platform->data->Get_Scale());
+		else
+		{
+			if (platform->data->CheckToggle())
+			{
+				ret = App->render->Blit(platform->data->Get_NextTexture(), x, y, &platform->data->Get_NextAnimationRect(), platform->data->Get_Scale());
+				ret = App->render->Blit(platform->data->Get_Texture(), x, y, &current_animation, platform->data->Get_Scale());
+			}
+			else
+			{
+				ret = App->render->Blit(platform->data->Get_Texture(), x, y, &platform->data->Get_CurrentAnimationRect(), platform->data->Get_Scale());
+			}
+		}
 		//Set next item
 		platform = platform->next;
 	}
@@ -91,10 +106,15 @@ Platform * j1SceneBuilder::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_ty
 
 	switch (platform_type)
 	{
-	// Platform Builds --------------------------
-	case PLATFORM_ORANGE:	new_element = new Platform(width, PLATFORM_TYPE::ORANGE, scale);		break;
+		// Platform Builds --------------------------
+		case BUILD_PLATFORM_TYPE::PLATFORM_BLACK:	new_element = new Platform(width, PLATFORM_TYPE::BLACK, scale);			break;
+		case BUILD_PLATFORM_TYPE::PLATFORM_BLUE:	new_element = new Platform(width, PLATFORM_TYPE::BLUE, scale);			break;
+		case BUILD_PLATFORM_TYPE::PLATFORM_GREEN:	new_element = new Platform(width, PLATFORM_TYPE::GREEN, scale);			break;
+		case BUILD_PLATFORM_TYPE::PLATFORM_ORANGE:	new_element = new Platform(width, PLATFORM_TYPE::ORANGE, scale);		break;
+		case BUILD_PLATFORM_TYPE::PLATFORM_PURPLE:	new_element = new Platform(width, PLATFORM_TYPE::PURPLE, scale);		break;
+		case BUILD_PLATFORM_TYPE::PLATFORM_RED:		new_element = new Platform(width, PLATFORM_TYPE::RED, scale);			break;
+		case BUILD_PLATFORM_TYPE::PLATFORM_YELLOW:	new_element = new Platform(width, PLATFORM_TYPE::YELLOW, scale);		break;
 	}
-
 	if (new_element != nullptr)target->AddScenePlatform(new_element);
 
 	return new_element;

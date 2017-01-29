@@ -142,6 +142,7 @@ bool j1Player::Update(float dt)
 	int x, y;
 	body->GetPosition(x, y);
 	b2Vec2 velocity = body->body->GetLinearVelocity();
+	
 	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation

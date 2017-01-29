@@ -73,13 +73,22 @@ public:
 		
 	}
 
+	const SDL_Rect& GetFirstFrame()const
+	{
+		return frames[0];
+	}
+
 	void Reset()
 	{
 		current_frame = 0;
 		frame_timer.Start();
 	}
 
-
+	void Clear()
+	{
+		frames.Clear();
+		frames_num = -1;
+	}
 
 };
 

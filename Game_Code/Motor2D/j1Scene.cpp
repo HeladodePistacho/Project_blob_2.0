@@ -54,6 +54,11 @@ bool j1Scene::PostUpdate()
 		Activate();
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+	{
+		if(Platforms.start->data->Get_Type() == PLATFORM_TYPE::RED)Platforms.start->data->ChangeType(PLATFORM_TYPE::ORANGE);
+		else Platforms.start->data->ChangeType(PLATFORM_TYPE::RED);
+	}
 
 	return ret;
 }
@@ -132,7 +137,7 @@ bool j1Scene::GeneratePlatformsTextures()
 	p2List_item<Platform*>* item = Platforms.start;
 	while (item)
 	{
-		ret = item->data->GenerateTexture();
+		item->data->SetTexture(item->data->GenerateTexture(item->data->Get_Type()));
 
 		item = item->next;
 	}

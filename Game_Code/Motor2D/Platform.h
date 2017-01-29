@@ -10,13 +10,13 @@ struct SDL_Texture;
 
 enum PLATFORM_TYPE
 {
-	GREEN,
-	YELLOW,
 	BLACK,
 	BLUE,
-	ORANGE,
+	GREEN,
+	YELLOW,
+	PURPLE,
 	RED,
-	PURPLE
+	ORANGE
 };
 
 class Platform
@@ -30,30 +30,41 @@ private:
 
 	PhysBody*		body = nullptr;
 	SDL_Texture*	texture = nullptr;
+	SDL_Texture*	next_texture = nullptr;
 	uint			scale;
 	PLATFORM_TYPE	type;
 
 	//Animations -----------------
 	Animation		idle_anim;
+	Animation		toggle_anim;
 	Animation*		current_animation;
+	bool			in_toggle = false;
 
 	//Build ----------------------
 	void	GenerateBodyFromWidth(uint width);
 	
 public:
 
-	bool	GenerateTexture();
-	void	DestroyTexture();
+	SDL_Texture*	GenerateTexture(PLATFORM_TYPE texture_type);
+	void			DestroyTexture();
 
 	//Functionality --------------
 	void				Set_Position(int x, int y);
+	void				SetTexture(SDL_Texture* new_texture);
+	void				SetNextTexture(SDL_Texture* new_next_texture);
+
+	void				ChangeType(PLATFORM_TYPE new_type);
+	bool				IsInToggle()const;
+	bool				CheckToggle();
 
 	void				Get_Position(int& x, int& y)const;
 	float				Get_Rotation()const;
 	const PhysBody*		Get_Body() const;
 	PLATFORM_TYPE		Get_Type() const;
 	SDL_Texture*		Get_Texture() const;
+	SDL_Texture*		Get_NextTexture()const;
 	const SDL_Rect&		Get_CurrentAnimationRect()const;
+	const SDL_Rect&		Get_NextAnimationRect()const;
 	uint				Get_Scale()const;
 
 };
