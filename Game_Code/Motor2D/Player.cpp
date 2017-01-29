@@ -77,13 +77,9 @@ bool j1Player::Start()
 	body->FixedRotation(true);
 	body->listener = this;
 	//Generate initial blob mouth
-	mouth = App->physics->CreateRectangle(50, 220,25,25, collision_type::PLAYER_MOUTH, BODY_TYPE::player_mouth);
+	mouth = App->physics->CreateRectangleSensor(50, 200,body->GetWidth(), body->GetHeight(), collision_type::PLAYER_MOUTH, BODY_TYPE::player_mouth);
 	mouth->FixedRotation(true);
-	App->physics->CreateRevoluteJoint(body,mouth);
-	
-	b2WeldJointDef weld_joint;
-	weld_joint.bodyA = body->body;
-	weld_joint.bodyB = mouth->body;
+
 	//Update level from number of bullets
 	CheckLevel();
 
@@ -141,6 +137,7 @@ bool j1Player::Update(float dt)
 	int x, y;
 	body->GetPosition(x, y);
 
+	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation
 		if (!body->IsInContact())
@@ -151,9 +148,14 @@ bool j1Player::Update(float dt)
 		{
 			HandleVelocity();
 		}
+		//Check player level
+		CheckLevel();
 	}
 	else if (current_animation->IsEnd())Respawn();
+	// ----------------------------------------------------
 
+
+	//Player Blits ----------------------------------------
 	//Draw player current sprite
 	App->render->Blit(blob_spritesheet, x, y, &current_animation->GetCurrentFrame(),level);
 	
@@ -172,6 +174,13 @@ bool j1Player::Update(float dt)
 
 		item = item->next;
 	}
+	// ----------------------------------------------------
+
+
+	//Update mouth coordinates at the center of player body
+	b2Vec2 world_player_center = body->body->GetWorldCenter();
+	mouth->body->SetTransform(world_player_center,0);
+
 
 	return true;
 }
@@ -212,7 +221,7 @@ bool j1Player::CleanUp()
 
 void j1Player::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
 {
-	if (bodyA->collide_type == bullet && bodyB->collide_type == player)
+	if (bodyA->collide_type == bullet && bodyB->collide_type == player_mouth)
 	{
 		p2List_item<Bullet*>* item = bullets_list.start;
 		while (item)
@@ -267,13 +276,11 @@ void j1Player::PickBullet(Bullet* bullet)
 	//Add bullet count to the player
 	bullets++;
 	
-	//Delet body of bullet
-	App->physics->DeleteBody(bullet->GetBody());
 	//Delet bullet from bullets list
 	bullets_list.del(bullets_list.At(bullets_list.find(bullet)));
 
-	//Check player level
-	CheckLevel();
+	//Delet body of bullet
+	App->physics->DeleteBody(bullet->GetBody());
 }
 
 bool j1Player::CheckLevel()
@@ -282,25 +289,33 @@ bool j1Player::CheckLevel()
 	uint current_level = floor(bullets/bullets_to_evolve);
 	
 	//Check level
-	if (current_level == 0)
+	if (current_level == level)return false;
+	else if (current_level == 0)
 	{
 		Die();
 		return true;
 	}
-	if (current_level == level)return false;
 
 	//Calculate player location
 	int x, y;
 	body->GetPosition(x, y);
-	x += (base_width * level) * 0.5;
+	x += (base_width * level)  * 0.5;
 	y += (base_height * level) * 0.5;
-
-	//Delete player body
-	App->physics->DeleteBody(body);
+	//Get player velocity
+	b2Vec2 player_velocity = body->body->GetLinearVelocity();
 	
+	//Delete player bodys
+	App->physics->DeleteBody(body);
+	App->physics->DeleteBody(mouth);
+
 	//Generate new body with new lvl scale
 	body = App->physics->CreateRectangle(x, y, base_width * current_level, base_height * current_level, collision_type::PLAYER, BODY_TYPE::player);
 	body->FixedRotation(true);
+	body->body->SetLinearVelocity(player_velocity);
+	//Generate new mouth with new body size
+	mouth = App->physics->CreateRectangleSensor(x, y, body->GetWidth(), body->GetHeight(), collision_type::PLAYER_MOUTH, BODY_TYPE::player_mouth);
+	mouth->FixedRotation(true);
+
 	//Update level
 	level = current_level;
 
@@ -336,7 +351,7 @@ bool j1Player::HandleInput()
 	if (App->input->GetMouseButtonDown(1) == KEY_DOWN)
 	{
 		ShootBullet();
-		ret = CheckLevel();
+		ret = true;
 	}
 
 	return ret;
@@ -358,6 +373,13 @@ void j1Player::Die()
 	alive = false;
 	current_animation = &die;
 	current_animation->Reset();
+	p2List_item<Bullet*>* item = bullets_list.start;
+	while (item)
+	{
+		App->physics->DeleteBody(item->data->GetBody());
+		item = item->next;
+	}
+	bullets_list.clear();
 }
 
 void j1Player::Respawn()

@@ -92,7 +92,7 @@ public:
 
 	//Joints Creations ----------------
 	bool	CreateWeldJoint(PhysBody* A, PhysBody* B);
-	bool	CreateRevoluteJoint(PhysBody* A, PhysBody* B);
+	bool	CreateRevoluteJoint(b2Body* A, b2Body* B);
 
 	bool DeleteBody(PhysBody* target);
 
@@ -107,7 +107,8 @@ private:
 	b2MouseJoint* mouse_joint;
 	b2Body* ground;
 
-	bool delete_object = false;
+	p2List<b2Body*> bodys_to_delete;
+
 };
 
 #endif

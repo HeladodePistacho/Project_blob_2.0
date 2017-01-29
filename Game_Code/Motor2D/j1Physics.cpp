@@ -281,7 +281,7 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = MAP | MAP_ITEM;
 		break;
 	case BULLET:
-		fixture.filter.maskBits = MAP | MAP_ITEM;
+		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH;
 		break;
 	case MAP:
 		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH;
@@ -290,7 +290,7 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = PLAYER | BULLET | MAP;
 		break;
 	case PLAYER_MOUTH:
-		fixture.filter.maskBits = MAP;
+		fixture.filter.maskBits = BULLET;
 		break;
 	}
 	return;
@@ -317,21 +317,26 @@ bool j1Physics::CreateWeldJoint(PhysBody * A, PhysBody * B)
 	return true;
 }
 
-bool j1Physics::CreateRevoluteJoint(PhysBody * A, PhysBody * B)
+bool j1Physics::CreateRevoluteJoint(b2Body* A, b2Body* B)
 {
-	b2Vec2 world_point = B->body->GetWorldPoint(b2Vec2(0, 0));
+	b2Vec2 world_point = A->GetWorldPoint(b2Vec2(0, 0));
 
 	b2RevoluteJointDef def;
-	def.bodyA = A->body;
-	def.bodyB = B->body;
-	def.collideConnected = false;
-	def.localAnchorA.Set(def.bodyA->GetLocalPoint(world_point).x, def.bodyA->GetLocalPoint(world_point).y);
-	def.localAnchorB.Set(def.bodyB->GetLocalPoint(world_point).x, def.bodyB->GetLocalPoint(world_point).y);
-	/*def.upperAngle = 0;
-	def.enableLimit = true;
-	//def.Initialize(A->body, B->body, world_point);*/
+	def.bodyA = A;
+	def.bodyB = B;
 
-	b2Joint* joint = world->CreateJoint(&def);
+	def.collideConnected = false;
+	def.localAnchorA.Set(0,0);
+	def.localAnchorB.Set(0,0);
+	def.enableMotor = true;
+	def.maxMotorTorque = 100000.0f;
+	def.motorSpeed = 2.0f;
+
+	/*def.Initialize(A, B, A->GetWorldCenter());
+	def.collideConnected = true;*/
+
+	b2RevoluteJoint* joint = (b2RevoluteJoint*)world->CreateJoint(&def);
+
 	return true;
 }
 
@@ -343,7 +348,7 @@ bool j1Physics::DeleteBody(PhysBody * target)
 		return false;
 	}
 
-	world->DestroyBody(target->body);
+	bodys_to_delete.add(target->body);
 
 	return true;
 }
@@ -351,6 +356,19 @@ bool j1Physics::DeleteBody(PhysBody * target)
 // 
 bool j1Physics::PostUpdate()
 {
+	if (bodys_to_delete.start != nullptr)
+	{
+		p2List_item<b2Body*>* item = bodys_to_delete.end;
+		p2List_item<b2Body*>* item_prev = item->prev;
+		while (item)
+		{
+			world->DestroyBody(item->data);
+			bodys_to_delete.del(item);
+
+			item = item_prev;
+			if (item_prev != nullptr)item_prev = item_prev->prev;
+		}
+	}
 
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
@@ -443,14 +461,6 @@ bool j1Physics::PostUpdate()
 		}
 	}
 
-	b2Joint * item = world->GetJointList();
-	while (item != nullptr)
-	{
-		b2Vec2 A_pos = item->GetBodyA()->GetPosition();
-		App->render->DrawCircle(A_pos.x, A_pos.y, 2, 50, 50, 150, 255);
-		item = item->GetNext();
-	}
-
 	b2MouseJointDef def;
 
 	if (body_clicked)
@@ -476,8 +486,6 @@ bool j1Physics::PostUpdate()
 		world->DestroyJoint(mouse_joint);
 		mouse_joint = nullptr;
 	}
-
-	
 
 	return true;
 }
@@ -603,6 +611,7 @@ void j1Physics::BeginContact(b2Contact* contact)
 
 	if(physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
+
 }
 
 void j1Physics::If_Sensor_contact(PhysBody* bodyA, PhysBody* bodyB)
