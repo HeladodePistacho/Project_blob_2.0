@@ -47,20 +47,23 @@ public:
 	PhysBody() : listener(NULL), body(NULL)
 	{}
 
+	//Get data from body ----------------------------------
 	void	GetPosition(int& x, int &y) const;
 	float	GetRotation() const;
-
 	int		GetWidth()const;
 	int		GetHeight()const;
 
+	//Set body data ---------------------------------------
 	void	Move(int x_vel, int y_vel);
 	void	FixedRotation(bool value);
 	void	SetPosition(int x,int y);
 
-	bool	Contains(int x, int y) const;
-	int		RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
-	
-	bool	IsInStaticContact()const;
+
+	//Collide functionality -------------------------------
+	bool		Contains(int x, int y) const;
+	int			RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
+	bool		IsInStaticContact()const;
+	void		HandleContact(PhysBody* contact_body);
 
 public:
 

@@ -133,16 +133,19 @@ bool j1Player::Start()
 	//Set initial animation
 	current_animation = &idle;
 	
+	//Start player timers
+	regen_timer.Start();
+	bleed_timer.Start();
+
 	return true;
 }
 
 bool j1Player::Update(float dt)
 {
-	//Get Player data
+	//Get Player data -------------------------------------
 	int x, y;
 	body->GetPosition(x, y);
-	b2Vec2 velocity = body->body->GetLinearVelocity();
-	
+
 	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation
@@ -164,14 +167,10 @@ bool j1Player::Update(float dt)
 				current_animation = &idle;
 			}
 		}
-
 		else if (!HandleInput()) HandleVelocity();
-		//Check player level
-		CheckLevel();
 	}
 	else if (current_animation->IsEnd())Respawn();
 	// ----------------------------------------------------
-
 
 	//Player Blits ----------------------------------------
 	//Draw player current sprite
@@ -239,7 +238,7 @@ bool j1Player::CleanUp()
 
 void j1Player::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
 {
-	if (bodyA->collide_type == bullet && bodyB->collide_type == player_mouth)PickBullet(FindBullet(bodyA));
+
 }
 
 //Functionality -------------------
@@ -272,6 +271,7 @@ Bullet * j1Player::ShootBullet()
 
 	//Update current bullets
 	bullets--;
+	CheckLevel();
 
 	return new_bullet;
 }
@@ -285,6 +285,9 @@ void j1Player::PickBullet(Bullet* bullet)
 
 	//Delete bullet
 	DeleteBullet(bullet);
+
+	//Update player level
+	CheckLevel();
 }
 
 void j1Player::DeleteBullet(Bullet* bullet)
@@ -354,7 +357,7 @@ bool j1Player::CheckLevel()
 bool j1Player::HandleInput()
 {
 	bool ret = false;
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && !in_air)
 	{
 		body->body->PlusLinearVelocity(b2Vec2(0, -vertical_acceleration));
 		ret = !ret;
@@ -398,6 +401,8 @@ void j1Player::HandleVelocity()
 
 void j1Player::Die()
 {
+	if (!alive)return;
+
 	LOG("Player dead :(");
 	alive = false;
 	current_animation = &die;
@@ -417,6 +422,26 @@ void j1Player::Respawn()
 	alive = true;
 	bullets = 16;
 	CheckLevel();
+}
+
+void j1Player::Regenerate()
+{
+	if (regen_timer.Read() > regen_rate)
+	{
+		bullets++;
+		CheckLevel();
+		regen_timer.Start();
+	}
+}
+
+void j1Player::Bleed()
+{
+	if (bleed_timer.Read() > bleed_rate)
+	{
+		bullets--;
+		CheckLevel();
+		bleed_timer.Start();
+	}
 }
 
 float j1Player::GetVerticalAcceleration() const

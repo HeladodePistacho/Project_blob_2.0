@@ -103,55 +103,6 @@ bool j1Scene::CleanUp()
 	return ret;
 }
 
-void j1Scene::OnCollision(PhysBody * bodyA, PhysBody * bodyB)
-{
-	int a_x, a_y;
-	bodyA->GetPosition(a_x, a_y);
-	int b_x, b_y;
-	bodyB->GetPosition(b_x, b_y);
-	bool at_bottom = (b_y + bodyB->height <= a_y);
-
-	switch (bodyA->collide_type)
-	{
-		//BLACK PLATFORM ------------------------
-	case platform_black:
-		if (bodyB->collide_type == player)
-		{
-			App->player->Die();
-		}
-		else if (bodyB->collide_type == bullet)
-		{
-			App->player->DeleteBullet(App->player->FindBullet(bodyB));
-		}
-		break;
-		
-		//BLUE PLATFORM -------------------------
-	case platform_blue:
-		break;
-
-		//GREEN PLATFORM ------------------------
-	case platform_green:
-
-		if (bodyB->collide_type == player && at_bottom)
-		{
-			bodyB->body->SetLinearVelocity(b2Vec2(bodyB->body->GetLinearVelocity().x, -App->player->GetVerticalAcceleration()));
-		}
-		break;
-
-	case platform_yellow:
-		break;
-
-	case platform_purple:
-		break;
-
-	case platform_red:
-		break;
-
-	case platform_orange:
-		break;
-	}
-}
-
 //Functionality ---------------------------------
 p2List_item<Item*>* j1Scene::GetFirstItem() const
 {

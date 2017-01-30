@@ -7,6 +7,7 @@
 
 struct PhysBody;
 struct SDL_Texture;
+enum BODY_TYPE;
 
 enum PLATFORM_TYPE
 {
@@ -18,6 +19,7 @@ enum PLATFORM_TYPE
 	RED,
 	ORANGE
 };
+
 
 class Platform
 {
@@ -40,13 +42,12 @@ private:
 	Animation*		current_animation;
 	bool			in_toggle = false;
 
-	//Build ----------------------
-	void	GenerateBodyFromWidth(uint width);
-	
 public:
 
-	SDL_Texture*	GenerateTexture(PLATFORM_TYPE texture_type);
-	void			DestroyTexture();
+	//Build ----------------------
+	void				GenerateBodyFromWidth(uint width);
+	SDL_Texture*		GenerateTexture(PLATFORM_TYPE texture_type);
+	void				DestroyTexture();
 
 	//Functionality --------------
 	void				Set_Position(int x, int y);
@@ -56,6 +57,7 @@ public:
 	void				ChangeType(PLATFORM_TYPE new_type);
 	bool				IsInToggle()const;
 	bool				CheckToggle();
+	void				BodyType_from_PlatformType(PLATFORM_TYPE type, BODY_TYPE& type_to_fit)const;
 
 	void				Get_Position(int& x, int& y)const;
 	float				Get_Rotation()const;

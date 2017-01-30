@@ -196,9 +196,14 @@ void Platform::ChangeType(PLATFORM_TYPE new_type)
 	if (new_type == type)return;
 
 	//Change platform type
-	this->type = new_type;
+	type = new_type;
+	BODY_TYPE body_type;
+	BodyType_from_PlatformType(new_type, body_type);
+	body->collide_type = body_type;
+
 	//Generate texture of the new type
 	next_texture = GenerateTexture(new_type);
+	
 	//Init toggle animation
 	in_toggle = true;
 	toggle_anim.Reset();
@@ -222,6 +227,20 @@ bool Platform::CheckToggle()
 		return false;
 	}
 	return true;
+}
+
+void Platform::BodyType_from_PlatformType(PLATFORM_TYPE type, BODY_TYPE & type_to_fit) const
+{
+	switch (type)
+	{
+	case BLACK:		type_to_fit = BODY_TYPE::platform_black;	break;
+	case BLUE:		type_to_fit = BODY_TYPE::platform_blue;		break;
+	case GREEN:		type_to_fit = BODY_TYPE::platform_green;	break;
+	case YELLOW:	type_to_fit = BODY_TYPE::platform_yellow;	break;
+	case PURPLE:	type_to_fit = BODY_TYPE::platform_purple;	break;
+	case RED:		type_to_fit = BODY_TYPE::platform_red;		break;
+	case ORANGE:	type_to_fit = BODY_TYPE::platform_orange;	break;
+	}
 }
 
 void Platform::Get_Position(int & x, int & y) const

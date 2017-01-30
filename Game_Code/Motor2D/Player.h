@@ -8,6 +8,7 @@
 
 struct PhysBody;
 struct SDL_Texture;
+enum BODY_TYPE;
 
 ///Player Bullet class ---------------------------
 class Bullet
@@ -33,6 +34,7 @@ public:
 
 }; //_BULLET_
 /// ----------------------------------------------
+
 class j1Player :public j1Module
 {
 public:
@@ -60,6 +62,11 @@ private:
 	//Player State ------------------------------
 	bool				alive = true;
 	bool				in_air = false;
+	j1Timer				regen_timer;
+	uint				regen_rate = 250;
+	j1Timer				bleed_timer;
+	uint				bleed_rate = 250;
+
 	//Player PhysBodys --------------------------
 	PhysBody*			body = nullptr;
 	PhysBody*			mouth = nullptr;
@@ -79,7 +86,7 @@ private:
 	uint				bullets_to_evolve = 3;
 	uint				bullet_size = 3;
 	float				bullet_force = 0.8f;
-	uint				bullet_active_delay = 350;
+	uint				bullet_active_delay = 850;
 
 	//PLayer animations -------------------------
 	SDL_Texture*		blob_spritesheet = nullptr;
@@ -93,21 +100,26 @@ private:
 
 public:
 
-	//Functionality -------------------
+	//Bullets Functionality -----------
 	Bullet*		ShootBullet();
 	void		PickBullet(Bullet* bullet);
 	void		DeleteBullet(Bullet* bullet_body);
 	Bullet*		FindBullet(PhysBody* bullet)const;
 
+	//Level Functionality -------------
 	bool		CheckLevel();
 
+	//Handle Data Functionality -------
 	bool		HandleInput();
 	void		HandleVelocity();
 
+	//Player state loop Functionality -
 	void		Die();
 	void		Respawn();
+	void		Regenerate();
+	void		Bleed();
 
-	//Get Methods --
+	//Get Methods ---------------------
 	float		GetVerticalAcceleration()const;
 
 };

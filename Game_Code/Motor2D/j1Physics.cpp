@@ -7,6 +7,7 @@
 #include "j1Audio.h"
 #include "j1Scene.h"
 #include "p2Log.h"
+#include "Player.h"
 
 //#include "ModulePlayer.h"
 
@@ -356,6 +357,7 @@ bool j1Physics::DeleteBody(PhysBody * target)
 // 
 bool j1Physics::PostUpdate()
 {
+	//Clean the bodies to delete list ---------------------
 	if (bodys_to_delete.start != nullptr)
 	{
 		p2List_item<b2Body*>* item = bodys_to_delete.end;
@@ -370,14 +372,36 @@ bool j1Physics::PostUpdate()
 		}
 	}
 
+	//Iterate all world bodies to apply contact effects ---
+	b2Body* body = world->GetBodyList();
+	b2ContactEdge* edge = nullptr;
+	while (body)
+	{
+		if (body->GetType() == b2BodyType::b2_staticBody)
+		{
+			body = body->GetNext();
+			continue;
+		}
+
+		edge = body->GetContactList();
+		while (edge)
+		{
+			((PhysBody*)body->GetUserData())->HandleContact(((PhysBody*)edge->contact->GetFixtureA()->GetBody()->GetUserData()));
+		
+			edge = edge->next;
+		}
+		body = body->GetNext();
+	}
+
+	//Active/Desactive physic debug mode ------------------
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
-	if(!debug)
-		return true;
+	if(!debug) return true;
 
+
+	//Iterate all world bodies for draw & active player mouse input
 	bool body_clicked = false;
-	
 	b2Body* click_body = nullptr;
 
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -448,6 +472,8 @@ bool j1Physics::PostUpdate()
 				break;
 			}
 
+
+			//Handle mouse input to check if a body is selected
 			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 			{
 
@@ -457,8 +483,9 @@ bool j1Physics::PostUpdate()
 					click_body = f->GetBody();
 				}
 			 }
-			
+
 		}
+
 	}
 
 	b2MouseJointDef def;
@@ -612,6 +639,62 @@ bool PhysBody::IsInStaticContact() const
 	return false;
 }
 
+void PhysBody::HandleContact(PhysBody* contact_body)
+{
+	b2Vec2 body_vel = body->GetLinearVelocity();
+	switch (contact_body->collide_type)
+	{
+	case none:		return;		break;
+
+	case player_mouth:
+		if (collide_type == bullet)
+		{
+			Bullet* collided_bullet = App->player->FindBullet(((PhysBody*)body->GetUserData()));
+			App->player->PickBullet(collided_bullet);
+		}
+	case platform_black:
+		if (collide_type == player)
+		{
+			App->player->Die();
+		}
+		break;
+
+	case platform_blue:
+		break;
+
+	case platform_green:
+		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -App->player->GetVerticalAcceleration()));
+		break;
+
+	case platform_yellow:
+		body_vel *= 1.05f;
+		body->SetLinearVelocity(body_vel);
+		break;
+
+	case platform_purple:
+		if (collide_type == player)
+		{
+			App->player->Regenerate();
+		}
+		break;
+
+	case platform_red:
+		if (collide_type == player)
+		{
+			App->player->Bleed();
+		}
+		break;
+
+	case platform_orange:
+		if (body_vel.y < 0)
+		{
+			body_vel.y *= 0;
+			body->SetLinearVelocity(body_vel);
+		}
+		break;
+	}
+}
+
 void j1Physics::BeginContact(b2Contact* contact)
 {
 	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
@@ -622,7 +705,6 @@ void j1Physics::BeginContact(b2Contact* contact)
 
 	if(physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
-
 }
 
 void j1Physics::If_Sensor_contact(PhysBody* bodyA, PhysBody* bodyB)
