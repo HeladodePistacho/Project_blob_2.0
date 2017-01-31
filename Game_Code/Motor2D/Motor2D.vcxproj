@@ -86,7 +86,6 @@
     <ClCompile Include="j1Physics.cpp" />
     <ClCompile Include="j1PerfTimer.cpp" />
     <ClCompile Include="j1Scene.cpp" />
-    <ClCompile Include="j1SceneBuilder.cpp" />
     <ClCompile Include="j1Timer.cpp" />
     <ClCompile Include="j1SceneManager.cpp" />
     <ClCompile Include="Level_1.cpp" />
@@ -137,7 +136,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
     <ClInclude Include="PugiXml\src\pugixml.hpp" />
-    <ClInclude Include="j1SceneBuilder.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="UI_Button.h" />
     <ClInclude Include="UI_Element.h" />

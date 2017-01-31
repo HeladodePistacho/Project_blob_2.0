@@ -61,7 +61,7 @@ public:
 
 	void				Get_Position(int& x, int& y)const;
 	float				Get_Rotation()const;
-	const PhysBody*		Get_Body() const;
+	PhysBody*		Get_Body() const;
 	PLATFORM_TYPE		Get_Type() const;
 	SDL_Texture*		Get_Texture() const;
 	SDL_Texture*		Get_NextTexture()const;

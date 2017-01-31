@@ -39,7 +39,7 @@ float Item::GetRotation() const
 }
 
 //Functionality ---------------------------------
-const PhysBody * Item::Get_body() const
+PhysBody * Item::Get_body() const
 {
 	return body;
 }

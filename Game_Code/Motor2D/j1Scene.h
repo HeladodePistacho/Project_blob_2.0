@@ -5,30 +5,60 @@
 #include "p2List.h"
 
 struct PhysBody;
-struct SDL_Texture;
 
 #include "Item.h"
 #include "Platform.h"
+#include "SDL\include\SDL_rect.h"
+
+enum BUILD_ITEM_TYPE
+{
+	BOX_BOOKS,
+	BOX_XMAS,
+	BOX_SNES,
+	BOX_NUKE,
+	BOX_LARGE_XMAS,
+};
+enum BUILD_PLATFORM_TYPE
+{
+	PLATFORM_BLACK,
+	PLATFORM_BLUE,
+	PLATFORM_GREEN,
+	PLATFORM_YELLOW,
+	PLATFORM_PURPLE,
+	PLATFORM_RED,
+	PLATFORM_ORANGE
+};
 
 class j1Scene : public j1Module
 {
 public:
 
+	//Constructor
 	j1Scene();
 
 	// Destructor
 	virtual ~j1Scene();
 
+	//Game Loop -----------------------
+	// Called each loop iteration
+	bool Update(float dt);
+
 	// Called after all Updates
-	virtual bool PostUpdate();
+	bool PostUpdate();
 
 	// Called before quitting
-	virtual bool CleanUp();
+	bool CleanUp();
+	// --------------------------------
 
+	//Scene Loop ----------------------
+	virtual bool SceneUpdate();
+	// --------------------------------
 protected:
 
+	//Spritesheet ---------------------
+	SDL_Texture*			spritesheet = nullptr;
 	//Background ----------------------
-	SDL_Texture*			background = nullptr;
+	SDL_Rect				background_rect;
 	PhysBody*				background_collide_mark = nullptr;
 	//Items ---------------------------
 	p2List<Item*>			Items;
@@ -40,13 +70,14 @@ public:
 	//Functionality -----------------------------
 	p2List_item<Item*>*			GetFirstItem()const;
 	p2List_item<Platform*>*		GetFirstPlatform()const;
-	SDL_Texture*				GetBackgroundTexture()const;
+	SDL_Texture*				GetSpritesheet()const;
+	const SDL_Rect*				GetBackgroundRect()const;
 
-	void						AddSceneItem(Item* new_item);
-	void						AddScenePlatform(Platform* new_platform);
-	
 	bool						GeneratePlatformsTextures();
 	void						CleanPlatformsTextures();
+
+	Item*						GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale = 1);
+	Platform*					GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale = 1);
 
 	void Activate();
 	void Desactivate();

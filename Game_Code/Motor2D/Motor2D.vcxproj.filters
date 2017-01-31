@@ -72,9 +72,6 @@
     <ClCompile Include="j1SceneManager.cpp">
       <Filter>Game\Scenes\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="j1SceneBuilder.cpp">
-      <Filter>Game\Scenes\Builder</Filter>
-    </ClCompile>
     <ClCompile Include="Level_1.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
@@ -190,9 +187,6 @@
     <ClInclude Include="Level_1.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="j1SceneBuilder.h">
-      <Filter>Game\Scenes\Builder</Filter>
-    </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>Game\Scenes\Elements</Filter>
     </ClInclude>
@@ -230,9 +224,6 @@
     </Filter>
     <Filter Include="Game\Player">
       <UniqueIdentifier>{a07e2984-8aad-41e0-b9f2-bd0cb6e143f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scenes\Builder">
-      <UniqueIdentifier>{f13dd067-a7e8-479c-abaa-cc5710274a99}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scenes\Manager">
       <UniqueIdentifier>{40aea533-9c3b-4fe7-9381-0ddaa28ce42c}</UniqueIdentifier>

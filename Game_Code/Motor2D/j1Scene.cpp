@@ -14,7 +14,6 @@
 
 #include "SDL/include/SDL.h"
 #include "SDL_image/include/SDL_image.h"
-#include "OpenGL/glut.h"
 
 //Constructors ----------------------------------
 j1Scene::j1Scene() : j1Module()
@@ -30,6 +29,61 @@ j1Scene::~j1Scene()
 
 
 //Game Loop -------------------------------------
+bool j1Scene::Update(float dt)
+{
+	bool ret = true;
+	int x = 0, y = 0;
+
+	//Draw target scene background
+	App->render->Blit(spritesheet, 0, 0, &background_rect);
+
+	SceneUpdate();
+
+	//Draw all the target scene items
+	p2List_item<Item*>* item = Items.start;
+	while (item)
+	{
+		//Get item position
+		item->data->GetPosition(x, y);
+		//Blit item texture from spritesheet
+		ret = App->render->Blit(App->Items_Spritesheet, x, y, &item->data->Get_Texture(), item->data->Get_Scale(), 1.0f, item->data->GetRotation());
+		//Set next item
+		item = item->next;
+	}
+
+	//Draw all the target scene platforms
+	SDL_Rect current_animation = { 0,0,0,0 };
+	p2List_item<Platform*>* platform = Platforms.start;
+	while (platform)
+	{
+		//Get item current data
+		platform->data->Get_Position(x, y);
+		current_animation = platform->data->Get_CurrentAnimationRect();
+
+		//Blit item texture from spritesheet
+		if (!platform->data->IsInToggle())ret = App->render->Blit(platform->data->Get_Texture(), x, y, &current_animation, platform->data->Get_Scale());
+
+		//In case that the platform is in color swap
+		else
+		{
+			SDL_Rect next_animation = platform->data->Get_NextAnimationRect();
+			if (platform->data->CheckToggle())
+			{
+				ret = App->render->Blit(platform->data->Get_Texture(), x, y, &current_animation, platform->data->Get_Scale());
+				ret = App->render->Blit(platform->data->Get_NextTexture(), x, y, &next_animation, platform->data->Get_Scale());
+			}
+			else
+			{
+				ret = App->render->Blit(platform->data->Get_Texture(), x, y, &platform->data->Get_CurrentAnimationRect(), platform->data->Get_Scale());
+			}
+		}
+		//Set next item
+		platform = platform->next;
+	}
+
+	return ret;
+}
+
 bool j1Scene::PostUpdate()
 {
 	bool ret = true;
@@ -103,6 +157,11 @@ bool j1Scene::CleanUp()
 	return ret;
 }
 
+bool j1Scene::SceneUpdate()
+{
+	return true;
+}
+
 //Functionality ---------------------------------
 p2List_item<Item*>* j1Scene::GetFirstItem() const
 {
@@ -114,21 +173,14 @@ p2List_item<Platform*>* j1Scene::GetFirstPlatform() const
 	return Platforms.start;
 }
 
-SDL_Texture * j1Scene::GetBackgroundTexture() const
+SDL_Texture * j1Scene::GetSpritesheet() const
 {
-	return background;
+	return spritesheet;
 }
 
-void j1Scene::AddSceneItem(Item * new_item)
+const SDL_Rect* j1Scene::GetBackgroundRect() const
 {
-	if (new_item == nullptr)return;
-	Items.add(new_item);
-}
-
-void j1Scene::AddScenePlatform(Platform * new_platform)
-{
-	if (new_platform == nullptr)return;
-	Platforms.add(new_platform);
+	return &background_rect;
 }
 
 bool j1Scene::GeneratePlatformsTextures()
@@ -157,6 +209,52 @@ void j1Scene::CleanPlatformsTextures()
 	}
 
 	return;
+}
+
+Item * j1Scene::GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale)
+{
+	Item* new_item = nullptr;
+
+	switch (item_type)
+	{
+		// Box Builds -------------------------------
+	case BOX_BOOKS:			new_item = new Item({ 0, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_XMAS:			new_item = new Item({ 52, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_SNES:			new_item = new Item({ 104, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_NUKE:			new_item = new Item({ 156, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
+	case BOX_LARGE_XMAS:	new_item = new Item({ 0, 58, 100, 97 }, ITEM_TYPE::BOX, scale);		break;
+	}
+
+	if (new_item == nullptr)return nullptr;
+
+	new_item->Get_body()->listener = this;
+	Items.add(new_item);
+
+	return new_item;
+}
+
+Platform * j1Scene::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale)
+{
+	Platform* new_platform = nullptr;
+
+	switch (platform_type)
+	{
+		// Platform Builds --------------------------
+	case BUILD_PLATFORM_TYPE::PLATFORM_BLACK:	new_platform = new Platform(width, PLATFORM_TYPE::BLACK, scale);			break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_BLUE:	new_platform = new Platform(width, PLATFORM_TYPE::BLUE, scale);			break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_GREEN:	new_platform = new Platform(width, PLATFORM_TYPE::GREEN, scale);			break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_ORANGE:	new_platform = new Platform(width, PLATFORM_TYPE::ORANGE, scale);		break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_PURPLE:	new_platform = new Platform(width, PLATFORM_TYPE::PURPLE, scale);		break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_RED:		new_platform = new Platform(width, PLATFORM_TYPE::RED, scale);			break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_YELLOW:	new_platform = new Platform(width, PLATFORM_TYPE::YELLOW, scale);		break;
+	}
+
+	if (new_platform == nullptr)return nullptr;
+	
+	new_platform->Get_Body()->listener = this;
+	Platforms.add(new_platform);
+	
+	return new_platform;
 }
 
 void j1Scene::Activate()

@@ -4,7 +4,6 @@
 #include "j1Physics.h"
 #include "j1Render.h"
 #include "j1Textures.h"
-#include "j1SceneBuilder.h"
 #include "p2Log.h"
 
 //Constructors ----------------------------------
@@ -34,13 +33,12 @@ void Platform::GenerateBodyFromWidth(uint width)
 	case ORANGE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_orange);	break;
 	}
 	body->body->SetType(b2BodyType::b2_staticBody);
-	body->listener = App->scene_builder->GetTarget();
 }
 
 SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 {
 	//Get platforms spritesheet from scene builder
-	SDL_Texture* spritesheet = App->scene_builder->GetPlatformsSpritesheet();
+	SDL_Texture* spritesheet = App->Platforms_Spritesheet;
 	
 	//Create rects for the three parts of the texture(default is blue)
 	//Entire platform state
@@ -253,7 +251,7 @@ float Platform::Get_Rotation() const
 	return body->GetRotation();
 }
 
-const PhysBody * Platform::Get_Body() const
+PhysBody * Platform::Get_Body() const
 {
 	return body;
 }

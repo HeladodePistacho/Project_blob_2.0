@@ -6,6 +6,7 @@
 #include "j1PerfTimer.h"
 #include "j1Timer.h"
 #include "PugiXml\src\pugixml.hpp"
+struct SDL_Texture;
 
 // Modules
 class j1Window;
@@ -20,7 +21,6 @@ class j1Console;
 class j1Physics;
 class j1Player;
 class j1SceneManager;
-class j1SceneBuilder;
 class Level_1;
 
 class j1App
@@ -97,7 +97,6 @@ public:
 	j1Console*			console = NULL;
 	j1Player*			player = NULL;
 	j1SceneManager*		scene_manager = NULL;
-	j1SceneBuilder*		scene_builder = NULL;
 	Level_1*			level_1 = NULL;
 	
 	// Add a new module to handle
@@ -153,7 +152,8 @@ public:
 	const char*	GetSaveDir()const;
 	const char*	GetLoadDir()const;
 
-
+	SDL_Texture* Platforms_Spritesheet;
+	SDL_Texture* Items_Spritesheet;
 };
 
 extern j1App* App;
