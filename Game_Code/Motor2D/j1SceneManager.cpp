@@ -27,7 +27,7 @@ bool j1SceneManager::Start()
 // Update: draw background
 bool j1SceneManager::PostUpdate()
 { 
-	/*float normalized = MIN(1.0f, (float)fade_timer.Read() / (float)total_time);
+	float normalized = MIN(1.0f, (float)fade_timer.Read() / (float)total_time);
 	
 	switch (current_step)
 	{
@@ -35,16 +35,9 @@ bool j1SceneManager::PostUpdate()
 		{
 			if (fade_timer.Read() > total_time)
 			{
-				if (x)
-				{
-					//desactive scene B
-					// active scene A
-				}
-				else
-				{
-					//desactive scene A
-					// active scene B
-				}
+				in_scene->Desactivate();
+				to_scene->Activate();
+
 				current_step = fade_from_black;
 			}
 		}
@@ -56,7 +49,7 @@ bool j1SceneManager::PostUpdate()
 
 			if (fade_timer.Read() >= total_time)
 			{
-				current_step = none;
+				current_step = off;
 				this->Desactivate();
 			}
 
@@ -67,18 +60,20 @@ bool j1SceneManager::PostUpdate()
 	// Finally render the black square with alpha on the screen
 	SDL_SetRenderDrawColor(App->render->renderer, 0, 0, 0, (Uint8)(normalized * 255.0f));
 	SDL_RenderFillRect(App->render->renderer, &App->render->viewport);
-	*/
 
 	return true;
 }
 
 // Fade to black. At mid point deactivate one module, then activate the other
-bool j1SceneManager::ChangeScene(int time)
+bool j1SceneManager::ChangeScene(j1Scene* in, j1Scene* to, int time)
 {
 	bool ret = (current_step == fade_step::off);
 
 	if (ret)
 	{
+		in_scene = in;
+		to_scene = to;
+		App->current_scene = to;
 		current_step = fade_step::fade_to_black;
 		fade_timer.Start();
 		total_time = time;

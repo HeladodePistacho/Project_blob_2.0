@@ -377,17 +377,13 @@ bool j1Physics::PostUpdate()
 	b2ContactEdge* edge = nullptr;
 	while (body)
 	{
-		if (body->GetType() == b2BodyType::b2_staticBody)
-		{
-			body = body->GetNext();
-			continue;
-		}
 
 		edge = body->GetContactList();
 		while (edge)
 		{
 			((PhysBody*)body->GetUserData())->HandleContact(((PhysBody*)edge->contact->GetFixtureA()->GetBody()->GetUserData()));
-		
+			((PhysBody*)body->GetUserData())->HandleContact(((PhysBody*)edge->contact->GetFixtureB()->GetBody()->GetUserData()));
+
 			edge = edge->next;
 		}
 		body = body->GetNext();
@@ -639,12 +635,24 @@ bool PhysBody::IsInStaticContact() const
 	return false;
 }
 
+bool PhysBody::IsInContact()const
+{
+	return  (body->GetContactList() != nullptr);
+}
+
 void PhysBody::HandleContact(PhysBody* contact_body)
 {
 	b2Vec2 body_vel = body->GetLinearVelocity();
 	switch (contact_body->collide_type)
 	{
 	case none:		return;		break;
+
+	case goal_item:
+		if (collide_type == player)
+		{
+			App->current_scene->EndScene();
+		}
+		break;
 
 	case player_mouth:
 		if (collide_type == bullet)

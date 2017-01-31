@@ -30,8 +30,8 @@ bool Level_1::Start()
 	background_rect = { 0,0,1280,720 };
 
 	//Build light animation
-	light_anim.PushBack({ 334,722,307,361 });
-	light_anim.PushBack({ 26,720,193,212 });
+	light_anim.PushBack({ 327,730,328,360 });
+	light_anim.PushBack({ 25,730,175,203 });
 	light_anim.SetSpeed(150);
 
 	//Background mark collide build 
@@ -45,6 +45,9 @@ bool Level_1::Start()
 
 	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
 
+	//Scene goal
+	GenerateSceneGoal(1);
+	goal_item->SetPosition(750, 300);
 
 	//Test platform --
 	Platform* platform = nullptr;

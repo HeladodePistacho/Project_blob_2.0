@@ -22,6 +22,7 @@ class j1Physics;
 class j1Player;
 class j1SceneManager;
 class Level_1;
+class j1Scene;
 
 class j1App
 {
@@ -117,6 +118,8 @@ public:
 private:
 
 	p2List<j1Module*>	modules;
+	p2List<j1Scene*>	scenes;
+
 	int					argc;
 	char**				args;
 
@@ -154,6 +157,9 @@ public:
 
 	SDL_Texture* Platforms_Spritesheet;
 	SDL_Texture* Items_Spritesheet;
+
+	j1Scene*	GetNextScene(j1Scene* current_scene);
+	j1Scene*	current_scene;
 };
 
 extern j1App* App;

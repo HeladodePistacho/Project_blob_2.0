@@ -36,16 +36,20 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new j1Textures();
 	audio = new j1Audio();
 	physics = new j1Physics();
-	
-	level_1 = new Level_1();
-	
 	fs = new j1FileSystem();
 	font = new j1Fonts();
+
+
+	level_1 = new Level_1();
+	
+
+	
 	gui = new j1Gui();
 	console = new j1Console();
 	player = new j1Player();
 	scene_manager = new j1SceneManager();
 
+	//Module List -------------------------------
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
 	AddModule(fs);
@@ -54,10 +58,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(font);
-
 	AddModule(physics);
 	
-	// scene last
+	// scenes 
 	AddModule(level_1);
 
 	AddModule(player);
@@ -67,7 +70,12 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	// render last to swap buffer
 	AddModule(render);
+	// ------------------------------------------
 
+
+	//Scene List --------------------------------
+	scenes.add(level_1);
+	// ------------------------------------------
 	
 
 	PERF_PEEK(ptimer);
@@ -197,7 +205,6 @@ bool j1App::Start()
 	console->AddCommand("quit", nullptr);
 	console->AddCommand("save", nullptr);
 	console->AddCommand("load", nullptr);
-	console->AddCommand("change_scene", nullptr);
 
 	//Add Console Cvars
 	save_dir = App->console->AddCvar("save_dir", "Directory where game data is saved", "game_save.xml", C_VAR_TYPE::CHAR_VAR, nullptr, false);
@@ -217,6 +224,7 @@ bool j1App::Start()
 
 	//Activate the first game scene
 	level_1->Activate();
+	current_scene = level_1;
 
 	return ret;
 }
@@ -609,10 +617,6 @@ void j1App::Console_Command_Input(Command * command, Cvar * cvar, p2SString * in
 	{
 		LoadGame(load_dir->GetValueString()->GetString());
 	}
-	else if (*command->GetCommandStr() == "change_scene")
-	{
-		App->scene_manager->ChangeScene();
-	}
 }
 
 void j1App::Console_Cvar_Input(Cvar * cvar, Command* command_type, p2SString * input)
@@ -684,6 +688,13 @@ const char * j1App::GetSaveDir() const
 const char * j1App::GetLoadDir() const
 {
 	return load_dir->GetValueString()->GetString();
+}
+
+j1Scene * j1App::GetNextScene(j1Scene * current_scene) 
+{
+	p2List_item<j1Scene*>* next = scenes.At(scenes.find(current_scene))->next;
+	if (next == nullptr)next = scenes.start;
+	return 	next->data;
 }
 
 

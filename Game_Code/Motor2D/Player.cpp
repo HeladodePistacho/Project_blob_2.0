@@ -149,7 +149,7 @@ bool j1Player::Update(float dt)
 	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation
-		bool body_contact = body->IsInStaticContact();
+		bool body_contact = body->IsInContact();
 		if (!body_contact)
 		{
 			in_air = true;
@@ -164,7 +164,7 @@ bool j1Player::Update(float dt)
 			else if (current_animation->IsEnd())
 			{
 				in_air = false;
-				current_animation = &idle;
+				HandleVelocity();
 			}
 		}
 		else if (!HandleInput()) HandleVelocity();

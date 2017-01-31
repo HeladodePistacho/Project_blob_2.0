@@ -163,26 +163,6 @@ bool j1Scene::SceneUpdate()
 }
 
 //Functionality ---------------------------------
-p2List_item<Item*>* j1Scene::GetFirstItem() const
-{
-	return Items.start;
-}
-
-p2List_item<Platform*>* j1Scene::GetFirstPlatform() const
-{
-	return Platforms.start;
-}
-
-SDL_Texture * j1Scene::GetSpritesheet() const
-{
-	return spritesheet;
-}
-
-const SDL_Rect* j1Scene::GetBackgroundRect() const
-{
-	return &background_rect;
-}
-
 bool j1Scene::GeneratePlatformsTextures()
 {
 	bool ret = true;
@@ -225,8 +205,6 @@ Item * j1Scene::GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale)
 	case BOX_LARGE_XMAS:	new_item = new Item({ 0, 58, 100, 97 }, ITEM_TYPE::BOX, scale);		break;
 	}
 
-	if (new_item == nullptr)return nullptr;
-
 	new_item->Get_body()->listener = this;
 	Items.add(new_item);
 
@@ -240,21 +218,38 @@ Platform * j1Scene::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uin
 	switch (platform_type)
 	{
 		// Platform Builds --------------------------
-	case BUILD_PLATFORM_TYPE::PLATFORM_BLACK:	new_platform = new Platform(width, PLATFORM_TYPE::BLACK, scale);			break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_BLACK:	new_platform = new Platform(width, PLATFORM_TYPE::BLACK, scale);		break;
 	case BUILD_PLATFORM_TYPE::PLATFORM_BLUE:	new_platform = new Platform(width, PLATFORM_TYPE::BLUE, scale);			break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_GREEN:	new_platform = new Platform(width, PLATFORM_TYPE::GREEN, scale);			break;
+	case BUILD_PLATFORM_TYPE::PLATFORM_GREEN:	new_platform = new Platform(width, PLATFORM_TYPE::GREEN, scale);		break;
 	case BUILD_PLATFORM_TYPE::PLATFORM_ORANGE:	new_platform = new Platform(width, PLATFORM_TYPE::ORANGE, scale);		break;
 	case BUILD_PLATFORM_TYPE::PLATFORM_PURPLE:	new_platform = new Platform(width, PLATFORM_TYPE::PURPLE, scale);		break;
 	case BUILD_PLATFORM_TYPE::PLATFORM_RED:		new_platform = new Platform(width, PLATFORM_TYPE::RED, scale);			break;
 	case BUILD_PLATFORM_TYPE::PLATFORM_YELLOW:	new_platform = new Platform(width, PLATFORM_TYPE::YELLOW, scale);		break;
 	}
 
-	if (new_platform == nullptr)return nullptr;
-	
 	new_platform->Get_Body()->listener = this;
 	Platforms.add(new_platform);
 	
 	return new_platform;
+}
+
+Item * j1Scene::GenerateSceneGoal(uint scale)
+{
+	goal_item = new Item({ 52, 0, 51, 50 }, ITEM_TYPE::GOAL, scale);
+	
+	PhysBody* item_body = goal_item->Get_body();
+	item_body->listener = this;
+	item_body->collide_type = BODY_TYPE::goal_item;
+
+	Items.add(goal_item);
+	
+	return goal_item;
+}
+
+void j1Scene::EndScene()
+{
+	LOG("%s end!", name.GetString());
+	App->scene_manager->ChangeScene(this, App->GetNextScene(this));
 }
 
 void j1Scene::Activate()

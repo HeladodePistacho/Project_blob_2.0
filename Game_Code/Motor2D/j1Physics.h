@@ -31,6 +31,7 @@ enum BODY_TYPE
 	bullet,
 	map,
 	map_item,
+	goal_item,
 	platform_black,
 	platform_blue,
 	platform_green,
@@ -63,6 +64,7 @@ public:
 	bool		Contains(int x, int y) const;
 	int			RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 	bool		IsInStaticContact()const;
+	bool		IsInContact()const;
 	void		HandleContact(PhysBody* contact_body);
 
 public:

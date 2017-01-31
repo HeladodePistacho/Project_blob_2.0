@@ -10,6 +10,7 @@ enum ITEM_TYPE
 {
 	BOX,
 	TABLE,
+	GOAL
 };
 
 class Item

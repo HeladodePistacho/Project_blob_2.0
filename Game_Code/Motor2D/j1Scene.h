@@ -62,25 +62,23 @@ protected:
 	PhysBody*				background_collide_mark = nullptr;
 	//Items ---------------------------
 	p2List<Item*>			Items;
+	Item*					goal_item = nullptr;
 	//Platforms -----------------------
 	p2List<Platform*>		Platforms;
 
 public:
 
 	//Functionality -----------------------------
-	p2List_item<Item*>*			GetFirstItem()const;
-	p2List_item<Platform*>*		GetFirstPlatform()const;
-	SDL_Texture*				GetSpritesheet()const;
-	const SDL_Rect*				GetBackgroundRect()const;
-
 	bool						GeneratePlatformsTextures();
 	void						CleanPlatformsTextures();
 
 	Item*						GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale = 1);
 	Platform*					GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale = 1);
+	Item*						GenerateSceneGoal(uint scale);
 
-	void Activate();
-	void Desactivate();
+	virtual void				EndScene();
+	virtual void				Activate();
+	virtual void				Desactivate();
 
 };
 

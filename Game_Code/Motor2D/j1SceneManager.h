@@ -5,6 +5,7 @@
 #include "j1Timer.h"
 
 #include "SDL\include\SDL_rect.h"
+struct j1Scene;
 
 enum fade_step
 {
@@ -30,6 +31,9 @@ public:
 
 private:
 
+	j1Scene*	in_scene = nullptr;
+	j1Scene*	to_scene = nullptr;
+
 	fade_step	current_step = off;
 	j1Timer		fade_timer;
 	uint32		total_time = 0;
@@ -37,7 +41,7 @@ private:
 public:
 
 	//Functionality -----------------------------
-	bool ChangeScene(int time = 1.0f);
+	bool ChangeScene(j1Scene* in, j1Scene* to, int time = 1);
 	bool IsFading() const;
 
 };

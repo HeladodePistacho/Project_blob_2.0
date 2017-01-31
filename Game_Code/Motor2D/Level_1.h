@@ -21,10 +21,12 @@ public:
 
 private:
 
-	//LEVEL 1 DATA
-	int light_x = 150;
-	int light_y = 0;
-	Animation light_anim;
+	//Light Data -----------------
+	int				light_x = 350;
+	int				light_y = 0;
+	Animation		light_anim;
+	uint			tilt_init_rate = 2500;
+	uint			tilt_length = 450;
 
 public:
 
