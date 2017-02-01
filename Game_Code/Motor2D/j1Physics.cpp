@@ -642,6 +642,13 @@ bool PhysBody::IsInContact()const
 
 void PhysBody::HandleContact(PhysBody* contact_body)
 {
+	//Check if collided body is in the bottom
+	b2Vec2 this_location = this->body->GetWorldPoint(b2Vec2(0, PIXEL_TO_METERS(this->height)));
+	b2Vec2 contact_location = contact_body->body->GetWorldPoint(b2Vec2(0, 0));
+	bool at_bottom = (this_location.y < contact_location.y);
+
+
+
 	b2Vec2 body_vel = body->GetLinearVelocity();
 	switch (contact_body->collide_type)
 	{
@@ -671,7 +678,7 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 		break;
 
 	case platform_green:
-		body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -App->player->GetVerticalAcceleration()));
+		if(at_bottom)body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -App->player->GetVerticalAcceleration()));
 		break;
 
 	case platform_yellow:

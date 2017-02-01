@@ -225,7 +225,7 @@ bool j1App::Start()
 	//Activate the first game scene
 	level_1->Activate();
 	current_scene = level_1;
-
+	App->player->Respawn();
 	return ret;
 }
 

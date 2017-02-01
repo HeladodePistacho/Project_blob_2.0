@@ -418,10 +418,14 @@ void j1Player::Die()
 
 void j1Player::Respawn()
 {
-	LOG("Player Respawned!");
 	alive = true;
 	bullets = 16;
 	CheckLevel();
+	body->body->SetLinearVelocity(b2Vec2(0, 0));
+	int x, y;
+	App->current_scene->GetPlayerSpawn(x, y);
+	body->SetPosition(x, y);
+	LOG("Player Respawned!");
 }
 
 void j1Player::Regenerate()
@@ -447,4 +451,9 @@ void j1Player::Bleed()
 float j1Player::GetVerticalAcceleration() const
 {
 	return vertical_acceleration;
+}
+
+void j1Player::SetPosition(int x, int y)
+{
+	body->SetPosition(x, y);
 }

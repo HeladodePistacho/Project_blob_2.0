@@ -53,6 +53,7 @@ public:
 	//Scene Loop ----------------------
 	virtual bool SceneUpdate();
 	// --------------------------------
+
 protected:
 
 	//Spritesheet ---------------------
@@ -65,10 +66,14 @@ protected:
 	Item*					goal_item = nullptr;
 	//Platforms -----------------------
 	p2List<Platform*>		Platforms;
+	//Player Spawn Coordinates --------
+	int player_x_cord = 0;
+	int player_y_cord = 0;
 
 public:
 
 	//Functionality -----------------------------
+	void						GetPlayerSpawn(int& x, int& y);
 	bool						GeneratePlatformsTextures();
 	void						CleanPlatformsTextures();
 

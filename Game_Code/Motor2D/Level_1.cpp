@@ -49,14 +49,16 @@ bool Level_1::Start()
 	GenerateSceneGoal(1);
 	goal_item->SetPosition(750, 300);
 
+	//Set Player Spawn point
+	player_x_cord = 350;
+	player_y_cord = 300;
+
 	//Test platform --
 	Platform* platform = nullptr;
-	platform = GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_ORANGE, 250, 2);
-	platform->Set_Position(1120, 420);
+
 	platform = GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
 	platform->Set_Position(520, 420);
-	platform = GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
-	platform->Set_Position(520, 100);
+
 
 	return true;
 }

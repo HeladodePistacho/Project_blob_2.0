@@ -122,6 +122,8 @@ public:
 	//Get Methods ---------------------
 	float		GetVerticalAcceleration()const;
 
+	//Set Methods ---------------------
+	void		SetPosition(int x = 0, int y = 0);
 };
 
 #endif // _PLAYER_

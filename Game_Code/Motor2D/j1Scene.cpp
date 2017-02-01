@@ -162,6 +162,12 @@ bool j1Scene::SceneUpdate()
 	return true;
 }
 
+void j1Scene::GetPlayerSpawn(int & x, int & y)
+{
+	x = player_x_cord;
+	y = player_y_cord;
+}
+
 //Functionality ---------------------------------
 bool j1Scene::GeneratePlatformsTextures()
 {
@@ -249,7 +255,8 @@ Item * j1Scene::GenerateSceneGoal(uint scale)
 void j1Scene::EndScene()
 {
 	LOG("%s end!", name.GetString());
-	App->scene_manager->ChangeScene(this, App->GetNextScene(this));
+	App->scene_manager->ChangeScene(this, App->GetNextScene(this),1);
+	App->player->Respawn();
 }
 
 void j1Scene::Activate()
