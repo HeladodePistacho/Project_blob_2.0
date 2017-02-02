@@ -209,6 +209,7 @@ Item * j1Scene::GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale)
 	case BOX_SNES:			new_item = new Item({ 104, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
 	case BOX_NUKE:			new_item = new Item({ 156, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
 	case BOX_LARGE_XMAS:	new_item = new Item({ 0, 58, 100, 97 }, ITEM_TYPE::BOX, scale);		break;
+	case STANDAR_TABLE:		new_item = new Item({0, 158, 300, 170}, ITEM_TYPE::TABLE, scale);	break;
 	}
 
 	new_item->Get_body()->listener = this;
