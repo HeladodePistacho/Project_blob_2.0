@@ -8,6 +8,7 @@ struct PhysBody;
 
 #include "Item.h"
 #include "Platform.h"
+#include "j1Timer.h"
 #include "SDL\include\SDL_rect.h"
 
 enum BUILD_ITEM_TYPE

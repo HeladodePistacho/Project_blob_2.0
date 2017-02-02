@@ -32,7 +32,10 @@ bool Level_1::Start()
 	//Build light animation
 	light_anim.PushBack({ 327,730,328,360 });
 	light_anim.PushBack({ 25,730,175,203 });
-	light_anim.SetSpeed(150);
+	light_anim.PushBack({ 327,730,328,360 });
+	light_anim.PushBack({ 25,730,175,203 });
+	light_anim.SetSpeed(75);
+	light_anim.SetLoop(false);
 
 	//Background mark collide build 
 	int background_points[10] = {
@@ -58,7 +61,7 @@ bool Level_1::Start()
 
 	platform = GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
 	platform->Set_Position(520, 420);
-
+	light_time.Start();
 
 	return true;
 }
@@ -66,5 +69,12 @@ bool Level_1::Start()
 bool Level_1::SceneUpdate()
 {
 	App->render->Blit(spritesheet, light_x, light_y, &light_anim.GetCurrentFrame());
+
+	if (light_time.Read() >= 5000)
+	{
+		light_anim.Reset();
+		light_time.Start();
+	}
+
 	return true;
 }

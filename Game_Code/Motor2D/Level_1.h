@@ -27,6 +27,7 @@ private:
 	Animation		light_anim;
 	uint			tilt_init_rate = 2500;
 	uint			tilt_length = 450;
+	j1Timer			light_time;
 
 public:
 
