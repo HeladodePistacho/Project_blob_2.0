@@ -61,8 +61,14 @@ bool Level_1::Start()
 
 	platform = GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
 	platform->Set_Position(520, 420);
-	light_time.Start();
+	
 
+	Item* element = GenerateSceneItem(BUILD_ITEM_TYPE::STANDAR_TABLE, 2);
+	element->SetPosition(0, 150);
+	element->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+
+
+	light_time.Start();
 	return true;
 }
 
