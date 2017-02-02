@@ -52,7 +52,7 @@ public:
 	//Loop
 	const SDL_Rect& GetCurrentFrame()
 	{
-		if (current_frame == -1)return {0,0,0,0};
+		if (current_frame == -1)return frames[0];
 
 		current_frame = (int)floor(frame_timer.Read() / speed);
 		if (current_frame > frames_num)
