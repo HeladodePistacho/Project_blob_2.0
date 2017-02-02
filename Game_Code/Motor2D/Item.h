@@ -8,9 +8,12 @@ struct PhysBody;
 
 enum ITEM_TYPE
 {
-	BOX,
-	TABLE,
-	GOAL
+	BOX_BOOKS,
+	BOX_XMAS,
+	BOX_SNES,
+	BOX_NUKE,
+	BOX_LARGE_XMAS,
+	STANDAR_TABLE
 };
 
 class Item
@@ -26,15 +29,12 @@ private:
 	SDL_Rect		texture;
 	uint			scale;
 	ITEM_TYPE		item_type;
-	
-	//Build ----------------------
-	PhysBody*		GenerateBodyFromRect();
 
 public:
 
 	//Functionality --------------
 	void			SetPosition(int x, int y);
-	
+	void			SetBody(PhysBody* new_body);
 	void			GetPosition(int& x, int& y)const;
 	float			GetRotation()const;
 	PhysBody*		Get_body() const;

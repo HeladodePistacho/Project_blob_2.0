@@ -49,8 +49,8 @@ bool Level_1::Start()
 	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
 
 	//Scene goal
-	GenerateSceneGoal(1);
-	goal_item->SetPosition(750, 300);
+	/*GenerateSceneGoal(1);
+	goal_item->SetPosition(750, 300);*/
 
 	//Set Player Spawn point
 	player_x_cord = 350;
@@ -59,14 +59,15 @@ bool Level_1::Start()
 	//Test platform --
 	Platform* platform = nullptr;
 
-	platform = GenerateScenePlatfrom(BUILD_PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
+	platform = GenerateScenePlatfrom(PLATFORM_TYPE::PLATFORM_GREEN, 250, 2);
 	platform->Set_Position(520, 420);
 	
 
-	Item* element = GenerateSceneItem(BUILD_ITEM_TYPE::STANDAR_TABLE, 2);
-	element->SetPosition(0, 150);
-	element->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+	Item* element = GenerateSceneItem(ITEM_TYPE::STANDAR_TABLE, 2);
+	element->SetPosition(450, 250);
 
+	Mini_Blob*	blob = GenerateSceneBlob(BLOB_TYPE::BLOB_GREEN, 2);
+	blob->SetPosition(200, 0);
 
 	light_time.Start();
 	return true;
@@ -76,7 +77,7 @@ bool Level_1::SceneUpdate()
 {
 	App->render->Blit(spritesheet, light_x, light_y, &light_anim.GetCurrentFrame());
 
-	if (light_time.Read() >= 5000)
+	if (light_time.Read() >= tilt_rate)
 	{
 		light_anim.Reset();
 		light_time.Start();

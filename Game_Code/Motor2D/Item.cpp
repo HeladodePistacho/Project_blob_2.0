@@ -6,7 +6,6 @@
 //Constructors ----------------------------------
 Item::Item(SDL_Rect new_tex, ITEM_TYPE TYPE, uint scale) : item_type(TYPE), texture(new_tex), scale(scale)
 {
-	GenerateBodyFromRect();
 }
 
 
@@ -16,16 +15,14 @@ Item::~Item()
 	delete body;
 }
 
-
-PhysBody * Item::GenerateBodyFromRect()
-{
-	body = App->physics->CreateRectangle(0, 0, texture.w * scale, texture.h * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item);
-	return body;
-}
-
 void Item::SetPosition(int x, int y)
 {
 	body->SetPosition(x, y);
+}
+
+void Item::SetBody(PhysBody* new_body)
+{
+	body = new_body;
 }
 
 void Item::GetPosition(int& x, int& y) const

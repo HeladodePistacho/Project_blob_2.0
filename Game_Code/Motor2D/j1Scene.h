@@ -10,26 +10,9 @@ struct PhysBody;
 #include "Platform.h"
 #include "j1Timer.h"
 #include "SDL\include\SDL_rect.h"
-
-enum BUILD_ITEM_TYPE
-{
-	BOX_BOOKS,
-	BOX_XMAS,
-	BOX_SNES,
-	BOX_NUKE,
-	BOX_LARGE_XMAS,
-	STANDAR_TABLE
-};
-enum BUILD_PLATFORM_TYPE
-{
-	PLATFORM_BLACK,
-	PLATFORM_BLUE,
-	PLATFORM_GREEN,
-	PLATFORM_YELLOW,
-	PLATFORM_PURPLE,
-	PLATFORM_RED,
-	PLATFORM_ORANGE
-};
+#include "Item.h"
+#include "Platform.h"
+#include "Mini_Blob.h"
 
 class j1Scene : public j1Module
 {
@@ -68,6 +51,8 @@ protected:
 	Item*					goal_item = nullptr;
 	//Platforms -----------------------
 	p2List<Platform*>		Platforms;
+	//Blobs ---------------------------
+	p2List<Mini_Blob*>		Blobs;
 	//Player Spawn Coordinates --------
 	int player_x_cord = 0;
 	int player_y_cord = 0;
@@ -79,9 +64,9 @@ public:
 	bool						GeneratePlatformsTextures();
 	void						CleanPlatformsTextures();
 
-	Item*						GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale = 1);
-	Platform*					GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale = 1);
-	Item*						GenerateSceneGoal(uint scale);
+	Item*						GenerateSceneItem(ITEM_TYPE item_type, uint scale = 1);
+	Platform*					GenerateScenePlatfrom(PLATFORM_TYPE platform_type, uint width, uint scale = 1);
+	Mini_Blob*					GenerateSceneBlob(BLOB_TYPE type, uint scale);
 
 	virtual void				EndScene();
 	virtual void				Activate();

@@ -218,6 +218,7 @@ bool j1App::Start()
 	//Load Spritesheets
 	Platforms_Spritesheet = tex->Load("textures/Platform_textures.png");
 	Items_Spritesheet = tex->Load("textures/Item_sprites.png");
+	WinBlobs_Spritesheet = tex->Load("textures/Win_blobs.png");
 
 	//Desactive gameplay scene manager
 	scene_manager->Desactivate();

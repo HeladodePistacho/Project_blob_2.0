@@ -155,8 +155,9 @@ public:
 	const char*	GetSaveDir()const;
 	const char*	GetLoadDir()const;
 
-	SDL_Texture* Platforms_Spritesheet;
-	SDL_Texture* Items_Spritesheet;
+	SDL_Texture* Platforms_Spritesheet = nullptr;
+	SDL_Texture* Items_Spritesheet = nullptr;
+	SDL_Texture* WinBlobs_Spritesheet = nullptr;
 
 	j1Scene*	GetNextScene(j1Scene* current_scene);
 	j1Scene*	current_scene;

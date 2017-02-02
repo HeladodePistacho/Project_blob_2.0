@@ -25,8 +25,7 @@ private:
 	int				light_x = 350;
 	int				light_y = 0;
 	Animation		light_anim;
-	uint			tilt_init_rate = 2500;
-	uint			tilt_length = 450;
+	uint			tilt_rate = 5000;
 	j1Timer			light_time;
 
 public:

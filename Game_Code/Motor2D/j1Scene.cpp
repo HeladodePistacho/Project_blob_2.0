@@ -1,4 +1,3 @@
-#include "p2Defs.h"
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1Input.h"
@@ -81,6 +80,18 @@ bool j1Scene::Update(float dt)
 		platform = platform->next;
 	}
 
+	//Draw all the target scene blobs
+	p2List_item<Mini_Blob*>* blob = Blobs.start;
+	while (blob)
+	{
+		//Get item position
+		blob->data->GetPosition(x, y);
+		//Blit item texture from spritesheet
+		ret = App->render->Blit(App->WinBlobs_Spritesheet, x , y, &blob->data->GetCurrentAnimRect(), blob->data->GetScale(), 1.0f);
+		//Set next item
+		blob = blob->next;
+	}
+
 	return ret;
 }
 
@@ -110,8 +121,8 @@ bool j1Scene::PostUpdate()
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 	{
-		if(Platforms.start->data->Get_Type() == PLATFORM_TYPE::RED)Platforms.start->data->ChangeType(PLATFORM_TYPE::ORANGE);
-		else Platforms.start->data->ChangeType(PLATFORM_TYPE::RED);
+		if(Platforms.start->data->Get_Type() == PLATFORM_RED)Platforms.start->data->ChangeType(PLATFORM_ORANGE);
+		else Platforms.start->data->ChangeType(PLATFORM_RED);
 	}
 
 	return ret;
@@ -197,41 +208,54 @@ void j1Scene::CleanPlatformsTextures()
 	return;
 }
 
-Item * j1Scene::GenerateSceneItem(BUILD_ITEM_TYPE item_type, uint scale)
+Item * j1Scene::GenerateSceneItem(ITEM_TYPE item_type, uint scale)
 {
 	Item* new_item = nullptr;
+
+	bool body_gen = false;
 
 	switch (item_type)
 	{
 		// Box Builds -------------------------------
-	case BOX_BOOKS:			new_item = new Item({ 0, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
-	case BOX_XMAS:			new_item = new Item({ 52, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
-	case BOX_SNES:			new_item = new Item({ 104, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
-	case BOX_NUKE:			new_item = new Item({ 156, 0, 51, 50 }, ITEM_TYPE::BOX, scale);		break;
-	case BOX_LARGE_XMAS:	new_item = new Item({ 0, 58, 100, 97 }, ITEM_TYPE::BOX, scale);		break;
-	case STANDAR_TABLE:		new_item = new Item({0, 158, 300, 170}, ITEM_TYPE::TABLE, scale);	break;
+	case BOX_BOOKS:			new_item = new Item({ 0, 0, 51, 50 }, item_type, scale);		break;
+	case BOX_XMAS:			new_item = new Item({ 52, 0, 51, 50 }, item_type, scale);		break;
+	case BOX_SNES:			new_item = new Item({ 104, 0, 51, 50 }, item_type, scale);		break;
+	case BOX_NUKE:			new_item = new Item({ 156, 0, 51, 50 }, item_type, scale);		break;
+	case BOX_LARGE_XMAS:	new_item = new Item({ 0, 58, 100, 97 }, item_type, scale);		break;
+	
+	case STANDAR_TABLE:	
+		new_item = new Item({0, 158, 300, 170}, item_type, scale);	
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 300 * scale, 16 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
 	}
 
+	if (!body_gen)
+	{
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, new_item->Get_Texture().w * scale, new_item->Get_Texture().h * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+	}
+	
 	new_item->Get_body()->listener = this;
 	Items.add(new_item);
 
 	return new_item;
 }
 
-Platform * j1Scene::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uint width, uint scale)
+Platform * j1Scene::GenerateScenePlatfrom(PLATFORM_TYPE platform_type, uint width, uint scale)
 {
 	Platform* new_platform = nullptr;
 
 	switch (platform_type)
 	{
 		// Platform Builds --------------------------
-	case BUILD_PLATFORM_TYPE::PLATFORM_BLACK:	new_platform = new Platform(width, PLATFORM_TYPE::BLACK, scale);		break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_BLUE:	new_platform = new Platform(width, PLATFORM_TYPE::BLUE, scale);			break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_GREEN:	new_platform = new Platform(width, PLATFORM_TYPE::GREEN, scale);		break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_ORANGE:	new_platform = new Platform(width, PLATFORM_TYPE::ORANGE, scale);		break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_PURPLE:	new_platform = new Platform(width, PLATFORM_TYPE::PURPLE, scale);		break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_RED:		new_platform = new Platform(width, PLATFORM_TYPE::RED, scale);			break;
-	case BUILD_PLATFORM_TYPE::PLATFORM_YELLOW:	new_platform = new Platform(width, PLATFORM_TYPE::YELLOW, scale);		break;
+	case PLATFORM_TYPE::PLATFORM_BLACK:		new_platform = new Platform(width, platform_type, scale);		break;
+	case PLATFORM_TYPE::PLATFORM_BLUE:		new_platform = new Platform(width, platform_type, scale);			break;
+	case PLATFORM_TYPE::PLATFORM_GREEN:		new_platform = new Platform(width, platform_type, scale);		break;
+	case PLATFORM_TYPE::PLATFORM_ORANGE:	new_platform = new Platform(width, platform_type, scale);		break;
+	case PLATFORM_TYPE::PLATFORM_PURPLE:	new_platform = new Platform(width, platform_type, scale);		break;
+	case PLATFORM_TYPE::PLATFORM_RED:		new_platform = new Platform(width, platform_type, scale);			break;
+	case PLATFORM_TYPE::PLATFORM_YELLOW:	new_platform = new Platform(width, platform_type, scale);		break;
 	}
 
 	new_platform->Get_Body()->listener = this;
@@ -240,17 +264,59 @@ Platform * j1Scene::GenerateScenePlatfrom(BUILD_PLATFORM_TYPE platform_type, uin
 	return new_platform;
 }
 
-Item * j1Scene::GenerateSceneGoal(uint scale)
+Mini_Blob * j1Scene::GenerateSceneBlob(BLOB_TYPE type, uint scale)
 {
-	goal_item = new Item({ 52, 0, 51, 50 }, ITEM_TYPE::GOAL, scale);
-	
-	PhysBody* item_body = goal_item->Get_body();
-	item_body->listener = this;
-	item_body->collide_type = BODY_TYPE::goal_item;
+	Mini_Blob* new_blob = nullptr;
 
-	Items.add(goal_item);
+	new_blob = new Mini_Blob(type, scale);
+
+	Animation* fear = new_blob->GetFearAnim();
+	Animation* happy = new_blob->GetHappyAnim();
 	
-	return goal_item;
+
+	switch (type)
+	{
+	case BLOB_GREEN:
+		fear->PushBack({ 0,4,19,15 });
+		fear->PushBack({ 21,4,17,15 });
+		happy->PushBack({ 40,4,19,16 });
+		happy->PushBack({ 60,4,18,16 });
+		break;
+	case BLOB_YELLOW:
+		fear->PushBack({ 0,31,19,15 });
+		fear->PushBack({ 21,31,17,15 });
+		happy->PushBack({ 40,5,19,15 });
+		happy->PushBack({ 61,4,17,16 });
+		break;
+	case BLOB_RED:
+		fear->PushBack({ 0,57,19,15 });
+		fear->PushBack({ 21,57,17,15 });
+		happy->PushBack({ 40,5,19,15 });
+		happy->PushBack({ 61,4,17,16 });
+		break;
+	case BLOB_ORANGE:
+		fear->PushBack({ 0,83,19,15 });
+		fear->PushBack({ 21,83,17,15 });
+		happy->PushBack({ 40,5,19,15 });
+		happy->PushBack({ 61,4,17,16 });
+		break;
+	case BLOB_BLUE:
+		fear->PushBack({ 0,109,19,15 });
+		fear->PushBack({ 21,109,17,15 });
+		happy->PushBack({ 40,5,19,15 });
+		happy->PushBack({ 61,4,17,16 });
+		break;
+	}
+
+	fear->SetSpeed(350);
+	happy->SetSpeed(350);
+	new_blob->SetHappy();
+
+	new_blob->SetBody(App->physics->CreateRectangle(0, 0, happy->GetFirstFrame().w * scale, happy->GetFirstFrame().h * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+	new_blob->GetBody()->FixedRotation(true);
+	Blobs.add(new_blob);
+	
+	return new_blob;
 }
 
 void j1Scene::EndScene()

@@ -24,13 +24,13 @@ void Platform::GenerateBodyFromWidth(uint width)
 {
 	switch (type)
 	{
-	case BLACK:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_black);		break;
-	case BLUE:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_blue);		break;
-	case GREEN:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_green);		break;
-	case YELLOW:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_yellow);	break;
-	case PURPLE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_purple);	break;
-	case RED:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_red);		break;
-	case ORANGE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_orange);	break;
+	case PLATFORM_BLACK:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_black);		break;
+	case PLATFORM_BLUE:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_blue);		break;
+	case PLATFORM_GREEN:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_green);		break;
+	case PLATFORM_YELLOW:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_yellow);	break;
+	case PLATFORM_PURPLE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_purple);	break;
+	case PLATFORM_RED:		body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_red);		break;
+	case PLATFORM_ORANGE:	body = App->physics->CreateRectangle(0, 0, width * scale, 10 * scale, collision_type::PLATFORM, BODY_TYPE::platform_orange);	break;
 	}
 	body->body->SetType(b2BodyType::b2_staticBody);
 }
@@ -58,7 +58,7 @@ SDL_Texture* Platform::GenerateTexture(PLATFORM_TYPE texture_type)
 	//Set textures rect checking the platform type
 	uint y_delta_between_color = 38;
 	uint y_delta = 0;
-	if (texture_type == BLACK)
+	if (texture_type == PLATFORM_BLACK)
 	{
 		right_texture = { 146,1,9,11 };
 		left_texture = { 158,1,9,11 };
@@ -231,13 +231,13 @@ void Platform::BodyType_from_PlatformType(PLATFORM_TYPE type, BODY_TYPE & type_t
 {
 	switch (type)
 	{
-	case BLACK:		type_to_fit = BODY_TYPE::platform_black;	break;
-	case BLUE:		type_to_fit = BODY_TYPE::platform_blue;		break;
-	case GREEN:		type_to_fit = BODY_TYPE::platform_green;	break;
-	case YELLOW:	type_to_fit = BODY_TYPE::platform_yellow;	break;
-	case PURPLE:	type_to_fit = BODY_TYPE::platform_purple;	break;
-	case RED:		type_to_fit = BODY_TYPE::platform_red;		break;
-	case ORANGE:	type_to_fit = BODY_TYPE::platform_orange;	break;
+	case PLATFORM_BLACK:	type_to_fit = BODY_TYPE::platform_black;	break;
+	case PLATFORM_BLUE:		type_to_fit = BODY_TYPE::platform_blue;		break;
+	case PLATFORM_GREEN:	type_to_fit = BODY_TYPE::platform_green;	break;
+	case PLATFORM_YELLOW:	type_to_fit = BODY_TYPE::platform_yellow;	break;
+	case PLATFORM_PURPLE:	type_to_fit = BODY_TYPE::platform_purple;	break;
+	case PLATFORM_RED:		type_to_fit = BODY_TYPE::platform_red;		break;
+	case PLATFORM_ORANGE:	type_to_fit = BODY_TYPE::platform_orange;	break;
 	}
 }
 
