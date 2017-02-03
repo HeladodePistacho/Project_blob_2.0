@@ -32,7 +32,7 @@ bool j1Scene::Update(float dt)
 {
 	bool ret = true;
 	int x = 0, y = 0;
-
+	int scale = 0;
 	//Draw target scene background
 	App->render->Blit(spritesheet, 0, 0, &background_rect);
 
@@ -42,10 +42,12 @@ bool j1Scene::Update(float dt)
 	p2List_item<Item*>* item = Items.start;
 	while (item)
 	{
-		//Get item position
+		//Get item position & scale
 		item->data->GetPosition(x, y);
+		scale = item->data->Get_Scale();
+
 		//Blit item texture from spritesheet
-		ret = App->render->Blit(App->Items_Spritesheet, x, y, &item->data->Get_Texture(), item->data->Get_Scale(), 1.0f, item->data->GetRotation());
+		ret = App->render->Blit(App->Items_Spritesheet, x + (item->data->GetTex_X_margin() * scale), y + (item->data->GetTex_Y_margin() * scale), &item->data->Get_Texture(), scale, 1.0f, item->data->GetRotation());
 		//Set next item
 		item = item->next;
 	}
@@ -216,27 +218,89 @@ Item * j1Scene::GenerateSceneItem(ITEM_TYPE item_type, uint scale)
 
 	switch (item_type)
 	{
-		// Box Builds -------------------------------
+	// Box Builds -------------------------------
 	case BOX_BOOKS:			new_item = new Item({ 0, 0, 51, 50 }, item_type, scale);		break;
 	case BOX_XMAS:			new_item = new Item({ 52, 0, 51, 50 }, item_type, scale);		break;
 	case BOX_SNES:			new_item = new Item({ 104, 0, 51, 50 }, item_type, scale);		break;
 	case BOX_NUKE:			new_item = new Item({ 156, 0, 51, 50 }, item_type, scale);		break;
 	case BOX_LARGE_XMAS:	new_item = new Item({ 0, 58, 100, 97 }, item_type, scale);		break;
-	
-	case STANDAR_TABLE:	
-		new_item = new Item({0, 158, 300, 170}, item_type, scale);	
+	// Tables Builds ----------------------------
+	case TABLE_STANDAR:
+		new_item = new Item({ 0, 158, 300, 170 }, item_type, scale);
 		new_item->SetBody(App->physics->CreateRectangle(0, 0, 300 * scale, 16 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
 		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
 		body_gen = true;
 		break;
+	case TABLE_SHORT:
+		new_item = new Item({ 15,336,272,48 }, item_type, scale);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 272 * scale, 10 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	// Drawers Builds ---------------------------
+	case DRAWER_LEFT:
+		new_item = new Item({ 209,68,78,80 }, item_type, scale);
+		new_item->SetTextMargins(-8, 0);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 7 * scale, 80 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	case DRAWER_LEFT_SEG:
+		new_item = new Item({ 312,199,54,80 }, item_type, scale);
+		new_item->SetTextMargins(-9, 0);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 7 * scale, 80 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	case DRAWER_RIGHT_SEG:
+		new_item = new Item({ 366,199,102,80 }, item_type, scale);
+		new_item->SetTextMargins(-87, 0);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 7 * scale, 80 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	case DRAWER_CENTER:
+		new_item = new Item({ 305,129,177,64 }, item_type, scale);
+		new_item->SetTextMargins(0, -8);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 177 * scale, 9 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	case DRAWER_SHORT_CLOSE:
+		new_item = new Item({ 290,68,99,49 }, item_type, scale);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 99 * scale, 34 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	case DRAWER_LARGE_CLOSE:
+		new_item = new Item({ 391,68,150,49 }, item_type, scale);
+		new_item->SetBody(App->physics->CreateRectangle(0, 0, 150 * scale, 34 * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+		new_item->Get_body()->body->SetType(b2BodyType::b2_staticBody);
+		body_gen = true;
+		break;
+	//Other items -------------------------------
+	case CHAIR:
+		break;
+	case CAMPFIRE:
+		break;
+	case TUPPER:
+		break;
+	case BLUE_TANK_PERFIL:
+		break;
+	case BLUE_TANK_FRONT:
+		break;
+	case BALANCE:
+		break;
+	default:
+		break;
 	}
-
 	if (!body_gen)
 	{
 		new_item->SetBody(App->physics->CreateRectangle(0, 0, new_item->Get_Texture().w * scale, new_item->Get_Texture().h * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
 	}
 	
 	new_item->Get_body()->listener = this;
+	new_item->Get_body()->body->SetUserData(new_item->Get_body());
 	Items.add(new_item);
 
 	return new_item;
@@ -310,13 +374,27 @@ Mini_Blob * j1Scene::GenerateSceneBlob(BLOB_TYPE type, uint scale)
 
 	fear->SetSpeed(350);
 	happy->SetSpeed(350);
-	new_blob->SetHappy();
+	new_blob->SetFear();
 
-	new_blob->SetBody(App->physics->CreateRectangle(0, 0, happy->GetFirstFrame().w * scale, happy->GetFirstFrame().h * scale, collision_type::MAP_ITEM, BODY_TYPE::map_item));
+	new_blob->SetBody(App->physics->CreateRectangle(0, 0, happy->GetFirstFrame().w * scale, happy->GetFirstFrame().h * scale, collision_type::MAP_ITEM, BODY_TYPE::mini_blob));
 	new_blob->GetBody()->FixedRotation(true);
 	Blobs.add(new_blob);
 	
 	return new_blob;
+}
+
+Mini_Blob * j1Scene::FindBlob(PhysBody * contact_body) const
+{
+	p2List_item<Mini_Blob*>* blob = Blobs.start;
+	while (blob)
+	{
+		if (blob->data->GetBody() == contact_body)
+		{
+			return blob->data;
+		}
+		blob = blob->next;
+	}
+	return nullptr;
 }
 
 void j1Scene::EndScene()

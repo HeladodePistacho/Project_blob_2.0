@@ -25,6 +25,22 @@ void Item::SetBody(PhysBody* new_body)
 	body = new_body;
 }
 
+void Item::SetTextMargins(int x, int y)
+{
+	tex_x_margin = x;
+	tex_y_margin = y;
+}
+
+int Item::GetTex_X_margin() const
+{
+	return tex_x_margin;
+}
+
+int Item::GetTex_Y_margin() const
+{
+	return tex_y_margin;
+}
+
 void Item::GetPosition(int& x, int& y) const
 {
 	body->GetPosition(x, y);

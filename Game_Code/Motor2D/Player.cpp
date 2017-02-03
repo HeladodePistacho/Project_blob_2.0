@@ -149,25 +149,8 @@ bool j1Player::Update(float dt)
 	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation
-		bool body_contact = body->IsInContact();
-		if (!body_contact)
-		{
-			in_air = true;
-		}
-		if (in_air && body_contact)
-		{
-			if (current_animation != &jump_end)
-			{
-				jump_end.Reset();
-				current_animation = &jump_end;
-			}
-			else if (current_animation->IsEnd())
-			{
-				in_air = false;
-				HandleVelocity();
-			}
-		}
-		else if (!HandleInput()) HandleVelocity();
+		if (!body->IsInContact())in_air = true;
+		if (current_animation->IsEnd() && !HandleInput()) HandleVelocity();
 	}
 	else if (current_animation->IsEnd())Respawn();
 	// ----------------------------------------------------
@@ -446,6 +429,15 @@ void j1Player::Bleed()
 		CheckLevel();
 		bleed_timer.Start();
 	}
+}
+
+void j1Player::Impact()
+{
+	if (!in_air)return;
+
+	current_animation = &jump_end;
+	current_animation->Reset();
+	in_air = false;
 }
 
 float j1Player::GetVerticalAcceleration() const

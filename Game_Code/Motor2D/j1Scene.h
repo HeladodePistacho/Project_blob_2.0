@@ -61,12 +61,15 @@ public:
 
 	//Functionality -----------------------------
 	void						GetPlayerSpawn(int& x, int& y);
+	
 	bool						GeneratePlatformsTextures();
 	void						CleanPlatformsTextures();
 
 	Item*						GenerateSceneItem(ITEM_TYPE item_type, uint scale = 1);
 	Platform*					GenerateScenePlatfrom(PLATFORM_TYPE platform_type, uint width, uint scale = 1);
 	Mini_Blob*					GenerateSceneBlob(BLOB_TYPE type, uint scale);
+
+	Mini_Blob*					FindBlob(PhysBody* contact_body)const;
 
 	virtual void				EndScene();
 	virtual void				Activate();

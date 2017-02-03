@@ -63,11 +63,9 @@ bool Level_1::Start()
 	platform->Set_Position(520, 420);
 	
 
-	Item* element = GenerateSceneItem(ITEM_TYPE::STANDAR_TABLE, 2);
-	element->SetPosition(450, 250);
+	Item* element = GenerateSceneItem(ITEM_TYPE::DRAWER_LARGE_CLOSE, 2);
+	element->SetPosition(750, 450);
 
-	Mini_Blob*	blob = GenerateSceneBlob(BLOB_TYPE::BLOB_GREEN, 2);
-	blob->SetPosition(200, 0);
 
 	light_time.Start();
 	return true;

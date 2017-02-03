@@ -118,6 +118,7 @@ public:
 	void		Respawn();
 	void		Regenerate();
 	void		Bleed();
+	void		Impact();
 
 	//Get Methods ---------------------
 	float		GetVerticalAcceleration()const;

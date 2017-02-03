@@ -8,12 +8,30 @@ struct PhysBody;
 
 enum ITEM_TYPE
 {
+	//Boxes
 	BOX_BOOKS,
 	BOX_XMAS,
 	BOX_SNES,
 	BOX_NUKE,
 	BOX_LARGE_XMAS,
-	STANDAR_TABLE
+	//Tables
+	TABLE_STANDAR,
+	TABLE_SHORT,
+	//Drawers
+	DRAWER_LEFT,
+	DRAWER_LEFT_SEG,
+	DRAWER_RIGHT_SEG,
+	DRAWER_CENTER,
+	DRAWER_SHORT_CLOSE,
+	DRAWER_LARGE_CLOSE,
+	//Other items
+	CHAIR,
+	CAMPFIRE,
+	TUPPER,
+	BLUE_TANK_PERFIL,
+	BLUE_TANK_FRONT,
+	BALANCE,
+	
 };
 
 class Item
@@ -27,6 +45,8 @@ private:
 
 	PhysBody*		body;
 	SDL_Rect		texture;
+	int				tex_x_margin = 0;
+	int				tex_y_margin = 0;
 	uint			scale;
 	ITEM_TYPE		item_type;
 
@@ -35,6 +55,10 @@ public:
 	//Functionality --------------
 	void			SetPosition(int x, int y);
 	void			SetBody(PhysBody* new_body);
+	void			SetTextMargins(int x, int y);
+
+	int				GetTex_X_margin()const;
+	int				GetTex_Y_margin()const;
 	void			GetPosition(int& x, int& y)const;
 	float			GetRotation()const;
 	PhysBody*		Get_body() const;

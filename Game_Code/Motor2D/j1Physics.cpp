@@ -619,22 +619,6 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	return ret;
 }
 
-bool PhysBody::IsInStaticContact() const
-{
-	b2ContactEdge* edge = body->GetContactList();
-	while (edge)
-	{
-		if ( edge->contact->GetFixtureA()->GetBody()->GetType() == b2_staticBody &&
-			((PhysBody*)edge->contact->GetFixtureA()->GetBody()->GetUserData())->collide_type != platform_green)
-		{
-			return true;
-			break;
-		}
-		edge = edge->next;
-	}
-	return false;
-}
-
 bool PhysBody::IsInContact()const
 {
 	return  (body->GetContactList() != nullptr);
@@ -653,10 +637,25 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 	switch (contact_body->collide_type)
 	{
 	case none:		return;		break;
-
-	case goal_item:
+	
+	case map:
 		if (collide_type == player)
 		{
+			App->player->Impact();
+		}
+		break;
+	
+	case map_item:
+		if (collide_type == player && at_bottom)
+		{
+			App->player->Impact();
+		}
+		break;
+
+	case mini_blob:
+		if (collide_type == player)
+		{
+			App->current_scene->FindBlob(contact_body)->SetHappy();
 			App->current_scene->EndScene();
 		}
 		break;
@@ -664,11 +663,10 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 	case player_mouth:
 		if (collide_type == bullet)
 		{
-			Bullet* collided_bullet = App->player->FindBullet(((PhysBody*)body->GetUserData()));
-			App->player->PickBullet(collided_bullet);
+			App->player->PickBullet(App->player->FindBullet(((PhysBody*)body->GetUserData())));
 		}
 	case platform_black:
-		if (collide_type == player)
+		if (collide_type == player && at_bottom)
 		{
 			App->player->Die();
 		}
@@ -678,33 +676,42 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 		break;
 
 	case platform_green:
-		if(at_bottom)body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -App->player->GetVerticalAcceleration()));
+		if (at_bottom)
+		{
+			body->SetLinearVelocity(b2Vec2(body->GetLinearVelocity().x, -App->player->GetVerticalAcceleration()));
+		}
 		break;
 
 	case platform_yellow:
-		body_vel *= 1.05f;
-		body->SetLinearVelocity(body_vel);
+		if (at_bottom)
+		{
+			body_vel *= 1.05f;
+			body->SetLinearVelocity(body_vel);
+		}
 		break;
 
 	case platform_purple:
-		if (collide_type == player)
+		if (collide_type == player && at_bottom)
 		{
+			App->player->Impact();
 			App->player->Regenerate();
 		}
 		break;
 
 	case platform_red:
-		if (collide_type == player)
+		if (collide_type == player && at_bottom)
 		{
+			App->player->Impact();
 			App->player->Bleed();
 		}
 		break;
 
 	case platform_orange:
-		if (body_vel.y < 0)
+		if (body_vel.y < 0 && at_bottom)
 		{
 			body_vel.y *= 0;
 			body->SetLinearVelocity(body_vel);
+			App->player->Impact();
 		}
 		break;
 	}

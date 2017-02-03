@@ -46,7 +46,7 @@ public:
 	//Get functions
 	bool IsEnd()const
 	{
-		return (current_frame == -1);
+		return (current_frame == -1 || loop == true);
 	}
 
 	//Loop
