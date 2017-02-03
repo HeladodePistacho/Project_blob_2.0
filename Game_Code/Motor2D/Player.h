@@ -8,7 +8,9 @@
 
 struct PhysBody;
 struct SDL_Texture;
+struct j1Scene;
 enum BODY_TYPE;
+enum BLOB_TYPE;
 
 ///Player Bullet class ---------------------------
 class Bullet
@@ -49,14 +51,14 @@ public:
 
 	bool Update(float dt);
 
-	bool Load(pugi::xml_node&);
+	bool Load(pugi::xml_node& load_node);
 
-	bool Save(pugi::xml_node&)const;
+	bool Save(pugi::xml_node& save_node)const;
 
 	bool CleanUp();
 
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
-
+	
 private:
 
 	//Player State ------------------------------
@@ -98,6 +100,10 @@ private:
 	Animation			dodge;
 	Animation			die;
 
+	//Player Game Progress ----------------------
+	p2DynArray<p2SString>	completed_names;
+	p2DynArray<BLOB_TYPE>	completed_blobs;
+
 public:
 
 	//Bullets Functionality -----------
@@ -108,6 +114,7 @@ public:
 
 	//Level Functionality -------------
 	bool		CheckLevel();
+	void		AddSceneCompleted(j1Scene* completed_scene);
 
 	//Handle Data Functionality -------
 	bool		HandleInput();

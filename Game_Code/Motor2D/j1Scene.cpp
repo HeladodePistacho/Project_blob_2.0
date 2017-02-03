@@ -82,17 +82,14 @@ bool j1Scene::Update(float dt)
 		platform = platform->next;
 	}
 
-	//Draw all the target scene blobs
-	p2List_item<Mini_Blob*>* blob = Blobs.start;
-	while (blob)
-	{
-		//Get item position
-		blob->data->GetPosition(x, y);
-		//Blit item texture from spritesheet
-		ret = App->render->Blit(App->WinBlobs_Spritesheet, x , y, &blob->data->GetCurrentAnimRect(), blob->data->GetScale(), 1.0f);
-		//Set next item
-		blob = blob->next;
-	}
+
+	if (goal_blob == nullptr)return ret;
+
+	//Draw target scene blob
+	//Get position
+	goal_blob->GetPosition(x, y);
+	//Blit item texture from spritesheet
+	ret = App->render->Blit(App->WinBlobs_Spritesheet, x , y, &goal_blob->GetCurrentAnimRect(), goal_blob->GetScale(), 1.0f);
 
 	return ret;
 }
@@ -179,6 +176,11 @@ void j1Scene::GetPlayerSpawn(int & x, int & y)
 {
 	x = player_x_cord;
 	y = player_y_cord;
+}
+
+Mini_Blob * j1Scene::GetBlob() const
+{
+	return goal_blob;
 }
 
 //Functionality ---------------------------------
@@ -341,34 +343,34 @@ Mini_Blob * j1Scene::GenerateSceneBlob(BLOB_TYPE type, uint scale)
 	switch (type)
 	{
 	case BLOB_GREEN:
-		fear->PushBack({ 0,4,19,15 });
-		fear->PushBack({ 21,4,17,15 });
+		fear->PushBack({ 0,4,19,16 });
+		fear->PushBack({ 21,4,17,16 });
 		happy->PushBack({ 40,4,19,16 });
 		happy->PushBack({ 60,4,18,16 });
 		break;
 	case BLOB_YELLOW:
-		fear->PushBack({ 0,31,19,15 });
-		fear->PushBack({ 21,31,17,15 });
-		happy->PushBack({ 40,5,19,15 });
-		happy->PushBack({ 61,4,17,16 });
+		fear->PushBack({ 0,25,19,16 });
+		fear->PushBack({ 21,25,17,16 });
+		happy->PushBack({ 40,25,19,16 });
+		happy->PushBack({ 60,25,18,16 });
 		break;
 	case BLOB_RED:
-		fear->PushBack({ 0,57,19,15 });
-		fear->PushBack({ 21,57,17,15 });
-		happy->PushBack({ 40,5,19,15 });
-		happy->PushBack({ 61,4,17,16 });
+		fear->PushBack({ 0,46,19,16 });
+		fear->PushBack({ 21,46,17,16 });
+		happy->PushBack({ 40,46,19,16 });
+		happy->PushBack({ 60,46,18,16 });
 		break;
 	case BLOB_ORANGE:
-		fear->PushBack({ 0,83,19,15 });
-		fear->PushBack({ 21,83,17,15 });
-		happy->PushBack({ 40,5,19,15 });
-		happy->PushBack({ 61,4,17,16 });
+		fear->PushBack({ 0,67,19,16 });
+		fear->PushBack({ 21,67,17,16 });
+		happy->PushBack({ 40,67,19,16 });
+		happy->PushBack({ 60,67,18,16 });
 		break;
 	case BLOB_BLUE:
-		fear->PushBack({ 0,109,19,15 });
-		fear->PushBack({ 21,109,17,15 });
-		happy->PushBack({ 40,5,19,15 });
-		happy->PushBack({ 61,4,17,16 });
+		fear->PushBack({ 0,88,19,16 });
+		fear->PushBack({ 21,88,17,16 });
+		happy->PushBack({ 40,88,19,16 });
+		happy->PushBack({ 60,88,18,16 });
 		break;
 	}
 
@@ -378,23 +380,11 @@ Mini_Blob * j1Scene::GenerateSceneBlob(BLOB_TYPE type, uint scale)
 
 	new_blob->SetBody(App->physics->CreateRectangle(0, 0, happy->GetFirstFrame().w * scale, happy->GetFirstFrame().h * scale, collision_type::MAP_ITEM, BODY_TYPE::mini_blob));
 	new_blob->GetBody()->FixedRotation(true);
-	Blobs.add(new_blob);
+
+	if (goal_blob != nullptr)delete goal_blob;
+	goal_blob = new_blob;
 	
 	return new_blob;
-}
-
-Mini_Blob * j1Scene::FindBlob(PhysBody * contact_body) const
-{
-	p2List_item<Mini_Blob*>* blob = Blobs.start;
-	while (blob)
-	{
-		if (blob->data->GetBody() == contact_body)
-		{
-			return blob->data;
-		}
-		blob = blob->next;
-	}
-	return nullptr;
 }
 
 void j1Scene::EndScene()

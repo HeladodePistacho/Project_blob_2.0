@@ -48,6 +48,11 @@ uint Mini_Blob::GetScale() const
 	return scale;
 }
 
+BLOB_TYPE Mini_Blob::GetType() const
+{
+	return type;
+}
+
 Animation * Mini_Blob::GetHappyAnim() 
 {
 	return &happy_anim;
@@ -61,4 +66,9 @@ Animation * Mini_Blob::GetFearAnim()
 SDL_Rect Mini_Blob::GetCurrentAnimRect()
 {
 	return current_animation->GetCurrentFrame();
+}
+
+bool Mini_Blob::IsHappy() const
+{
+	return (current_animation == &happy_anim);
 }

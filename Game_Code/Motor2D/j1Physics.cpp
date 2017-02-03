@@ -655,7 +655,7 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 	case mini_blob:
 		if (collide_type == player)
 		{
-			App->current_scene->FindBlob(contact_body)->SetHappy();
+			App->current_scene->GetBlob()->SetHappy();
 			App->current_scene->EndScene();
 		}
 		break;

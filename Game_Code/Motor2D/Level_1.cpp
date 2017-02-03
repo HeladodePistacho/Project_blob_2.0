@@ -48,10 +48,6 @@ bool Level_1::Start()
 
 	background_collide_mark = App->physics->CreateChain(0, 12, background_points, 10, collision_type::MAP, BODY_TYPE::map);
 
-	//Scene goal
-	/*GenerateSceneGoal(1);
-	goal_item->SetPosition(750, 300);*/
-
 	//Set Player Spawn point
 	player_x_cord = 350;
 	player_y_cord = 300;
@@ -66,6 +62,8 @@ bool Level_1::Start()
 	Item* element = GenerateSceneItem(ITEM_TYPE::DRAWER_LARGE_CLOSE, 2);
 	element->SetPosition(750, 450);
 
+	Mini_Blob* blob = GenerateSceneBlob(BLOB_TYPE::BLOB_BLUE, 2);
+	blob->SetPosition(450, 300);
 
 	light_time.Start();
 	return true;

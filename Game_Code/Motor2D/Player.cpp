@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Player.h"
 
 #include "p2Log.h"
@@ -8,6 +9,7 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Input.h"
+#include "j1Scene.h"
 
 ///BULLET CLASS ----------------------------------
 //Constructor
@@ -185,15 +187,45 @@ bool j1Player::Update(float dt)
 	return true;
 }
 
-bool j1Player::Load(pugi::xml_node &load_node)
+bool j1Player::Load(pugi::xml_node& load_node)
 {
+	//Focus Completed scenes name node
+	pugi::xml_node name_node = load_node.child("scene_name").first_child();
+	//Focus Completed scenes blob node
+	pugi::xml_node blob_node = load_node.child("scene_blobs").first_child();
 
+	while (name_node && blob_node)
+	{
+		//Add names to player 
+		completed_names.PushBack(p2SString(name_node.value()));
+		//Add blobs to player
+		const char* temp = blob_node.value();
+		completed_blobs.PushBack((BLOB_TYPE)atoi(temp));
+
+		name_node = name_node.next_sibling();
+		blob_node = blob_node.next_sibling();
+	}
 	return true;
 }
 
-bool j1Player::Save(pugi::xml_node &save_node)const
+bool j1Player::Save(pugi::xml_node& save_node)const
 {
+	//Append child to save completed scenes names
+	pugi::xml_node names_node = save_node.append_child("scene_names");
+	//Append child to save completed scenes blobs
+	pugi::xml_node blobs_node = save_node.append_child("scene_blobs");
 
+	uint scenes_num = completed_names.Count();
+	for (uint k = 0; k < scenes_num; k++)
+	{
+		//Append Scene names
+		names_node.append_child("name").append_attribute(completed_names[k].GetString()).as_string();
+		//Append Scene blobs type
+		char* buffer = new char[2];
+		_itoa(completed_blobs[k], buffer, 2);
+		blobs_node.append_child("blob").append_attribute(buffer);
+		delete buffer;
+	}
 	return true;
 }
 
@@ -335,6 +367,12 @@ bool j1Player::CheckLevel()
 	level = current_level;
 
 	return false;
+}
+
+void j1Player::AddSceneCompleted(j1Scene * completed_scene)
+{
+	completed_names.PushBack(completed_scene->name);
+	completed_blobs.PushBack(completed_scene->GetBlob()->GetType());
 }
 
 bool j1Player::HandleInput()

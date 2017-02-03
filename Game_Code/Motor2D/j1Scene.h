@@ -52,7 +52,7 @@ protected:
 	//Platforms -----------------------
 	p2List<Platform*>		Platforms;
 	//Blobs ---------------------------
-	p2List<Mini_Blob*>		Blobs;
+	Mini_Blob*				goal_blob;
 	//Player Spawn Coordinates --------
 	int player_x_cord = 0;
 	int player_y_cord = 0;
@@ -61,15 +61,14 @@ public:
 
 	//Functionality -----------------------------
 	void						GetPlayerSpawn(int& x, int& y);
-	
+	Mini_Blob*					GetBlob()const;
+
 	bool						GeneratePlatformsTextures();
 	void						CleanPlatformsTextures();
 
 	Item*						GenerateSceneItem(ITEM_TYPE item_type, uint scale = 1);
 	Platform*					GenerateScenePlatfrom(PLATFORM_TYPE platform_type, uint width, uint scale = 1);
 	Mini_Blob*					GenerateSceneBlob(BLOB_TYPE type, uint scale);
-
-	Mini_Blob*					FindBlob(PhysBody* contact_body)const;
 
 	virtual void				EndScene();
 	virtual void				Activate();
