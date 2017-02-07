@@ -102,7 +102,7 @@ private:
 
 	//Player Game Progress ----------------------
 	p2DynArray<p2SString*>	completed_names;
-	p2DynArray<BLOB_TYPE*>	completed_blobs;
+	p2DynArray<SDL_Rect*>	completed_blobs;
 
 public:
 

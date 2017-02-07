@@ -656,6 +656,7 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 		if (collide_type == player)
 		{
 			((j1Scene*)App->current_scene)->GetBlob()->SetHappy();
+			App->player->AddSceneCompleted((j1Scene*)App->current_scene);
 			((j1Scene*)App->current_scene)->EndScene();
 		}
 		break;

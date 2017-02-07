@@ -207,17 +207,11 @@ bool j1App::Start()
 
 	//Add Console Commands
 	console->AddCommand("quit", nullptr);
-	console->AddCommand("save", nullptr);
-	console->AddCommand("load", nullptr);
-
-	//Add Console Cvars
-	save_dir = App->console->AddCvar("save_dir", "Directory where game data is saved", "game_save.xml", C_VAR_TYPE::CHAR_VAR, nullptr, false);
-	load_dir = App->console->AddCvar("load_dir", "Directory where app load data", "game_save.xml", C_VAR_TYPE::CHAR_VAR, nullptr, false);
-	load_game = *load_dir->GetValueString();
-	save_game = *save_dir->GetValueString();
 
 	//Load game state data
-	LoadGame(load_game.GetString());
+	game_save_dir = "game_save.xml";
+
+	LoadGame(game_save_dir.GetString());
 
 	//Load Spritesheets
 	Platforms_Spritesheet = tex->Load("textures/Platform_textures.png");
@@ -392,20 +386,6 @@ bool j1App::CleanUp()
 		item = item->prev;
 	}
 
-	p2List_item<p2SString*>* str_item = saved_games.end;
-	p2List_item<p2SString*>* item_prev = nullptr;
-
-	if (str_item != nullptr)item_prev = str_item->prev;
-	while (str_item) {
-
-		//Delete all item data
-		saved_games.del(str_item);
-
-		str_item = item_prev;
-		if (item_prev != nullptr)item_prev = item_prev->prev;
-
-	}
-
 	PERF_PEEK(ptimer);
 	return ret;
 }
@@ -447,34 +427,18 @@ const char* j1App::GetOrganization() const
 void j1App::LoadGame(const char* file)
 {
 	want_to_load = true;
-	load_game.create("%s%s", fs->GetSaveDirectory(), file);
+	game_save_dir.create("%s%s", fs->GetSaveDirectory(), file);
 }
 
 // ---------------------------------------
 void j1App::SaveGame(const char* file) const
 {
-	p2List_item<p2SString*>* saved_game = saved_games.start;
-	bool exist = false;
-	while (saved_game != NULL)
-	{
-		if (*saved_game->data == file)exist = true;
-		saved_game = saved_game->next;
-	}
-	if (!exist)
-	{
-		p2SString* new_file_str = new p2SString(file);
-		saved_games.add(new_file_str);
-	}
 
 	want_to_save = true;
-	save_game.create(file);
+	game_save_dir.create(file);
 }
 
 // ---------------------------------------
-void j1App::GetSaveGames(p2List<p2SString*>& list_to_fill) const
-{
-	list_to_fill = saved_games;
-}
 
 bool j1App::IsXMLdir(const char * dir) const
 {
@@ -506,7 +470,7 @@ bool j1App::LoadGameNow()
 	bool ret = false;
 
 	char* buffer;
-	uint size = fs->Load(load_game.GetString(), &buffer);
+	uint size = fs->Load(game_save_dir.GetString(), &buffer);
 
 	if(size > 0)
 	{
@@ -518,7 +482,7 @@ bool j1App::LoadGameNow()
 
 		if(result != NULL)
 		{
-			LOG("Loading new Game State from %s...", load_game.GetString());
+			LOG("Loading new Game State from %s...", game_save_dir.GetString());
 
 			root = data.child("game_state");
 
@@ -538,10 +502,10 @@ bool j1App::LoadGameNow()
 				LOG("...loading process interrupted with error on module %s", (item != NULL) ? item->data->name.GetString() : "unknown");
 		}
 		else
-			LOG("Could not parse game state xml file %s. pugi error: %s", load_game.GetString(), result.description());
+			LOG("Could not parse game state xml file %s. pugi error: %s", game_save_dir.GetString(), result.description());
 	}
 	else
-		LOG("Could not load game state xml file %s", load_game.GetString());
+		LOG("Could not load game state xml file %s", game_save_dir.GetString());
 
 	want_to_load = false;
 	return ret;
@@ -551,7 +515,7 @@ bool j1App::SavegameNow() const
 {
 	bool ret = true;
 
-	LOG("Saving Game State to %s...", save_game.GetString());
+	LOG("Saving Game State to %s...", game_save_dir.GetString());
 
 	// xml object were we will store all data
 	pugi::xml_document data;
@@ -573,7 +537,7 @@ bool j1App::SavegameNow() const
 		data.save(stream);
 
 		// we are done, so write data to disk
-		fs->Save(save_game.GetString(), stream.str().c_str(), stream.str().length());
+		fs->Save(game_save_dir.GetString(), stream.str().c_str(), stream.str().length());
 		LOG("... finished saving");
 	}
 	else
@@ -616,15 +580,6 @@ void j1App::Console_Command_Input(Command * command, Cvar * cvar, p2SString * in
 	{
 		SetQuit();
 	}
-	else if (*command->GetCommandStr() == "save")
-	{
-		SaveGame(save_dir->GetValueString()->GetString());
-		
-	}
-	else if (*command->GetCommandStr() == "load")
-	{
-		LoadGame(load_dir->GetValueString()->GetString());
-	}
 }
 
 void j1App::Console_Cvar_Input(Cvar * cvar, Command* command_type, p2SString * input)
@@ -645,34 +600,6 @@ void j1App::Console_Cvar_Input(Cvar * cvar, Command* command_type, p2SString * i
 			capped_ms = 1000 / cvar->GetValueAsNum();
 
 		}
-		//Save_dir cvar
-		else if (*cvar->GetCvarName() == "save_dir")
-		{
-			if (strlen(input->GetString()) > 5 && IsXMLdir(input->GetString()))
-			{
-				//Set new save directory
-				App->save_game.create(input->GetString());
-				
-				//Set cvar value
-				cvar->SetValue(input->GetString());
-			}
-			else App->console->GenerateConsoleLabel("Invalid Save Directory: %s", input->GetString(),cvar->GetCvarName()->GetString());
-
-		}
-
-		else if (*cvar->GetCvarName() == "load_dir")
-		{
-			if (strlen(input->GetString()) > 5 && IsXMLdir(input->GetString()))
-			{
-				//Set new save directory
-				App->load_game.create(input->GetString());
-
-				//Set cvar value
-				cvar->SetValue(input->GetString());
-			}
-			else App->console->GenerateConsoleLabel("Invalid Load Directory: %s", input->GetString(), cvar->GetCvarName()->GetString());
-
-		}
 		//Unknown cvar
 		else
 		{
@@ -686,16 +613,6 @@ void j1App::Console_Cvar_Input(Cvar * cvar, Command* command_type, p2SString * i
 void j1App::SetQuit()
 {
 	want_to_quit = true;
-}
-
-const char * j1App::GetSaveDir() const
-{
-	return save_dir->GetValueString()->GetString();
-}
-
-const char * j1App::GetLoadDir() const
-{
-	return load_dir->GetValueString()->GetString();
 }
 
 j1Module * j1App::GetNextScene(j1Module * current_scene)

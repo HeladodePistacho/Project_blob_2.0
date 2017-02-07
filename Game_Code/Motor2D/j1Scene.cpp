@@ -100,7 +100,7 @@ bool j1Scene::PostUpdate()
 	
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 	{
-		ret = false;
+		App->scene_manager->ChangeScene(this, (j1Module*)App->hub, 500);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{

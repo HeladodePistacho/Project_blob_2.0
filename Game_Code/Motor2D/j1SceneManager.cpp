@@ -37,7 +37,7 @@ bool j1SceneManager::PostUpdate()
 			{
 				in_scene->Desactivate();
 				to_scene->Activate();
-
+				App->current_scene = to_scene;
 				current_step = fade_from_black;
 			}
 		}

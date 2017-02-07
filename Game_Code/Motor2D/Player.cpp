@@ -73,7 +73,6 @@ bool j1Player::Awake(pugi::xml_node & config)
 
 bool j1Player::Start()
 {
-
 	//Generate inital blob body
 	body = App->physics->CreateRectangle(50, 200, base_width * level, base_height * level, collision_type::PLAYER, BODY_TYPE::player);
 	body->FixedRotation(true);
@@ -200,9 +199,14 @@ bool j1Player::Load(pugi::xml_node& load_node)
 		p2SString* name = new p2SString(name_node.value());
 		completed_names.PushBack(name);
 		//Add blobs to player
-		const char* temp = blob_node.value();
-		BLOB_TYPE* type = new BLOB_TYPE((BLOB_TYPE)atoi(temp));
-		completed_blobs.PushBack(type);
+		
+		SDL_Rect* rect = new SDL_Rect();
+
+		rect->x = blob_node.attribute("x").as_int();
+		rect->y = blob_node.attribute("y").as_int();
+		rect->w = blob_node.attribute("w").as_int();
+		rect->h = blob_node.attribute("h").as_int();
+		completed_blobs.PushBack(rect);
 
 		name_node = name_node.next_sibling();
 		blob_node = blob_node.next_sibling();
@@ -222,11 +226,12 @@ bool j1Player::Save(pugi::xml_node& save_node)const
 	{
 		//Append Scene names
 		names_node.append_child("name").append_attribute(completed_names[k]->GetString()).as_string();
-		//Append Scene blobs type
-		char* buffer = new char[2];
-		_itoa(*completed_blobs[k], buffer, 2);
-		blobs_node.append_child("blob").append_attribute(buffer);
-		delete buffer;
+		//Append Scene blobs rect
+		pugi::xml_node current_blob = blobs_node.append_child("blob");
+		current_blob.append_attribute("x").as_int(completed_blobs[k]->x);
+		current_blob.append_attribute("y").as_int(completed_blobs[k]->y);
+		current_blob.append_attribute("w").as_int(completed_blobs[k]->w);
+		current_blob.append_attribute("h").as_int(completed_blobs[k]->h);
 	}
 	return true;
 }
@@ -249,6 +254,9 @@ bool j1Player::CleanUp()
 		if (item_prev != nullptr)item_prev = item_prev->prev;
 
 	}
+
+	completed_blobs.Delete_All();
+	completed_names.Delete_All();
 
 	return ret;
 }
@@ -371,10 +379,11 @@ bool j1Player::CheckLevel()
 	return false;
 }
 
-void j1Player::AddSceneCompleted(j1Scene * completed_scene)
+void j1Player::AddSceneCompleted(j1Scene* completed_scene)
 {
-	completed_names.PushBack(&completed_scene->name);
+	/*completed_names.PushBack(&completed_scene->name);
 	completed_blobs.PushBack(completed_scene->GetBlob()->GetType());
+	App->SaveGame(App->GetSaveDir());*/
 }
 
 bool j1Player::HandleInput()

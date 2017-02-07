@@ -119,11 +119,13 @@ void Hub::GUI_Input(UI_Element * target, GUI_INPUT input)
 void Hub::Activate()
 {
 	ui->Activate();
+	active = true;
 }
 
 void Hub::Desactivate()
 {
 	ui->Desactivate();
+	active = false;
 }
 
 //Functionality -----------------------

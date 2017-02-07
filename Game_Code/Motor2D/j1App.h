@@ -132,8 +132,7 @@ private:
 
 	mutable bool		want_to_save = false;
 	bool				want_to_load = false;
-	mutable p2SString	load_game;
-	mutable p2SString	save_game;
+	mutable p2SString	game_save_dir;
 
 	j1PerfTimer			ptimer;
 	uint64				frame_count = 0;
@@ -146,11 +145,6 @@ private:
 	int					capped_ms = -1;
 
 	bool				want_to_quit = false;
-
-	Cvar*				save_dir;
-	Cvar*				load_dir;
-
-	mutable p2List<p2SString*>	saved_games;
 
 public:
 

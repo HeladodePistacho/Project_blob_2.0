@@ -43,7 +43,7 @@ public:
 	PhysBody*	GetBody()const;
 	void		GetPosition(int& x, int& y);
 	uint		GetScale()const;
-	BLOB_TYPE*	GetType();
+	BLOB_TYPE	GetType()const;
 	Animation*	GetHappyAnim();
 	Animation*	GetFearAnim();
 	SDL_Rect	GetCurrentAnimRect();

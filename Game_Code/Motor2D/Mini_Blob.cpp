@@ -48,9 +48,9 @@ uint Mini_Blob::GetScale() const
 	return scale;
 }
 
-BLOB_TYPE* Mini_Blob::GetType() 
+BLOB_TYPE Mini_Blob::GetType() const
 {
-	return &type;
+	return type;
 }
 
 Animation * Mini_Blob::GetHappyAnim() 

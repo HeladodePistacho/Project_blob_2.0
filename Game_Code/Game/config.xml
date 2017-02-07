@@ -2,7 +2,7 @@
 
 <config>
   <app>
-    <title>Typing_Game</title>
+    <title>Blob</title>
     <organization>UPC</organization>
     <c_vars>
       <c_var name = "maxfps"	description = "Limit Max framerate"	value = "60"	type = "integrer"	only_read="false"/>
