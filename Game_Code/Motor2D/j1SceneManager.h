@@ -31,8 +31,8 @@ public:
 
 private:
 
-	j1Scene*	in_scene = nullptr;
-	j1Scene*	to_scene = nullptr;
+	j1Module*	in_scene = nullptr;
+	j1Module*	to_scene = nullptr;
 
 	fade_step	current_step = off;
 	j1Timer		fade_timer;
@@ -41,7 +41,7 @@ private:
 public:
 
 	//Functionality -----------------------------
-	bool ChangeScene(j1Scene* in, j1Scene* to, int time = 1);
+	bool ChangeScene(j1Module* in, j1Module* to, int time = 1);
 	bool IsFading() const;
 
 };

@@ -122,7 +122,7 @@ public:
 private:
 
 	p2List<j1Module*>	modules;
-	p2List<j1Scene*>	scenes;
+	p2List<j1Module*>	scenes;
 
 	int					argc;
 	char**				args;
@@ -163,8 +163,8 @@ public:
 	SDL_Texture* Items_Spritesheet = nullptr;
 	SDL_Texture* WinBlobs_Spritesheet = nullptr;
 
-	j1Scene*	GetNextScene(j1Scene* current_scene);
-	j1Scene*	current_scene;
+	j1Module*	GetNextScene(j1Module* current_scene);
+	j1Module*	current_scene;
 };
 
 extern j1App* App;

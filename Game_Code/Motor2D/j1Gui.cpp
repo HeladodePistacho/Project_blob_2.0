@@ -211,6 +211,8 @@ UI_Element* j1Gui::GenerateUI_Element(UI_TYPE element_type)
 		break;
 	}
 	
+	new_element->SetInputTarget(default_input_target);
+
 	return new_element;
 }
 

@@ -446,7 +446,7 @@ void j1Player::Respawn()
 	CheckLevel();
 	body->body->SetLinearVelocity(b2Vec2(0, 0));
 	int x, y;
-	App->current_scene->GetPlayerSpawn(x, y);
+	((j1Scene*)App->current_scene)->GetPlayerSpawn(x, y);
 	body->SetPosition(x, y);
 	LOG("Player Respawned!");
 }

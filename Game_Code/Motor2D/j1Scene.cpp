@@ -391,7 +391,6 @@ void j1Scene::EndScene()
 {
 	LOG("%s end!", name.GetString());
 	App->scene_manager->ChangeScene(this, App->GetNextScene(this),1);
-	App->player->Respawn();
 }
 
 void j1Scene::Activate()
@@ -401,6 +400,13 @@ void j1Scene::Activate()
 	{
 		LOG("Scene Textures wasn't clear before generation!");
 	}
+	else {
+		App->player->Activate();
+		App->player->Respawn();
+		active = true;
+		App->physics->Activate();
+	}
+
 	return;
 }
 
@@ -408,4 +414,7 @@ void j1Scene::Desactivate()
 {
 	LOG("Desactivating Scene...");
 	CleanPlatformsTextures();
+	App->physics->Desactivate();
+	App->player->Desactivate();
+	active = false;
 }

@@ -77,6 +77,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 
 	//Scene List --------------------------------
+	scenes.add(hub);
 	scenes.add(level_1);
 	// ------------------------------------------
 	
@@ -227,9 +228,12 @@ bool j1App::Start()
 	scene_manager->Desactivate();
 
 	//Activate the first game scene
-	level_1->Activate();
-	current_scene = level_1;
-	App->player->Respawn();
+	current_scene = hub;
+	hub->Activate();
+
+	player->Desactivate();
+	level_1->Desactivate();
+
 	return ret;
 }
 
@@ -694,9 +698,9 @@ const char * j1App::GetLoadDir() const
 	return load_dir->GetValueString()->GetString();
 }
 
-j1Scene * j1App::GetNextScene(j1Scene * current_scene) 
+j1Module * j1App::GetNextScene(j1Module * current_scene)
 {
-	p2List_item<j1Scene*>* next = scenes.At(scenes.find(current_scene))->next;
+	p2List_item<j1Module*>* next = scenes.At(scenes.find(current_scene))->next;
 	if (next == nullptr)next = scenes.start;
 	return 	next->data;
 }

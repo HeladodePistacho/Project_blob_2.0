@@ -65,7 +65,7 @@ bool j1SceneManager::PostUpdate()
 }
 
 // Fade to black. At mid point deactivate one module, then activate the other
-bool j1SceneManager::ChangeScene(j1Scene* in, j1Scene* to, int time)
+bool j1SceneManager::ChangeScene(j1Module* in, j1Module* to, int time)
 {
 	bool ret = (current_step == fade_step::off);
 
