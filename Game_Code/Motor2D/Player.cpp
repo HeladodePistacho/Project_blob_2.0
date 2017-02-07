@@ -197,10 +197,12 @@ bool j1Player::Load(pugi::xml_node& load_node)
 	while (name_node && blob_node)
 	{
 		//Add names to player 
-		completed_names.PushBack(p2SString(name_node.value()));
+		p2SString* name = new p2SString(name_node.value());
+		completed_names.PushBack(name);
 		//Add blobs to player
 		const char* temp = blob_node.value();
-		completed_blobs.PushBack((BLOB_TYPE)atoi(temp));
+		BLOB_TYPE* type = new BLOB_TYPE((BLOB_TYPE)atoi(temp));
+		completed_blobs.PushBack(type);
 
 		name_node = name_node.next_sibling();
 		blob_node = blob_node.next_sibling();
@@ -219,10 +221,10 @@ bool j1Player::Save(pugi::xml_node& save_node)const
 	for (uint k = 0; k < scenes_num; k++)
 	{
 		//Append Scene names
-		names_node.append_child("name").append_attribute(completed_names[k].GetString()).as_string();
+		names_node.append_child("name").append_attribute(completed_names[k]->GetString()).as_string();
 		//Append Scene blobs type
 		char* buffer = new char[2];
-		_itoa(completed_blobs[k], buffer, 2);
+		_itoa(*completed_blobs[k], buffer, 2);
 		blobs_node.append_child("blob").append_attribute(buffer);
 		delete buffer;
 	}
@@ -371,7 +373,7 @@ bool j1Player::CheckLevel()
 
 void j1Player::AddSceneCompleted(j1Scene * completed_scene)
 {
-	completed_names.PushBack(completed_scene->name);
+	completed_names.PushBack(&completed_scene->name);
 	completed_blobs.PushBack(completed_scene->GetBlob()->GetType());
 }
 

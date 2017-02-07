@@ -20,6 +20,8 @@
 #include "Player.h"
 #include "j1SceneManager.h"
 
+//Game Scenes
+#include "Hub.h"
 #include "Level_1.h"
 
 #include "j1App.h"
@@ -39,7 +41,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	fs = new j1FileSystem();
 	font = new j1Fonts();
 
-
+	hub = new Hub();
 	level_1 = new Level_1();
 	
 
@@ -61,6 +63,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(physics);
 	
 	// scenes 
+	AddModule(hub);
 	AddModule(level_1);
 
 	AddModule(player);

@@ -84,6 +84,9 @@
     <ClCompile Include="Mini_Blob.cpp">
       <Filter>Game\Scenes\Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Hub.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -198,6 +201,9 @@
     </ClInclude>
     <ClInclude Include="Mini_Blob.h">
       <Filter>Game\Scenes\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Hub.h">
+      <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
