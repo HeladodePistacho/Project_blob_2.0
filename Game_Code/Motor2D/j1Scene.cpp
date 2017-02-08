@@ -400,6 +400,7 @@ void j1Scene::Reset()
 
 	//Reset Blob Position
 	goal_blob->SetPosition(goal_loc.x + goal_blob->GetBody()->width, goal_loc.y + goal_blob->GetBody()->height);
+	goal_blob->GetBody()->body->SetLinearVelocity(b2Vec2(0, 0));
 	goal_blob->GetBody()->body->SetAwake(true);
 
 	//Reset Scene Items
@@ -409,6 +410,7 @@ void j1Scene::Reset()
 	while (item && loc)
 	{
 		item->data->SetPosition(loc->data.x + item->data->Get_body()->width, loc->data.y + item->data->Get_body()->height);
+		item->data->Get_body()->body->SetLinearVelocity(b2Vec2(0,0));
 		item->data->Get_body()->body->SetAwake(true);
 		item = item->next;
 		loc = loc->next;

@@ -50,6 +50,8 @@ public:
 	bool Start();
 
 	bool Update(float dt);
+	
+	bool PostUpdate();
 
 	bool Load(pugi::xml_node& load_node);
 
@@ -62,10 +64,9 @@ public:
 private:
 
 	//Player State ------------------------------
-public:
 	bool				alive = true;
-private:
 	bool				in_air = false;
+	bool				can_respawn = false;
 	j1Timer				regen_timer;
 	uint				regen_rate = 250;
 	j1Timer				bleed_timer;

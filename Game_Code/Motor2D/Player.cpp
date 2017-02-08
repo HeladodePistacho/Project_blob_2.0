@@ -150,13 +150,13 @@ bool j1Player::Update(float dt)
 	//Player actions --------------------------------------
 	if (alive) {
 		//Check all the action to set the current animation
-		if (!body->IsInContact())in_air = true;
+		if (!in_air && (!body->IsInContact() || body->OnlyMapContact()))
+		{
+			in_air = true;
+		}
 		if (current_animation->IsEnd() && !HandleInput()) HandleVelocity();
 	}
-	else if (current_animation->IsEnd())
-	{
-		((j1Scene*)App->current_scene)->Reset();
-	}
+	else if (current_animation->IsEnd()) can_respawn = true;
 	// ----------------------------------------------------
 
 	//Player Blits ----------------------------------------
@@ -186,6 +186,16 @@ bool j1Player::Update(float dt)
 	mouth->body->SetTransform(world_player_center,0);
 
 
+	return true;
+}
+
+bool j1Player::PostUpdate()
+{
+	if (can_respawn)
+	{
+		((j1Scene*)App->current_scene)->Reset();
+		can_respawn = false;
+	}
 	return true;
 }
 
@@ -329,7 +339,7 @@ void j1Player::DeleteBullet(Bullet* bullet)
 	App->physics->DeleteBody(bullet->GetBody());
 }
 
-Bullet * j1Player::FindBullet(PhysBody * bullet) const
+Bullet * j1Player::FindBullet(PhysBody* bullet) const
 {
 	p2List_item<Bullet*>* item = bullets_list.start;
 	while (item)

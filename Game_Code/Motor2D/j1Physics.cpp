@@ -624,7 +624,22 @@ bool PhysBody::IsInContact()const
 	return  (body->GetContactList() != nullptr);
 }
 
-void PhysBody::HandleContact(PhysBody* contact_body)
+bool PhysBody::OnlyMapContact() const
+{
+	b2ContactEdge* edge = body->GetContactList();
+	bool ret = false;
+
+	while (edge)
+	{
+		if (((PhysBody*)edge->contact->GetFixtureA()->GetBody()->GetUserData())->collide_type != BODY_TYPE::map)return false;
+		else ret = true;
+
+		edge = edge->next;
+	}
+	return ret;
+}
+
+inline void PhysBody::HandleContact(PhysBody* contact_body)
 {
 	//Check if collided body is in the bottom
 	b2Vec2 this_location = this->body->GetWorldPoint(b2Vec2(0, PIXEL_TO_METERS(this->height)));
@@ -639,10 +654,6 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 	case none:		return;		break;
 	
 	case map:
-		if (collide_type == player)
-		{
-			App->player->Impact();
-		}
 		break;
 	
 	case map_item:
@@ -664,19 +675,22 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 	case player_mouth:
 		if (collide_type == bullet)
 		{
-			App->player->PickBullet(App->player->FindBullet(((PhysBody*)body->GetUserData())));
+			App->player->PickBullet(App->player->FindBullet(this));
 		}
+		break;
+
 	case platform_black:
 		if (collide_type == player && at_bottom)
 		{
-			if (App->player->alive)
-			{
-				App->player->Die();
-			}
+			App->player->Die();
 		}
 		else if (collide_type == mini_blob && at_bottom)
 		{
 			((j1Scene*)App->current_scene)->Reset();
+		}
+		else if (collide_type == bullet)
+		{
+			App->player->DeleteBullet(App->player->FindBullet(this));
 		}
 		break;
 
