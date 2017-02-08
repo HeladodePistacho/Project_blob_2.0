@@ -153,7 +153,10 @@ bool j1Player::Update(float dt)
 		if (!body->IsInContact())in_air = true;
 		if (current_animation->IsEnd() && !HandleInput()) HandleVelocity();
 	}
-	else if (current_animation->IsEnd())Respawn();
+	else if (current_animation->IsEnd())
+	{
+		((j1Scene*)App->current_scene)->Reset();
+	}
 	// ----------------------------------------------------
 
 	//Player Blits ----------------------------------------
@@ -439,6 +442,11 @@ void j1Player::Die()
 	alive = false;
 	current_animation = &die;
 	current_animation->Reset();
+}
+
+void j1Player::Respawn()
+{
+	//Delete all bullets free in scene
 	p2List_item<Bullet*>* item = bullets_list.start;
 	while (item)
 	{
@@ -446,17 +454,18 @@ void j1Player::Die()
 		item = item->next;
 	}
 	bullets_list.clear();
-}
 
-void j1Player::Respawn()
-{
-	alive = true;
+	//Reset Player stats
 	bullets = 16;
 	CheckLevel();
 	body->body->SetLinearVelocity(b2Vec2(0, 0));
 	int x, y;
 	((j1Scene*)App->current_scene)->GetPlayerSpawn(x, y);
 	body->SetPosition(x, y);
+	body->body->SetAwake(true);
+	alive = true;
+	current_animation = &idle;
+
 	LOG("Player Respawned!");
 }
 

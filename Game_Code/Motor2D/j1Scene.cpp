@@ -393,6 +393,47 @@ void j1Scene::EndScene()
 	App->scene_manager->ChangeScene(this, App->GetNextScene(this),1);
 }
 
+void j1Scene::Reset()
+{
+	//Reset Player State
+	App->player->Respawn();
+
+	//Reset Blob Position
+	goal_blob->SetPosition(goal_loc.x + goal_blob->GetBody()->width, goal_loc.y + goal_blob->GetBody()->height);
+	goal_blob->GetBody()->body->SetAwake(true);
+
+	//Reset Scene Items
+	p2List_item<Item*>* item = Items.start;
+	p2List_item<iPoint>* loc = Items_loc.start;
+
+	while (item && loc)
+	{
+		item->data->SetPosition(loc->data.x + item->data->Get_body()->width, loc->data.y + item->data->Get_body()->height);
+		item->data->Get_body()->body->SetAwake(true);
+		item = item->next;
+		loc = loc->next;
+	}
+}
+
+void j1Scene::SaveSceneInit()
+{
+	//Save Mini Blob location
+	int x, y;
+	goal_blob->GetPosition(x, y);
+	goal_loc = iPoint(x, y);
+
+	//Save scene items location
+	p2List_item<Item*>* item = Items.start;
+	while (item)
+	{
+		item->data->GetPosition(x, y);
+
+		Items_loc.add(iPoint(x, y));
+
+		item = item->next;
+	}
+}
+
 void j1Scene::Activate()
 {
 	LOG("Activating Scene!");

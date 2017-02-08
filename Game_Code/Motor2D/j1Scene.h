@@ -3,6 +3,7 @@
 
 #include "j1Module.h"
 #include "p2List.h"
+#include "p2Point.h"
 
 struct PhysBody;
 
@@ -48,11 +49,12 @@ protected:
 	PhysBody*				background_collide_mark = nullptr;
 	//Items ---------------------------
 	p2List<Item*>			Items;
-	Item*					goal_item = nullptr;
+	p2List<iPoint>			Items_loc;
 	//Platforms -----------------------
 	p2List<Platform*>		Platforms;
 	//Blobs ---------------------------
 	Mini_Blob*				goal_blob;
+	iPoint					goal_loc;
 	//Player Spawn Coordinates --------
 	int player_x_cord = 0;
 	int player_y_cord = 0;
@@ -71,6 +73,9 @@ public:
 	Mini_Blob*					GenerateSceneBlob(BLOB_TYPE type, uint scale);
 
 	virtual void				EndScene();
+	void						Reset();
+	void						SaveSceneInit();
+
 	virtual void				Activate();
 	virtual void				Desactivate();
 

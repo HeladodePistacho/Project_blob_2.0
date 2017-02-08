@@ -285,10 +285,10 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH | PLATFORM;
 		break;
 	case MAP:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH | MAP_ITEM;
 		break;
 	case MAP_ITEM:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM | MAP_ITEM;
 		break;
 	case PLAYER_MOUTH:
 		fixture.filter.maskBits = BULLET;
@@ -669,7 +669,14 @@ void PhysBody::HandleContact(PhysBody* contact_body)
 	case platform_black:
 		if (collide_type == player && at_bottom)
 		{
-			App->player->Die();
+			if (App->player->alive)
+			{
+				App->player->Die();
+			}
+		}
+		else if (collide_type == mini_blob && at_bottom)
+		{
+			((j1Scene*)App->current_scene)->Reset();
 		}
 		break;
 

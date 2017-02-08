@@ -62,7 +62,9 @@ public:
 private:
 
 	//Player State ------------------------------
+public:
 	bool				alive = true;
+private:
 	bool				in_air = false;
 	j1Timer				regen_timer;
 	uint				regen_rate = 250;
