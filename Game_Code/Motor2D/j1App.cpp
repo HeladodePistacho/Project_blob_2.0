@@ -22,7 +22,9 @@
 
 //Game Scenes
 #include "Hub.h"
+#include "Tutorial_Level_1.h"
 #include "Level_1.h"
+
 
 #include "j1App.h"
 
@@ -43,7 +45,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	hub = new Hub();
 	level_1 = new Level_1();
-	
+	tutorial_1 = new Tutorial_1();
 
 	
 	gui = new j1Gui();
@@ -64,7 +66,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	
 	// scenes 
 	AddModule(hub);
+	AddModule(tutorial_1);
 	AddModule(level_1);
+	
 
 	AddModule(player);
 	AddModule(gui);
@@ -78,6 +82,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	//Scene List --------------------------------
 	scenes.add(hub);
+	scenes.add(tutorial_1);
 	scenes.add(level_1);
 	// ------------------------------------------
 	
@@ -226,6 +231,7 @@ bool j1App::Start()
 	hub->Activate();
 
 	player->Desactivate();
+	tutorial_1->Desactivate();
 	level_1->Desactivate();
 
 	return ret;

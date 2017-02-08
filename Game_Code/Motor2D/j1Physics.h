@@ -21,7 +21,8 @@ enum collision_type
 	BULLET = 4,
 	MAP = 8,
 	MAP_ITEM = 16,
-	PLATFORM = 32
+	PLATFORM = 32,
+	MINI_BLOB = 64
 };
 
 enum BODY_TYPE 

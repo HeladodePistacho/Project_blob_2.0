@@ -6,6 +6,7 @@
 #include "p2Point.h"
 
 struct PhysBody;
+struct SDL_Texture;
 
 #include "Item.h"
 #include "Platform.h"
@@ -37,7 +38,9 @@ public:
 	// --------------------------------
 
 	//Scene Loop ----------------------
+	virtual bool SceneStart();
 	virtual bool SceneUpdate();
+	virtual bool SceneCleanUp();
 	// --------------------------------
 
 protected:
@@ -71,8 +74,10 @@ public:
 	Item*						GenerateSceneItem(ITEM_TYPE item_type, uint scale = 1);
 	Platform*					GenerateScenePlatfrom(PLATFORM_TYPE platform_type, uint width, uint scale = 1);
 	Mini_Blob*					GenerateSceneBlob(BLOB_TYPE type, uint scale);
+	bool						LoadSpriteSheet(const char* folder);
+	void						GenerateCollideMark(int x, int y, int* points, int points_num);
 
-	virtual void				EndScene();
+	void						EndScene();
 	void						Reset();
 	void						SaveSceneInit();
 

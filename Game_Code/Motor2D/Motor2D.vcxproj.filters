@@ -19,9 +19,6 @@
     <ClCompile Include="p2Log.cpp">
       <Filter>Tanks</Filter>
     </ClCompile>
-    <ClCompile Include="j1Scene.cpp">
-      <Filter>Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="j1FileSystem.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
     <ClCompile Include="j1SceneManager.cpp">
       <Filter>Game\Scenes\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Level_1.cpp">
-      <Filter>Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Platform.cpp">
       <Filter>Game\Scenes\Elements</Filter>
     </ClCompile>
@@ -85,6 +79,9 @@
       <Filter>Game\Scenes\Elements</Filter>
     </ClCompile>
     <ClCompile Include="Hub.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Scene.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -187,9 +184,6 @@
     <ClInclude Include="j1SceneManager.h">
       <Filter>Game\Scenes\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="j1Scene.h">
-      <Filter>Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Level_1.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
@@ -203,6 +197,12 @@
       <Filter>Game\Scenes\Elements</Filter>
     </ClInclude>
     <ClInclude Include="Hub.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Scene.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial_Level_1.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

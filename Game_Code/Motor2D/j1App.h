@@ -25,7 +25,9 @@ class j1Scene;
 
 //Game Scenes
 class Hub;
+class Tutorial_1;
 class Level_1;
+
 
 class j1App
 {
@@ -101,8 +103,11 @@ public:
 	j1Console*			console = NULL;
 	j1Player*			player = NULL;
 	j1SceneManager*		scene_manager = NULL;
-	Level_1*			level_1 = NULL;
+	
 	Hub*				hub = NULL;
+	Tutorial_1*			tutorial_1 = NULL;
+	Level_1*			level_1 = NULL;
+
 
 	// Add a new module to handle
 	void		AddModule(j1Module* module);

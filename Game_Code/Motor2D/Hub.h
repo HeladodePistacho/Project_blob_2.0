@@ -33,9 +33,9 @@ public:
 
 private:
 
-	UI_Element* ui = nullptr;
-	UI_Button*	start_button = nullptr;
-	UI_Button*	exit_button = nullptr;
+	UI_Element*		ui = nullptr;
+	UI_Button*		start_button = nullptr;
+	UI_Button*		exit_button = nullptr;
 
 	p2DynArray<UI_Image*>	completed_blob;
 	p2DynArray<UI_String*>	completed_name;

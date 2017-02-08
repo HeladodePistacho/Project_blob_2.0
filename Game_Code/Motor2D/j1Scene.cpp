@@ -5,7 +5,6 @@
 #include "j1Audio.h"
 #include "j1Render.h"
 #include "j1Window.h"
-#include "j1Gui.h"
 #include "j1Scene.h"
 #include "j1Physics.h"
 #include "Player.h"
@@ -167,9 +166,28 @@ bool j1Scene::CleanUp()
 	return ret;
 }
 
+bool j1Scene::SceneStart()
+{
+	return true;
+}
+
 bool j1Scene::SceneUpdate()
 {
 	return true;
+}
+
+bool j1Scene::SceneCleanUp()
+{
+	bool ret = true;
+
+	//Unload Scene Spirtesheet
+	App->tex->UnLoad(spritesheet);
+
+	//Destroy Background collide mark
+	App->physics->DeleteBody(background_collide_mark);
+
+	//Delete Scene Items
+	return ret;
 }
 
 void j1Scene::GetPlayerSpawn(int & x, int & y)
@@ -378,13 +396,24 @@ Mini_Blob * j1Scene::GenerateSceneBlob(BLOB_TYPE type, uint scale)
 	happy->SetSpeed(350);
 	new_blob->SetFear();
 
-	new_blob->SetBody(App->physics->CreateRectangle(0, 0, happy->GetFirstFrame().w * scale, happy->GetFirstFrame().h * scale, collision_type::MAP_ITEM, BODY_TYPE::mini_blob));
+	new_blob->SetBody(App->physics->CreateRectangle(0, 0, happy->GetFirstFrame().w * scale, happy->GetFirstFrame().h * scale, collision_type::MINI_BLOB, BODY_TYPE::mini_blob));
 	new_blob->GetBody()->FixedRotation(true);
 
 	if (goal_blob != nullptr)delete goal_blob;
 	goal_blob = new_blob;
 	
 	return new_blob;
+}
+
+bool j1Scene::LoadSpriteSheet(const char * folder)
+{
+	spritesheet = App->tex->Load(folder);
+	return spritesheet != nullptr;
+}
+
+void j1Scene::GenerateCollideMark(int x, int y, int * points, int points_num)
+{
+	background_collide_mark = App->physics->CreateChain(x,y,points,points_num, collision_type::MAP, BODY_TYPE::map);
 }
 
 void j1Scene::EndScene()
@@ -439,16 +468,11 @@ void j1Scene::SaveSceneInit()
 void j1Scene::Activate()
 {
 	LOG("Activating Scene!");
-	if (!GeneratePlatformsTextures())
-	{
-		LOG("Scene Textures wasn't clear before generation!");
-	}
-	else {
-		App->player->Activate();
-		App->player->Respawn();
-		active = true;
-		App->physics->Activate();
-	}
+	GeneratePlatformsTextures();
+	App->player->Activate();
+	App->player->Respawn();
+	active = true;
+	App->physics->Activate();
 
 	return;
 }
@@ -457,6 +481,7 @@ void j1Scene::Desactivate()
 {
 	LOG("Desactivating Scene...");
 	CleanPlatformsTextures();
+
 	App->physics->Desactivate();
 	App->player->Desactivate();
 	active = false;

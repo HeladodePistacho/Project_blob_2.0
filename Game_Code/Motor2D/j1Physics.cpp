@@ -282,16 +282,16 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = MAP | MAP_ITEM | PLATFORM;
 		break;
 	case BULLET:
-		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH | PLATFORM;
+		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH | PLATFORM | MINI_BLOB;
 		break;
 	case MAP:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH | MAP_ITEM;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH | MAP_ITEM | MINI_BLOB;
 		break;
 	case MAP_ITEM:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM | MAP_ITEM;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM | MAP_ITEM | MINI_BLOB;
 		break;
 	case PLAYER_MOUTH:
-		fixture.filter.maskBits = BULLET;
+		fixture.filter.maskBits = BULLET | MINI_BLOB;
 		break;
 	}
 	return;
@@ -664,7 +664,7 @@ inline void PhysBody::HandleContact(PhysBody* contact_body)
 		break;
 
 	case mini_blob:
-		if (collide_type == player)
+		if (collide_type == player_mouth)
 		{
 			((j1Scene*)App->current_scene)->GetBlob()->SetHappy();
 			App->player->AddSceneCompleted((j1Scene*)App->current_scene);

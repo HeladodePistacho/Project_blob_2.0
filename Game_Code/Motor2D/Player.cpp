@@ -9,7 +9,6 @@
 #include "j1Render.h"
 #include "j1Textures.h"
 #include "j1Input.h"
-#include "j1Scene.h"
 
 ///BULLET CLASS ----------------------------------
 //Constructor
