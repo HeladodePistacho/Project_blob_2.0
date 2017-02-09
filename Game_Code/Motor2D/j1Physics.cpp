@@ -291,7 +291,7 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM | MAP_ITEM | MINI_BLOB;
 		break;
 	case PLAYER_MOUTH:
-		fixture.filter.maskBits = BULLET | MINI_BLOB;
+		fixture.filter.maskBits = BULLET;
 		break;
 	}
 	return;
@@ -564,9 +564,9 @@ void PhysBody::FixedRotation(bool value)
 
 void PhysBody::SetPosition(int x, int y)
 {
-	x = PIXEL_TO_METERS(x);
-	y = PIXEL_TO_METERS(y);
-	b2Vec2 position((float32)x,(float32)y);
+	float x_meters = PIXEL_TO_METERS(x);
+	float y_meters = PIXEL_TO_METERS(y);
+	b2Vec2 position((float32)x_meters,(float32)y_meters);
 	body->SetTransform(position, body->GetAngle());
 }
 
@@ -663,15 +663,6 @@ inline void PhysBody::HandleContact(PhysBody* contact_body)
 		}
 		break;
 
-	case mini_blob:
-		if (collide_type == player_mouth)
-		{
-			((j1Scene*)App->current_scene)->GetBlob()->SetHappy();
-			App->player->AddSceneCompleted((j1Scene*)App->current_scene);
-			((j1Scene*)App->current_scene)->EndScene();
-		}
-		break;
-
 	case player_mouth:
 		if (collide_type == bullet)
 		{
@@ -753,5 +744,13 @@ void j1Physics::BeginContact(b2Contact* contact)
 
 void j1Physics::If_Sensor_contact(PhysBody* bodyA, PhysBody* bodyB)
 {
-
+	if (bodyA->collide_type == player_mouth && bodyB->collide_type == mini_blob)
+	{
+		if (((j1Scene*)App->current_scene)->GetBlob()->IsHappy())
+		{
+			((j1Scene*)App->current_scene)->GetBlob()->SetHappy();
+			App->player->AddSceneCompleted((j1Scene*)App->current_scene);
+			((j1Scene*)App->current_scene)->EndScene();
+		}
+	}
 }

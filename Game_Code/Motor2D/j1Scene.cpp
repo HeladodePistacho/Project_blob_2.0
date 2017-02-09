@@ -129,6 +129,9 @@ bool j1Scene::PostUpdate()
 // Called before quitting
 bool j1Scene::CleanUp()
 {
+	//Free scene spritesheet
+	App->tex->UnLoad(spritesheet);
+
 	LOG("Freeing %s",this->name.GetString());
 
 	bool ret = true;
@@ -190,6 +193,7 @@ bool j1Scene::SceneCleanUp()
 	return ret;
 }
 
+//Functionality ---------------------------------
 void j1Scene::GetPlayerSpawn(int & x, int & y)
 {
 	x = player_x_cord;
@@ -201,7 +205,7 @@ Mini_Blob * j1Scene::GetBlob() const
 	return goal_blob;
 }
 
-//Functionality ---------------------------------
+
 bool j1Scene::GeneratePlatformsTextures()
 {
 	bool ret = true;
@@ -468,6 +472,7 @@ void j1Scene::SaveSceneInit()
 void j1Scene::Activate()
 {
 	LOG("Activating Scene!");
+	Start();
 	GeneratePlatformsTextures();
 	App->player->Activate();
 	App->player->Respawn();
@@ -481,7 +486,7 @@ void j1Scene::Desactivate()
 {
 	LOG("Desactivating Scene...");
 	CleanPlatformsTextures();
-
+	CleanUp();
 	App->physics->Desactivate();
 	App->player->Desactivate();
 	active = false;

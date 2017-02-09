@@ -30,8 +30,8 @@ public:
 		//Background mark collide build 
 		int background_points[8] = {
 			0,0,
-			0,720,
-			1280,720,
+			0,640,
+			1280,640,
 			1280,0
 		};
 		GenerateCollideMark(0, 0, background_points, 8);
@@ -40,22 +40,23 @@ public:
 		player_x_cord = 50;
 		player_y_cord = 150;
 
-		//Platforms -------------
-		Platform* platform = nullptr;
-		platform = GenerateScenePlatfrom(PLATFORM_TYPE::PLATFORM_BLACK, 1280, 2);
-		platform->Set_Position(0, 680);
-		// ----------------------
-
 		//Items -----------------
-		Item* element = GenerateSceneItem(ITEM_TYPE::DRAWER_LARGE_CLOSE, 1);
-		element->SetPosition(50, 200);
-		element = GenerateSceneItem(ITEM_TYPE::TABLE_SHORT, 2);
-		element->SetPosition(350, 500);
+		Item* element = nullptr;
+		element = GenerateSceneItem(ITEM_TYPE::TABLE_STANDAR, 2);
+		element->SetPosition(200, 316);
+		element = GenerateSceneItem(ITEM_TYPE::BOX_BOOKS);
+		element->SetPosition(620, 500);
+		element = GenerateSceneItem(ITEM_TYPE::BOX_BOOKS);
+		element->SetPosition(675, 500);
+		element = GenerateSceneItem(ITEM_TYPE::BOX_BOOKS);
+		element->SetPosition(650, 450);
+		element = GenerateSceneItem(ITEM_TYPE::BOX_LARGE_XMAS);
+		element->SetPosition(950, 500);
 		// ----------------------
 
 		//Mini Blob -------------
-		Mini_Blob* blob = GenerateSceneBlob(BLOB_TYPE::BLOB_BLUE, 2);
-		blob->SetPosition(1180, 500);
+		goal_blob = GenerateSceneBlob(BLOB_TYPE::BLOB_BLUE, 2);
+		goal_blob->SetPosition(1180, 500);
 		// ----------------------
 
 		SaveSceneInit();

@@ -203,7 +203,7 @@ bool j1App::Start()
 
 	while(item != NULL && ret == true)
 	{
-		ret = item->data->Start();
+		if(scenes.find(item->data) == -1)item->data->Start();
 		item = item->next;
 	}
 	startup_time.Start();
@@ -227,6 +227,7 @@ bool j1App::Start()
 	scene_manager->Desactivate();
 
 	//Activate the first game scene
+	hub->Start();
 	current_scene = hub;
 	hub->Activate();
 

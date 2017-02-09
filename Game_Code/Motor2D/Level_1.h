@@ -69,8 +69,8 @@ public:
 		// ----------------------
 
 		//Mini Blob -------------
-		Mini_Blob* blob = GenerateSceneBlob(BLOB_TYPE::BLOB_BLUE, 2);
-		blob->SetPosition(1180, 500);
+		goal_blob = GenerateSceneBlob(BLOB_TYPE::BLOB_BLUE, 2);
+		goal_blob->SetPosition(1180, 500);
 		// ----------------------
 
 		SaveSceneInit();
