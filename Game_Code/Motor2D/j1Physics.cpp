@@ -282,16 +282,16 @@ void j1Physics::SetFixture(b2FixtureDef& fixture, collision_type type)
 		fixture.filter.maskBits = MAP | MAP_ITEM | PLATFORM;
 		break;
 	case BULLET:
-		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH | PLATFORM | MINI_BLOB;
+		fixture.filter.maskBits = MAP | MAP_ITEM |PLAYER_MOUTH | PLATFORM;
 		break;
 	case MAP:
-		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | PLAYER_MOUTH | MAP_ITEM | MINI_BLOB;
+		fixture.filter.maskBits = PLAYER | BULLET | MAP_ITEM | MINI_BLOB;
 		break;
 	case MAP_ITEM:
 		fixture.filter.maskBits = PLAYER | BULLET | MAP | PLATFORM | MAP_ITEM | MINI_BLOB;
 		break;
 	case PLAYER_MOUTH:
-		fixture.filter.maskBits = BULLET;
+		fixture.filter.maskBits = BULLET | MINI_BLOB;
 		break;
 	}
 	return;
@@ -655,7 +655,14 @@ inline void PhysBody::HandleContact(PhysBody* contact_body)
 	
 	case map:
 		break;
-	
+	case mini_blob:
+		if (collide_type == player_mouth)
+		{
+			(((j1Scene*)App->current_scene))->BlobContact();
+			LOG("K");
+		}
+		break;
+
 	case map_item:
 		if (collide_type == player && at_bottom)
 		{
@@ -732,25 +739,18 @@ inline void PhysBody::HandleContact(PhysBody* contact_body)
 
 void j1Physics::BeginContact(b2Contact* contact)
 {
+
 	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
 	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
-	if(physA && physA->listener != NULL)
+	if(physA != nullptr && physA->listener != NULL)
 		physA->listener->OnCollision(physA, physB);
 
-	if(physB && physB->listener != NULL)
+	if(physB != nullptr && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
 }
 
 void j1Physics::If_Sensor_contact(PhysBody* bodyA, PhysBody* bodyB)
 {
-	if (bodyA->collide_type == player_mouth && bodyB->collide_type == mini_blob)
-	{
-		if (((j1Scene*)App->current_scene)->GetBlob()->IsHappy())
-		{
-			((j1Scene*)App->current_scene)->GetBlob()->SetHappy();
-			App->player->AddSceneCompleted((j1Scene*)App->current_scene);
-			((j1Scene*)App->current_scene)->EndScene();
-		}
-	}
+
 }

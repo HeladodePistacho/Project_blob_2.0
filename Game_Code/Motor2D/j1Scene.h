@@ -56,8 +56,11 @@ protected:
 	//Platforms -----------------------
 	p2List<Platform*>		Platforms;
 	//Blobs ---------------------------
-	Mini_Blob*				goal_blob;
+	Mini_Blob*				goal_blob = nullptr;
 	iPoint					goal_loc;
+	uint					blob_happy_delay = 2500;
+	j1Timer					blob_timer;
+	bool					at_change = false;
 	//Player Spawn Coordinates --------
 	int player_x_cord = 0;
 	int player_y_cord = 0;
@@ -77,6 +80,7 @@ public:
 	bool						LoadSpriteSheet(const char* folder);
 	void						GenerateCollideMark(int x, int y, int* points, int points_num);
 
+	void						BlobContact();
 	void						EndScene();
 	void						Reset();
 	void						SaveSceneInit();

@@ -81,20 +81,12 @@ bool j1Scene::Update(float dt)
 		platform = platform->next;
 	}
 
-
-	if (goal_blob == nullptr)return ret;
-
-	//Draw target scene blob
-	//Get position
-	goal_blob->GetPosition(x, y);
-	//Blit item texture from spritesheet
-	ret = App->render->Blit(App->WinBlobs_Spritesheet, x , y, &goal_blob->GetCurrentAnimRect(), goal_blob->GetScale(), 1.0f);
-
 	return ret;
 }
 
 bool j1Scene::PostUpdate()
 {
+
 	bool ret = true;
 	
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
@@ -123,18 +115,52 @@ bool j1Scene::PostUpdate()
 		else Platforms.start->data->ChangeType(PLATFORM_RED);
 	}
 
+
+	if (goal_blob == nullptr)return ret;
+
+	//Draw target scene blob
+	//Get position
+	int x, y;
+	goal_blob->GetPosition(x, y);
+	//Blit item texture from spritesheet
+	ret = App->render->Blit(App->WinBlobs_Spritesheet, x, y, &goal_blob->GetCurrentAnimRect(), goal_blob->GetScale(), 1.0f);
+
+
+	if (goal_blob->IsHappy() && (blob_timer.Read() > blob_happy_delay) && !at_change)
+	{
+		LOG("Change");
+		at_change = true;
+		App->player->AddSceneCompleted(this);
+		EndScene();
+	}
 	return ret;
 }
 
 // Called before quitting
 bool j1Scene::CleanUp()
 {
+	bool ret = true;
+	LOG("Freeing %s", this->name.GetString());
+
+	//Destroy Background collide mark
+	if (background_collide_mark != nullptr)
+	{
+		App->physics->DeleteBody(background_collide_mark);
+		background_collide_mark = nullptr;
+	}
+
 	//Free scene spritesheet
 	App->tex->UnLoad(spritesheet);
+	spritesheet = nullptr;
 
-	LOG("Freeing %s",this->name.GetString());
+	//Delete Scene Blob
+	if (goal_blob != nullptr)
+	{
+		App->physics->DeleteBody(goal_blob->GetBody());
+		delete goal_blob;
+		goal_blob = nullptr;
+	}
 
-	bool ret = true;
 
 	//Clean all Scene Items
 	p2List_item<Item*>* item = Items.end;
@@ -144,6 +170,7 @@ bool j1Scene::CleanUp()
 	while (item) {
 
 		//Delete all item data
+		if(!App->physics->DeleteBody(item->data->Get_body()))return false;
 		ret = Items.del(item);
 
 		item = item_prev;
@@ -159,12 +186,15 @@ bool j1Scene::CleanUp()
 	while (p_item) {
 
 		//Delete all item data
+		if (!App->physics->DeleteBody(p_item->data->Get_Body()))return false;
 		ret = Platforms.del(p_item);
 
 		p_item = p_item_prev;
 		if (p_item_prev != nullptr)p_item_prev = p_item_prev->prev;
 
 	}
+
+	ret = SceneCleanUp();
 
 	return ret;
 }
@@ -183,13 +213,6 @@ bool j1Scene::SceneCleanUp()
 {
 	bool ret = true;
 
-	//Unload Scene Spirtesheet
-	App->tex->UnLoad(spritesheet);
-
-	//Destroy Background collide mark
-	App->physics->DeleteBody(background_collide_mark);
-
-	//Delete Scene Items
 	return ret;
 }
 
@@ -420,10 +443,21 @@ void j1Scene::GenerateCollideMark(int x, int y, int * points, int points_num)
 	background_collide_mark = App->physics->CreateChain(x,y,points,points_num, collision_type::MAP, BODY_TYPE::map);
 }
 
+void j1Scene::BlobContact()
+{
+	if (goal_blob == nullptr)return;
+
+	if (!goal_blob->IsHappy())
+	{
+		goal_blob->SetHappy();
+		blob_timer.Start();
+	}
+}
+
 void j1Scene::EndScene()
 {
 	LOG("%s end!", name.GetString());
-	App->scene_manager->ChangeScene(this, App->GetNextScene(this),1);
+	App->scene_manager->ChangeScene(this, App->GetNextScene(this),500);
 }
 
 void j1Scene::Reset()
@@ -477,6 +511,7 @@ void j1Scene::Activate()
 	App->player->Activate();
 	App->player->Respawn();
 	active = true;
+	at_change = false;
 	App->physics->Activate();
 
 	return;
@@ -486,8 +521,10 @@ void j1Scene::Desactivate()
 {
 	LOG("Desactivating Scene...");
 	CleanPlatformsTextures();
-	CleanUp();
+	if(spritesheet != nullptr)CleanUp();
+
 	App->physics->Desactivate();
 	App->player->Desactivate();
 	active = false;
+	at_change = false;
 }

@@ -54,8 +54,8 @@ public:
 
 		//Platforms -------------
 		Platform* platform = nullptr;
-		platform = GenerateScenePlatfrom(PLATFORM_TYPE::PLATFORM_BLACK, 1280, 2);
-		platform->Set_Position(0, 680);
+		platform = GenerateScenePlatfrom(PLATFORM_TYPE::PLATFORM_GREEN, 1280, 2);
+		platform->Set_Position(0, 650);
 		// ----------------------
 
 		//Items -----------------

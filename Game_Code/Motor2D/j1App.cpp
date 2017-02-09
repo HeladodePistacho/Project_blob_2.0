@@ -82,8 +82,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	//Scene List --------------------------------
 	scenes.add(hub);
-	scenes.add(tutorial_1);
 	scenes.add(level_1);
+	scenes.add(tutorial_1);
 	// ------------------------------------------
 	
 
@@ -228,12 +228,12 @@ bool j1App::Start()
 
 	//Activate the first game scene
 	hub->Start();
-	current_scene = hub;
 	hub->Activate();
+	current_scene = hub;
 
-	player->Desactivate();
 	tutorial_1->Desactivate();
 	level_1->Desactivate();
+	player->Desactivate();
 
 	return ret;
 }
