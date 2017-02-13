@@ -128,7 +128,6 @@ bool j1Scene::PostUpdate()
 
 	if (goal_blob->IsHappy() && (blob_timer.Read() > blob_happy_delay) && !at_change)
 	{
-		LOG("Change");
 		at_change = true;
 		App->player->AddSceneCompleted(this);
 		EndScene();
@@ -445,9 +444,9 @@ void j1Scene::GenerateCollideMark(int x, int y, int * points, int points_num)
 
 void j1Scene::BlobContact()
 {
-	if (goal_blob == nullptr)return;
+	if (this->goal_blob == nullptr || this->name.GetString() == "hub")return;
 
-	if (!goal_blob->IsHappy())
+	if (!goal_blob->IsHappy() && start_delay_timer.Read() > start_delay)
 	{
 		goal_blob->SetHappy();
 		blob_timer.Start();
@@ -513,7 +512,7 @@ void j1Scene::Activate()
 	active = true;
 	at_change = false;
 	App->physics->Activate();
-
+	start_delay_timer.Start();
 	return;
 }
 

@@ -58,7 +58,7 @@ protected:
 	//Blobs ---------------------------
 	Mini_Blob*				goal_blob = nullptr;
 	iPoint					goal_loc;
-	uint					blob_happy_delay = 2500;
+	uint					blob_happy_delay = 500;
 	j1Timer					blob_timer;
 	bool					at_change = false;
 	//Player Spawn Coordinates --------
@@ -88,6 +88,8 @@ public:
 	virtual void				Activate();
 	virtual void				Desactivate();
 
+	j1Timer						start_delay_timer;
+	uint						start_delay = 500;
 };
 
 #endif // __j1SCENE_H__

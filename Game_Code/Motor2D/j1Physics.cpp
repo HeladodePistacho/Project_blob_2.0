@@ -659,7 +659,6 @@ inline void PhysBody::HandleContact(PhysBody* contact_body)
 		if (collide_type == player_mouth)
 		{
 			(((j1Scene*)App->current_scene))->BlobContact();
-			LOG("K");
 		}
 		break;
 
