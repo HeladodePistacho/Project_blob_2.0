@@ -8,6 +8,12 @@ struct PhysBody;
 
 enum ITEM_TYPE
 {
+	//Balls
+	BALL_GREEN,
+	BALL_YELLOW,
+	BALL_RED,
+	BALL_ORANGE,
+	BALL_BLUE,
 	//Boxes
 	BOX_BOOKS,
 	BOX_XMAS,

@@ -264,6 +264,12 @@ Item * j1Scene::GenerateSceneItem(ITEM_TYPE item_type, uint scale)
 
 	switch (item_type)
 	{
+	//Balls Builds ------------------------------
+	case BALL_GREEN:		new_item = new Item({ 399, 7, 7, 7 }, item_type, scale);		break;
+	case BALL_YELLOW:		new_item = new Item({ 408, 7, 7, 7 }, item_type, scale);		break;
+	case BALL_RED:			new_item = new Item({ 417, 7, 7, 7 }, item_type, scale);		break;
+	case BALL_ORANGE:		new_item = new Item({ 426, 7, 7, 7 }, item_type, scale);		break;
+	case BALL_BLUE:			new_item = new Item({ 435, 7, 7, 7 }, item_type, scale);		break;
 	// Box Builds -------------------------------
 	case BOX_BOOKS:			new_item = new Item({ 0, 0, 51, 50 }, item_type, scale);		break;
 	case BOX_XMAS:			new_item = new Item({ 52, 0, 51, 50 }, item_type, scale);		break;

@@ -34,13 +34,20 @@ enum BODY_TYPE
 	map,
 	map_item,
 	mini_blob,
+	
 	platform_black,
 	platform_blue,
 	platform_green,
 	platform_yellow,
 	platform_purple,
 	platform_red,
-	platform_orange
+	platform_orange,
+	
+	ball_blue,
+	ball_green,
+	ball_yellow,
+	ball_red,
+	ball_orange
 };
 
 // Small class to return to other modules to track position and rotation of physics bodies
@@ -55,6 +62,7 @@ public:
 	float	GetRotation() const;
 	int		GetWidth()const;
 	int		GetHeight()const;
+	bool	IsPlatfom()const;
 
 	//Set body data ---------------------------------------
 	void	Move(int x_vel, int y_vel);

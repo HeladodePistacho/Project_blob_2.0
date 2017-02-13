@@ -546,6 +546,14 @@ int PhysBody::GetHeight() const
 	return height;
 }
 
+bool PhysBody::IsPlatfom() const
+{
+	return collide_type == platform_black || collide_type == platform_blue || 
+		   collide_type == platform_green || collide_type == platform_orange ||
+		   collide_type == platform_purple || collide_type == platform_red ||
+		   collide_type == platform_yellow;
+}
+
 void PhysBody::Move(int x_vel, int y_vel)
 {
 	int x, y;
@@ -731,6 +739,12 @@ inline void PhysBody::HandleContact(PhysBody* contact_body)
 			body_vel.y *= 0;
 			body->SetLinearVelocity(body_vel);
 			App->player->Impact();
+		}
+
+	case ball_green:
+		if (this->IsPlatfom())
+		{
+			
 		}
 		break;
 	}
